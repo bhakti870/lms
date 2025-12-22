@@ -23,41 +23,44 @@
 
 
 
+                    @php
+                        $notifications = auth()->user()->unreadNotifications;
+                    @endphp
                     <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative"
-                            href="#" data-bs-toggle="dropdown"><span class="alert-count">7</span>
+                            href="#" data-bs-toggle="dropdown"><span class="alert-count">{{ count($notifications) }}</span>
                             <i class='bx bx-bell'></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a href="javascript:;">
                                 <div class="msg-header">
                                     <p class="msg-header-title">Notifications</p>
-                                    <p class="msg-header-badge">8 New</p>
+                                    <p class="msg-header-badge">{{ count($notifications) }} New</p>
                                 </div>
                             </a>
                             <div class="header-notifications-list">
-                                <a class="dropdown-item" href="javascript:;">
+                                @foreach($notifications as $notification)
+                                <a class="dropdown-item" href="{{ route('admin.instructor.index') }}">
                                     <div class="d-flex align-items-center">
                                         <div class="user-online">
-                                            <img src="{{asset('backend/assets/images/avatars/avatar-1.png')}}" class="msg-avatar"
+                                            <img src="{{ asset('backend/assets/images/avatars/avatar-1.png') }}" class="msg-avatar"
                                                 alt="user avatar">
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h6 class="msg-name">Daisy Anderson<span
-                                                    class="msg-time float-end">5 sec
-                                                    ago</span></h6>
-                                            <p class="msg-info">The standard chunk of lorem</p>
+                                            <h6 class="msg-name">{{ $notification->data['name'] ?? 'System' }}<span
+                                                    class="msg-time float-end">{{ $notification->created_at->diffForHumans() }}</span></h6>
+                                            <p class="msg-info">{{ $notification->data['message'] }}</p>
                                         </div>
                                     </div>
                                 </a>
-
-
-
+                                @endforeach
                             </div>
-
+                            <a href="javascript:;" id="mark-all-read">
+                                <div class="text-center msg-footer">Mark All as Read</div>
+                            </a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown dropdown-large">
+                    <!-- <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative"
                             href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="alert-count">8</span>
@@ -95,13 +98,13 @@
                             </div>
 
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="user-box dropdown px-3">
                 <a class="d-flex align-items-center nav-link dropdown-toggle gap-3 dropdown-toggle-nocaret"
                     href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{asset('backend/assets/images/avatars/avatar-2.png')}}" class="user-img" alt="user avatar">
+                    <img src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('backend/assets/images/avatars/avatar-2.png') }}" class="user-img" alt="user avatar">
                     <div class="user-info">
                         <p class="user-name mb-0">{{auth()->user()->name}}</p>
                         <p class="designattion mb-0">{{auth()->user()->role}}</p>

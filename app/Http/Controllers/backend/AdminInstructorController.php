@@ -36,5 +36,21 @@ class AdminInstructorController extends Controller
         return view('backend.admin.instructor.active', compact('active_instructor'));
     }
 
+    /**
+     * Delete instructor account.
+     */
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        $notification = array(
+            'message' => 'Instructor deleted successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
+    }
+
 
 }

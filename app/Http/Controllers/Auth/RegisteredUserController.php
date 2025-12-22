@@ -42,6 +42,10 @@ class RegisteredUserController extends Controller
 
         ]);
 
+        // Notify Admin
+        $admins = User::where('role', 'admin')->get();
+        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\InstructorRegistrationNotification($user));
+
         event(new Registered($user));
 
         Auth::login($user);

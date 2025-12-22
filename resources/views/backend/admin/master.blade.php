@@ -6,7 +6,7 @@
     <title>LMS - Admin Dashboard</title>
 
     <style>
-        /* ডিফল্ট ভাবে থিম হাইড করুন */
+       
         html {
             visibility: hidden;
             opacity: 0;

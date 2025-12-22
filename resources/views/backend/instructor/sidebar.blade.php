@@ -52,6 +52,14 @@
             </ul>
         </li>
 
+        <li class="{{ setSidebar(['instructor.all.review*']) }}">
+            <a href="{{ route('instructor.all.review') }}">
+                <div class="parent-icon"><i class='bx bx-star'></i>
+                </div>
+                <div class="menu-title">Manage Reviews</div>
+            </a>
+        </li>
+
         @endif
 
 

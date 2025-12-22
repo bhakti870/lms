@@ -13,7 +13,7 @@
     <ul class="metismenu" id="menu">
         <li class="{{ setSidebar(['admin.dashboard']) }}">
             <a href="{{route('admin.dashboard')}}">
-                <div class="parent-icon"><i class='bx bx-category'></i>
+                <div class="parent-icon"><i class='bx bx-home'></i>
                 </div>
                 <div class="menu-title">Dashboard</div>
             </a>
@@ -23,7 +23,7 @@
         <li class="{{ setSidebar(['admin.category*', 'admin.subcategory*']) }}">
             <a href="javascript:;" class="has-arrow">
 
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-folder-open"></i>
                 </div>
                 <div class="menu-title">Manage Category</div>
             </a>
@@ -40,7 +40,7 @@
 
         <li  class="{{ setSidebar(['admin.instructor.index', 'admin.instructor.active']) }}">
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-user-voice "></i>
                 </div>
                 <div class="menu-title">Manage Instructor</div>
             </a>
@@ -56,9 +56,23 @@
         </li>
 
 
+        <li  class="{{ setSidebar(['admin.all.user']) }}">
+            <a href="javascript:;" class="has-arrow">
+                <div class="parent-icon"><i class="bx bx-group"></i>
+                </div>
+                <div class="menu-title">Manage User</div>
+            </a>
+            <ul>
+                <li class="{{ setSidebar(['admin.all.user']) }}">
+                    <a href="{{route('admin.all.user')}}"><i class='bx bx-radio-circle'></i>All User</a>
+                </li>
+            </ul>
+        </li>
+
+
         <li class="{{ setSidebar(['admin.course*']) }}">
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-book-open"></i>
                 </div>
                 <div class="menu-title">Manage Course</div>
             </a>
@@ -73,13 +87,13 @@
 
          <li class="{{ setSidebar(['admin.order*']) }}">
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-cart"></i>
                 </div>
                 <div class="menu-title">Manage Order</div>
             </a>
             <ul>
                 <li class="{{ setSidebar(['admin.order*']) }}">
-                    <a href="{{route('admin.order.index')}}"><i class='bx bx-radio-circle'></i>All Orders</a>
+                    <a href="{{route('admin.order.index')}}"><i class='bx bx bx-radio-circle'></i>All Orders</a>
                 </li>
 
 
@@ -91,7 +105,7 @@
         <li class="{{ setSidebar(['admin.slider*', 'admin.info*', 'admin.partner*', 'admin.subscriber*', 'admin.site-setting*', 'admin.page-setting*']) }}">
             <a href="javascript:;" class="has-arrow">
 
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-cog"></i>
                 </div>
                 <div class="menu-title">Application Settings</div>
             </a>

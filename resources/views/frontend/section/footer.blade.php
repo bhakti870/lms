@@ -31,7 +31,7 @@
                     <ul class="generic-list-item">
                         <li><a href="#">About us</a></li>
                         <li><a href="#">Contact us</a></li>
-                        <li><a href="#">Become a Teacher</a></li>
+                        <li><a href="{{ route('instructor.register') }}">Become a Teacher</a></li>
                         <li><a href="#">Support</a></li>
                         <li><a href="#">FAQs</a></li>
                         <li><a href="#">Blog</a></li>
@@ -72,7 +72,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <p class="copy-desc">&copy; 2021 Aduca. All Rights Reserved. by <a
+                    <p class="copy-desc">&copy; 2021 SkillPoint. All Rights Reserved. by <a
                             href="https://techydevs.com/">TechyDevs</a></p>
                 </div><!-- end col-lg-6 -->
                 <div class="col-lg-6">

@@ -43,6 +43,7 @@ class CourseRequest extends FormRequest
             'bestseller' => 'nullable|in:yes,no',
             'featured' => 'nullable|in:yes,no',
             'highestrated' => 'nullable|in:yes,no',
+            'can_have_quizzes' => 'nullable|boolean',
             'course_goals.*' => 'nullable'
 
         ];

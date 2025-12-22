@@ -29,10 +29,16 @@ class FrontendDashboardController extends Controller
 
     public function view($slug)
     {
+        // Strip .html suffix if present
+        $slug = preg_replace('/\.html$/', '', $slug);
 
-        $course = Course::where('course_name_slug', $slug)->with('category', 'subcategory', 'user')->first();
+        $course = Course::where('course_name_slug', $slug)->with('category', 'subcategory', 'user', 'quizzes', 'materials', 'lectures')->firstOrFail();
+        
         $total_lecture = CourseLecture::where('course_id', $course->id)->count();
-        $course_content = CourseSection::where('course_id', $course->id)->with('lecture')->get();
+        $course_content = CourseSection::where('course_id', $course->id)
+            ->with(['lectures', 'quizzes.questions', 'materials'])
+            ->orderBy('display_order')
+            ->get();
 
         // Get the currently authenticated user's ID
         $userId = Auth::id();
@@ -44,11 +50,7 @@ class FrontendDashboardController extends Controller
         $all_category = Category::orderBy('name', 'asc')->get();
 
         //more course instructor
-
         $more_course_instructor = Course::where('instructor_id', $course->instructor_id)->where('id', '!=', $course->id)->with('user')->get();
-
-        $total_lecture = CourseLecture::where('course_id', $course->id)->count();
-
 
         $total_minutes = CourseLecture::where('course_id', $course->id)->sum('video_duration');
 
@@ -58,7 +60,20 @@ class FrontendDashboardController extends Controller
 
         $total_lecture_duration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
+        $is_enrolled = false;
+        if (Auth::check()) {
+            $is_enrolled = \App\Models\Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $course->id)
+                ->where('status', 'active')
+                ->exists();
+        }
 
-        return view('frontend.pages.course-details.index', compact('course', 'total_lecture', 'course_content', 'similarCourses', 'all_category', 'more_course_instructor', 'total_minutes', 'total_lecture_duration'));
+        return view('frontend.pages.course-details.index', compact('course', 'total_lecture', 'course_content', 'similarCourses', 'all_category', 'more_course_instructor', 'total_minutes', 'total_lecture_duration', 'is_enrolled'));
+    }
+
+    public function allCourses()
+    {
+        $courses = Course::with('user', 'category')->paginate(12);
+        return view('frontend.course.index', compact('courses'));
     }
 }

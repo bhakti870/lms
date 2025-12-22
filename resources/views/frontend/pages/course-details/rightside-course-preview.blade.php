@@ -46,10 +46,18 @@
                 <span class="text-color-3">4 days</span> left at this price!
             </p>
             <div class="buy-course-btn-box">
-                <button type="button" class="btn theme-btn w-100 mb-2"><i
-                        class="la la-shopping-cart fs-18 mr-1"></i> Add to cart</button>
-                <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2"><i
-                        class="la la-shopping-bag mr-1"></i> Buy this course</button>
+                @if($is_enrolled)
+                    <a href="{{ route('user.course.learn', $course->id) }}" class="btn theme-btn w-100 mb-2">
+                        <i class="la la-play-circle fs-18 mr-1"></i> Start Learning
+                    </a>
+                @else
+                    <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart" data-id="{{ $course->id }}">
+                        <i class="la la-shopping-cart fs-18 mr-1"></i> Add to cart
+                    </button>
+                    <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2">
+                        <i class="la la-shopping-bag mr-1"></i> Buy this course
+                    </button>
+                @endif
             </div>
             <p class="fs-14 text-center pb-4">30-Day Money-Back Guarantee</p>
             <div class="preview-course-incentives">

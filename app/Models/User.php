@@ -37,6 +37,34 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'user_role');
     }
 
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'instructor_id', 'id');
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(CourseProgress::class);
+    }
+
+    public function quizResults()
+    {
+        return $this->hasMany(QuizResult::class);
+    }
+
+    /**
+     * Check if user is enrolled in a course
+     */
+    public function isEnrolled($courseId)
+    {
+        return $this->enrollments()->where('course_id', $courseId)->where('status', 'active')->exists();
+    }
+
     // Helper methods for role checking
 
     public function isAdmin()

@@ -106,7 +106,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                 @foreach($payment_info['order'] as $item)
+                                 @foreach($payment_info->orders as $item)
                                 <tr>
                                     <td>
                                         <img src="{{asset($item->course->course_image)}}" width="80" height="80" style="border-radius: 5px" />

@@ -19,16 +19,25 @@
                         {{ $course['label'] }}</h6>
 
                     <div class="rating-wrap d-flex flex-wrap align-items-center">
+                        @php
+                            $review_count = $course->reviews->count();
+                            $avg_rating = $course->reviews->avg('rating');
+                            $rounded_avg = round($avg_rating, 1);
+                        @endphp
                         <div class="review-stars">
-                            <span class="rating-number">4.4</span>
-                            <span class="la la-star"></span>
-                            <span class="la la-star"></span>
-                            <span class="la la-star"></span>
-                            <span class="la la-star"></span>
-                            <span class="la la-star-o"></span>
+                            <span class="rating-number">{{ $rounded_avg > 0 ? $rounded_avg : '0.0' }}</span>
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $rounded_avg)
+                                    <span class="la la-star"></span>
+                                @elseif($i - 0.5 <= $rounded_avg)
+                                    <span class="la la-star-half-o"></span>
+                                @else
+                                    <span class="la la-star-o"></span>
+                                @endif
+                            @endfor
                         </div>
-                        <span class="rating-total pl-1">(20,230 ratings)</span>
-                        <span class="student-total pl-2">540,815 students</span>
+                        <span class="rating-total pl-1">({{ $review_count }} ratings)</span>
+                        <span class="student-total pl-2">{{ $course->enrollments->count() }} students</span>
                     </div>
                 </div><!-- end d-flex -->
 

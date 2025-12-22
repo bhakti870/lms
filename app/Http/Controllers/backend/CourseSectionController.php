@@ -50,12 +50,13 @@ class CourseSectionController extends Controller
      */
     public function show(string $id)
     {
-        $course = Course::find($id);
+        $course = Course::findOrFail($id);
+        $course_wise_lecture = CourseSection::with(['lectures', 'quizzes', 'materials'])
+            ->where('course_id', $id)
+            ->orderBy('display_order')
+            ->get();
 
-        $course_wise_lecture = CourseSection::with('lecture')->where('course_id', $id)->get();
-
-
-        return view('backend.instructor.course-section.index', compact('course',  'course_wise_lecture'));
+        return view('backend.instructor.course-section.index', compact('course', 'course_wise_lecture'));
     }
 
     /**

@@ -17,6 +17,7 @@ use App\Http\Controllers\backend\InstructorProfileController;
 use App\Http\Controllers\backend\OrderController;
 use App\Http\Controllers\backend\PartnerController;
 use App\Http\Controllers\backend\SettingController;
+use App\Http\Controllers\backend\AdminUserController;
 use App\Http\Controllers\backend\SiteSettingController;
 use App\Http\Controllers\backend\SliderController;
 use App\Http\Controllers\backend\SubcategoryController;
@@ -24,11 +25,16 @@ use App\Http\Controllers\backend\UserController;
 use App\Http\Controllers\backend\UserProfileController;
 use App\Http\Controllers\backend\RoleController;
 use App\Http\Controllers\backend\PermissionController;
+use App\Http\Controllers\backend\QuizController;
+use App\Http\Controllers\backend\CourseMaterialController;
 use App\Http\Controllers\frontend\CartController;
 use App\Http\Controllers\frontend\CheckoutController;
 use App\Http\Controllers\frontend\FrontendDashboardController;
 use App\Http\Controllers\frontend\WishlistController;
+use App\Http\Controllers\frontend\CourseDeliveryController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\backend\ReviewController as BackendReviewController;
+use App\Http\Controllers\frontend\ReviewController as FrontendReviewController;
 use App\Http\Controllers\SocialController;
 
 /*
@@ -83,6 +89,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::resource('instructor', AdminInstructorController::class);
     Route::post('/update-status', [AdminInstructorController::class, 'updateStatus'])->name('instructor.status');
     Route::get('/instructor-active-list', [AdminInstructorController::class, 'instructorActive'])->name('instructor.active');
+    Route::get('/delete-instructor/{id}', [AdminInstructorController::class, 'delete'])->name('delete.instructor');
 
     /*  Setting Controller */
     Route::get('/mail-setting', [SettingController::class, 'mailSetting'])->name('mailSetting');
@@ -104,6 +111,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     /* Manage Roles & Permissions */
     Route::resource('role', RoleController::class);
     Route::resource('permission', PermissionController::class);
+    Route::get('/mark-all-read', [AdminController::class, 'markAllAsRead'])->name('markAllRead');
+
+    /* Manage All Users */
+    Route::get('/all-user', [AdminUserController::class, 'index'])->name('all.user');
+    Route::post('/user-status', [AdminUserController::class, 'updateStatus'])->name('user.status');
+    Route::get('/delete-user/{id}', [AdminUserController::class, 'delete'])->name('delete.user');
 
 });
 
@@ -111,6 +124,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 /*  Instructor Route  */
 Route::get('/instructor/login', [InstructorController::class, 'login'])->name('instructor.login');
 Route::get('/instructor/register', [InstructorController::class, 'register'])->name('instructor.register');
+Route::post('/instructor/register', [InstructorController::class, 'instructorRegister'])->name('instructor.register.store');
 Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
     Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [InstructorController::class, 'destroy'])
@@ -127,6 +141,26 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')
     Route::resource('course-section', CourseSectionController::class);
 
     Route::resource('lecture', LectureController::class);
+
+    // Instructor Course Quiz
+    Route::post('/quiz/store', [QuizController::class, 'store'])->name('quiz.store');
+    Route::get('/quiz/edit/{id}', [QuizController::class, 'edit'])->name('quiz.edit');
+    Route::post('/quiz/update/{id}', [QuizController::class, 'update'])->name('quiz.update');
+    Route::delete('/quiz/destroy/{id}', [QuizController::class, 'destroy'])->name('quiz.destroy');
+    Route::post('/quiz/question/store', [QuizController::class, 'storeQuestion'])->name('quiz.question.store');
+    Route::post('/quiz/question/update/{id}', [QuizController::class, 'updateQuestion'])->name('quiz.question.update');
+    Route::delete('/quiz/question/destroy/{id}', [QuizController::class, 'destroyQuestion'])->name('quiz.question.destroy');
+
+    // Instructor Course Materials
+    Route::post('/material/store', [CourseMaterialController::class, 'store'])->name('instructor.material.store');
+    Route::get('/material/edit/{id}', [CourseMaterialController::class, 'edit'])->name('instructor.material.edit');
+    Route::post('/material/update/{id}', [CourseMaterialController::class, 'update'])->name('instructor.material.update');
+    Route::delete('/material/destroy/{id}', [CourseMaterialController::class, 'destroy'])->name('instructor.material.destroy');
+
+    // Review Management
+    Route::get('/all-reviews', [BackendReviewController::class, 'instructorReviews'])->name('all.review');
+    Route::post('/update-review-status/{id}', [BackendReviewController::class, 'updateReviewStatus'])->name('update.review.status');
+    Route::delete('/delete-review/{id}', [BackendReviewController::class, 'deleteReview'])->name('delete.review');
 
     Route::resource('coupon', CouponController::class);
 });
@@ -151,12 +185,30 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::get('/wishlist-data', [WishlistController::class, 'getWishlist']);
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
+    /* Course Delivery & Learning */
+    Route::get('/course-learn/{id}', [CourseDeliveryController::class, 'learn'])->name('course.learn');
+    Route::get('/course-content/{course_id}/{type}/{id}', [CourseDeliveryController::class, 'getContent'])->name('course.content');
+    Route::post('/course-progress', [CourseDeliveryController::class, 'saveProgress'])->name('course.progress');
+    Route::post('/course-quiz-submit', [CourseDeliveryController::class, 'submitQuiz'])->name('course.quiz.submit');
+    Route::post('/course-note', [CourseDeliveryController::class, 'saveNote'])->name('course.note.save');
+    Route::get('/course-certificate/{course_id}', [CourseDeliveryController::class, 'downloadCertificate'])->name('course.certificate');
+
+    /* Purchase History */
+    Route::get('/purchase-history', [UserController::class, 'purchaseHistory'])->name('purchase.history');
+    Route::get('/invoice/{id}', [UserController::class, 'downloadInvoice'])->name('invoice');
+    Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('leaderboard');
 });
 
 
 //Frontend Route
 
 Route::get('/', [FrontendDashboardController::class, 'home'])->name('frontend.home');
+Route::get('/instructors', [App\Http\Controllers\Frontend\InstructorController::class, 'index'])->name('all.instructors');
+Route::get('/instructor/details/{id}', [App\Http\Controllers\Frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
+
+// All Courses
+Route::get('/courses', [App\Http\Controllers\Frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
 Route::get('/course-details/{slug}', [FrontendDashboardController::class, 'view'])->name('course-details');
 
 /* wishlist controller  */
@@ -186,7 +238,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/order', [OrderController::class, 'order'])->name('order');
     Route::get('/payment-success', [OrderController::class, 'success'])->name('success');
     Route::get('/payment-cancel', [OrderController::class, 'cancel'])->name('cancel');
-    //Route::resource('rating', RatingController::class);
+    Route::post('/razorpay-success', [OrderController::class, 'razorpaySuccess'])->name('razorpay.success');
+    Route::get('/razorpay-cancel', [OrderController::class, 'razorpayCancel'])->name('razorpay.cancel');
+    
+    /* Review */
+    Route::post('/store/review', [FrontendReviewController::class, 'storeReview'])->name('store.review');
 });
 
 

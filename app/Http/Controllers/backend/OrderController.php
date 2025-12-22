@@ -55,6 +55,9 @@ class OrderController extends Controller
             // Use request data for specific fields
             $this->createPayment($session, $paymentIntent);
 
+            $firstCourseId = $stripe_data['course_id'][0] ?? null;
+            $course = \App\Models\Course::find($firstCourseId);
+
             //delete cart data
             $guestToken = $request->cookie('guest_token') ?? Str::uuid();
             Cart::where('guest_token', $guestToken)->delete();
@@ -62,7 +65,8 @@ class OrderController extends Controller
             //coupon session destroy
             session()->forget('coupon','stripe_data');
 
-            return redirect('/')->with('success', 'Course purchase successfully');
+            $redirectUrl = $course ? route('course-details', $course->course_name_slug) : '/';
+            return redirect($redirectUrl)->with('purchase_success', true);
 
 
             // return view('frontend.pages.checkout.stripe.success', ['session' => $session]);
@@ -110,7 +114,7 @@ class OrderController extends Controller
 
          // Retrieve the validated data from the session or request
          $stripeData = session('stripe_data'); // Assuming this is where the order data is stored.
-         // Create order records for each course
+         // Create order and enrollment records for each course
          foreach ($stripeData['course_id'] as $index => $courseId) {
              Order::create([
                  'payment_id' => $paymentId, // Associate with the created payment record
@@ -120,9 +124,100 @@ class OrderController extends Controller
                  'course_title' => $stripeData['course_name'][$index],
                  'price' => $stripeData['course_price'][$index],
              ]);
+
+             // Create Enrollment
+             \App\Models\Enrollment::updateOrCreate(
+                [
+                    'user_id' => auth()->user()->id,
+                    'course_id' => $courseId,
+                ],
+                [
+                    'amount' => $stripeData['course_price'][$index],
+                    'status' => 'active',
+                    'enrolled_at' => now(),
+                ]
+             );
          }
 
     }
 
 
+    public function razorpaySuccess(Request $request)
+    {
+        $input = $request->all();
+        $api = new \Razorpay\Api\Api(config('razorpay.razor_key'), config('razorpay.razor_secret'));
+        
+        try {
+            $attributes = [
+                'razorpay_order_id' => $input['razorpay_order_id'],
+                'razorpay_payment_id' => $input['razorpay_payment_id'],
+                'razorpay_signature' => $input['razorpay_signature']
+            ];
+            
+            $api->utility->verifyPaymentSignature($attributes);
+            
+            // Payment successful
+            $orderPayload = session()->get('order_payload');
+            
+            // Create Payment Record (Razorpay)
+            $payment = Payment::create([
+                'transaction_id' => $input['razorpay_payment_id'],
+                'name' => $orderPayload['first_name'] . ' ' . $orderPayload['last_name'],
+                'email' => $orderPayload['email'],
+                'total_amount' => $orderPayload['total_price'],
+                'payment_type' => 'razorpay',
+                'invoice_no' => 'INV-' . strtoupper(uniqid()),
+                'order_date' => now()->toDateString(),
+                'order_month' => now()->format('F'),
+                'order_year' => now()->year,
+                'status' => 'completed',
+            ]);
+
+            // Create Orders
+             foreach ($orderPayload['course_id'] as $index => $courseId) {
+                 Order::create([
+                     'payment_id' => $payment->id,
+                     'user_id' => auth()->user()->id,
+                     'course_id' => $courseId,
+                     'instructor_id' => $orderPayload['instructor_id'][$index],
+                     'course_title' => $orderPayload['course_name'][$index],
+                     'price' => $orderPayload['course_price'][$index],
+                 ]);
+
+                 // Create Enrollment
+                 \App\Models\Enrollment::updateOrCreate(
+                    [
+                        'user_id' => auth()->user()->id,
+                        'course_id' => $courseId,
+                    ],
+                    [
+                        'amount' => $orderPayload['course_price'][$index],
+                        'status' => 'active',
+                        'enrolled_at' => now(),
+                    ]
+                 );
+             }
+            
+            // Clear cart
+             Cart::where('user_id', auth()->user()->id)->delete();
+             $guestToken = $request->cookie('guest_token');
+             if ($guestToken) Cart::where('guest_token', $guestToken)->delete();
+             
+             $firstCourseId = $orderPayload['course_id'][0] ?? null;
+             $course = \App\Models\Course::find($firstCourseId);
+
+             session()->forget(['order_payload', 'razorpay_order_id', 'coupon']);
+
+             $redirectUrl = $course ? route('course-details', $course->course_name_slug) : '/';
+             return redirect($redirectUrl)->with('purchase_success', true);
+
+        } catch (\Exception $e) {
+            return redirect()->route('checkout.index')->with('error', 'Payment verification failed: ' . $e->getMessage());
+        }
+    }
+
+    public function razorpayCancel()
+    {
+        return redirect()->route('checkout.index')->with('error', 'Payment was cancelled');
+    }
 }

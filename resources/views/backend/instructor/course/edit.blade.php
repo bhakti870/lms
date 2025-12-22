@@ -245,6 +245,13 @@
                                     {{ $course->highestrated == 'yes' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="flexCheckWarning">highestrated</label>
                             </div>
+                            <div class="form-check form-check-info">
+                                <input type="hidden" name="can_have_quizzes" value="0">
+                                <input class="form-check-input" type="checkbox" name="can_have_quizzes"
+                                    id="quizToggle" style="cursor: pointer" value="1"
+                                    {{ $course->can_have_quizzes ? 'checked' : '' }}>
+                                <label class="form-check-label" for="quizToggle text-info"><strong>Enable Quizzes</strong></label>
+                            </div>
                         </div>
 
 

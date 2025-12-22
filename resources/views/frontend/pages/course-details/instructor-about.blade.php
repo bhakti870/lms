@@ -7,12 +7,20 @@
                     <img class="lazy" src="{{ $course['user']['photo'] }}"
                         data-src="{{ $course['user']['photo'] }}" alt="Avatar image">
                 </a>
+                @php
+                    $instructor = $course->user;
+                    $courses = $instructor->courses;
+                    $course_ids = $courses->pluck('id');
+                    $total_students = App\Models\Enrollment::whereIn('course_id', $course_ids)->count();
+                    $total_reviews = App\Models\Review::whereIn('course_id', $course_ids)->where('status', 1)->count();
+                    $avg_rating = App\Models\Review::whereIn('course_id', $course_ids)->where('status', 1)->avg('rating');
+                    $instructor_rating = $avg_rating > 0 ? round($avg_rating, 1) : '0.0';
+                @endphp
                 <ul class="generic-list-item pt-3">
-                    <li><i class="la la-star mr-2 text-color-3"></i> 4.6 Instructor Rating</li>
-                    <li><i class="la la-user mr-2 text-color-3"></i> 45,786 Students</li>
-                    <li><i class="la la-comment-o mr-2 text-color-3"></i> 2,533 Reviews</li>
-                    <li><i class="la la-play-circle-o mr-2 text-color-3"></i> 24 Courses</li>
-                    <li><a href="teacher-detail.html">View all Courses</a></li>
+                    <li><i class="la la-star mr-2 text-color-3"></i> {{ $instructor_rating }} Instructor Rating</li>
+                    <li><i class="la la-student mr-2 text-color-3"></i> {{ $total_students }} Students</li>
+                    <li><i class="la la-comment-o mr-2 text-color-3"></i> {{ $total_reviews }} Reviews</li>
+                    <li><i class="la la-play-circle-o mr-2 text-color-3"></i> {{ $courses->count() }} Courses</li>
                 </ul>
             </div><!-- end instructor-img -->
             <div class="media-body">

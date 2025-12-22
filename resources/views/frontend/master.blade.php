@@ -20,6 +20,16 @@
 
     <!-- end inject -->
 
+    <script>
+        // Apply theme immediately before page renders
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+                document.body.classList.add('dark-theme');
+            }
+        })();
+    </script>
 </head>
 
 <body>

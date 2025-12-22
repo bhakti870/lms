@@ -94,7 +94,8 @@
 
                             </div><!-- end card-body -->
                         </div><!-- end card -->
-                        <div class="card card-item">
+                        
+                         <div class="card card-item">
                             <div class="card-body">
                                 <h3 class="card-title fs-22 pb-3">Select Payment Method</h3>
                                 <div class="divider"><span></span></div>
@@ -103,96 +104,26 @@
 
 
                                     <div class="payment-tab">
-
-
-
                                         <div class="payment-tab-toggle">
-                                            <input id="stripe" name="payment_type" type="radio" value="stripe">
-                                            <label for="stripe">Stripe</label>
-
-                                            <img class="payment-logo" src="{{ asset('frontend/images/stripe.png') }}"
-                                                alt="">
-
-
-
-
-
+                                            <input checked id="razorpay" name="payment_type" type="radio" value="razorpay">
+                                            <label for="razorpay">Razorpay Secure Payment</label>
+                                            <img class="payment-logo" src="https://razorpay.com/assets/razorpay-glyph.svg" style="width: 30px; margin-left:10px;" alt="">
                                         </div>
                                         <div class="payment-tab-content">
-                                            <p class="fs-15 lh-24">In order to complete your transaction, we will transfer
-                                                you over to Stripe's secure servers.</p>
-                                        </div>
-                                    </div><!-- end payment-tab -->
-
-                                    <div class="payment-tab">
-
-
-
-                                        <div class="payment-tab-toggle">
-                                            <input id="paypal" name="payment_type" type="radio" value="paypal">
-                                            <label for="paypal">PayPal</label>
-                                            <img class="payment-logo" src="{{ asset('frontend/images/paypal.png') }}"
-                                                alt="">
-                                        </div>
-                                        <div class="payment-tab-content">
-                                            <p class="fs-15 lh-24">In order to complete your transaction, we will transfer
-                                                you over to PayPal's secure servers.</p>
-                                        </div>
-                                    </div><!-- end payment-tab -->
-
-
-
-                                    <div class="payment-tab">
-                                        <div class="payment-tab-toggle">
-                                            <input type="radio" name="radio" id="creditCart" value="creditCard">
-                                            <label for="creditCart">Credit / Debit Card</label>
-                                            <img class="payment-logo" src="images/payment-img.png" alt="">
-                                        </div>
-                                        <div class="payment-tab-content">
-                                            <form action="#" class="row">
-                                                <div class="input-box col-lg-6">
-                                                    <label class="label-text">Name on Card</label>
-                                                    <div class="form-group">
-                                                        <input class="form-control form--control pl-3" type="text"
-                                                            name="text" placeholder="Card Name">
-                                                    </div>
-                                                </div>
-                                                <div class="input-box col-lg-6">
-                                                    <label class="label-text">Card Number</label>
-                                                    <div class="form-group">
-                                                        <input class="form-control form--control pl-3" type="text"
-                                                            name="text" placeholder="1234  5678  9876  5432">
-                                                    </div>
-                                                </div>
-                                                <div class="input-box col-lg-4">
-                                                    <label class="label-text">Expiry Month</label>
-                                                    <div class="form-group">
-                                                        <input class="form-control form--control pl-3" type="text"
-                                                            name="text" placeholder="MM">
-                                                    </div>
-                                                </div>
-                                                <div class="input-box col-lg-4">
-                                                    <label class="label-text">Expiry Year</label>
-                                                    <div class="form-group">
-                                                        <input class="form-control form--control pl-3" type="text"
-                                                            name="text" placeholder="YY">
-                                                    </div>
-                                                </div>
-                                                <div class="input-box col-lg-4">
-                                                    <label class="label-text">CVV</label>
-                                                    <div class="form-group">
-                                                        <input class="form-control form--control pl-3" type="text"
-                                                            name="text" placeholder="cvv">
-                                                    </div>
-                                                </div>
-                                            </form>
+                                            <p class="fs-15 lh-24">Pay securely with Credit/Debit Card, UPI, NetBanking, and Wallets via Razorpay.</p>
                                         </div>
                                     </div><!-- end payment-tab -->
 
 
                                 </div>
-                            </div><!-- end card-body -->
-                        </div><!-- end card -->
+                            </div>
+                            <!-- end card-body -->
+                        </div>
+
+
+
+
+                        <!-- end card -->
                     </div><!-- end col-lg-7 -->
                     <div class="col-lg-5">
                         <div class="card card-item">

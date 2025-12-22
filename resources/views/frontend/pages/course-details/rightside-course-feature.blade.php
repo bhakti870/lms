@@ -10,7 +10,10 @@
                         class="la la-play-circle-o mr-2 text-color"></i>Lectures</span> {{$total_lecture}}
             </li>
             <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-file-text-o mr-2 text-color"></i>Resources</span> {{$course->resources}}</li>
+                        class="la la-question mr-2 text-color"></i>Quizzes</span> {{ $course->quizzes->count() }}
+            </li>
+            <li class="d-flex align-items-center justify-content-between"><span><i
+                        class="la la-file-text-o mr-2 text-color"></i>Resources</span> {{ $course->materials->count() }}</li>
 
 
             <li class="d-flex align-items-center justify-content-between"><span><i

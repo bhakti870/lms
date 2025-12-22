@@ -40,7 +40,9 @@
 </script>
 
 <script>
-    new PerfectScrollbar(".app-container")
+    if ($(".app-container").length) {
+        new PerfectScrollbar(".app-container");
+    }
 </script>
 
 
@@ -130,3 +132,54 @@
 
 
 @stack('scripts')
+
+<script>
+    $(document).ready(function() {
+        $('#mark-all-read').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{ route('admin.markAllRead') }}",
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('.alert-count').text('0');
+                        $('.msg-header-badge').text('0 New');
+                        $('.header-notifications-list').html('<p class="text-center p-3">No new notifications</p>');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(function(){
+        $(document).on('click','#delete',function(e){
+            e.preventDefault();
+            var link = $(this).attr("href");
+
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Delete This Data?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = link
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                }
+            })
+
+
+        });
+
+    });
+</script>

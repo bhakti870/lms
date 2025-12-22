@@ -120,7 +120,7 @@
                                     </div><!-- end custom-control -->
                                     <button class="btn theme-btn" type="submit">Register Account <i
                                             class="la la-arrow-right icon ml-1"></i></button>
-                                    <p class="fs-14 pt-2">Already have an account? <a href="login.html"
+                                    <p class="fs-14 pt-2">Already have an account? <a href="{{ route('login') }}"
                                             class="text-color hover-underline">Log in</a></p>
                                 </div><!-- end btn-box -->
                             </form>

@@ -22,7 +22,7 @@ class UserProfileController extends Controller
 
     public function index()
     {
-        return view('backend.user.profile.index');
+        return view('frontend.dashboard.profile');
     }
 
     public function store(ProfileRequest $request)

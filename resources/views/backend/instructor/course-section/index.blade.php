@@ -97,53 +97,72 @@
                             <hr>
 
                             <div class="mt-3 collapse show" id="demo{{$data->id}}">
-                                @foreach ($data['lecture'] as $lecture)
-                                    <div style="display: flex; align-items:center; justify-content:space-between;">
-                                        <div style="display: flex; gap: 10px">
-                                            <span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393" />
-                                                </svg>
-                                            </span>
-                                            <p>{{ $lecture->lecture_title }}</p>
+                                <!-- Lectures List -->
+                                <h6 class="text-primary mb-2">Lectures</h6>
+                                @foreach ($data->lectures as $lecture)
+                                    <div class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class='bx bx-play-circle fs-4 me-2'></i>
+                                            <p class="mb-0">{{ $lecture->lecture_title }}</p>
                                         </div>
                                         <div>
-                                            <a class="btn btn-dark" data-bs-toggle="modal"
-                                                data-bs-target="#course-edit-{{ $lecture->id }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                                </svg>
+                                            <a class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#course-edit-{{ $lecture->id }}">
+                                                <i class='bx bx-edit'></i>
                                             </a>
-
-                                            <a href="javascript:void(0)" class="btn btn-danger delete-lecture"
-                                                data-id="{{ $lecture->id }}" style="margin-left: 10px">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                                                </svg>
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-danger delete-lecture" data-id="{{ $lecture->id }}">
+                                                <i class='bx bx-trash'></i>
                                             </a>
-
-                                            <form id="delete-form" method="POST" style="display: none;">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-
-
                                         </div>
-
                                     </div>
-                                    <div style="margin-top: 10px"></div>
-
-                                    <!-- Edit Course Modal -->
                                     @include('backend.instructor.course-section.modal.course-edit-modal')
                                 @endforeach
+
+                                <!-- Quizzes List -->
+                                <h6 class="text-success mt-4 mb-2">Quizzes</h6>
+                                @foreach ($data->quizzes as $quiz)
+                                    <div class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded bg-light">
+                                        <div class="d-flex align-items-center">
+                                            <i class='bx bx-help-circle fs-4 me-2 text-success'></i>
+                                            <p class="mb-0"><strong>{{ $quiz->quiz_title }}</strong> ({{ $quiz->questions->count() }} Qs)</p>
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('instructor.quiz.edit', $quiz->id) }}" class="btn btn-sm btn-success">
+                                                <i class='bx bx-list-plus'></i> Manage Questions
+                                            </a>
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-danger delete-quiz" data-id="{{ $quiz->id }}">
+                                                <i class='bx bx-trash'></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                @if($course->can_have_quizzes)
+                                <button class="btn btn-sm btn-outline-success mb-3" data-bs-toggle="modal" data-bs-target="#addQuizModal{{ $data->id }}">
+                                    <i class='bx bx-plus'></i> Add Quiz
+                                </button>
+                                @endif
+
+                                <!-- Materials List -->
+                                <h6 class="text-info mt-3 mb-2">Resources/Materials</h6>
+                                @foreach ($data->materials as $material)
+                                    <div class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class='bx bx-file fs-4 me-2 text-info'></i>
+                                            <p class="mb-0">{{ $material->material_title }} <small class="badge bg-info">{{ strtoupper($material->type) }}</small></p>
+                                        </div>
+                                        <div>
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editMaterialModal{{ $material->id }}">
+                                                <i class='bx bx-edit'></i>
+                                            </a>
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-danger delete-material" data-id="{{ $material->id }}">
+                                                <i class='bx bx-trash'></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @include('backend.instructor.course-section.modal.material-edit-modal')
+                                @endforeach
+                                <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#addMaterialModal{{ $data->id }}">
+                                    <i class='bx bx-plus'></i> Add Material
+                                </button>
                             </div>
 
                         </div>
@@ -151,6 +170,91 @@
 
                     <!-- Add Course Modal -->
                     @include('backend.instructor.course-section.modal.course-create-modal')
+
+                    <!-- Add Quiz Modal -->
+                    <div class="modal fade" id="addQuizModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add New Quiz to {{ $data->section_title }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('instructor.quiz.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                    <input type="hidden" name="section_id" value="{{ $data->id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Quiz Title</label>
+                                            <input type="text" name="quiz_title" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description (Optional)</label>
+                                            <textarea name="description" class="form-control" rows="2"></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label">Duration (Minutes)</label>
+                                                <input type="number" name="duration_minutes" class="form-control" value="0">
+                                                <small class="text-muted">0 for no limit</small>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label">Pass Mark (%)</label>
+                                                <input type="number" name="pass_mark" class="form-control" value="50">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Save Quiz</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Material Modal -->
+                    <div class="modal fade" id="addMaterialModal{{ $data->id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add Resource Material to {{ $data->section_title }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('instructor.instructor.material.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                    <input type="hidden" name="section_id" value="{{ $data->id }}">
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Material Title</label>
+                                            <input type="text" name="material_title" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Type</label>
+                                            <select name="type" class="form-select material-type-select" required>
+                                                <option value="pdf">PDF Document</option>
+                                                <option value="link">External Link</option>
+                                                <option value="file">Other File</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3 file-input-group">
+                                            <label class="form-label">File</label>
+                                            <input type="file" name="file" class="form-control">
+                                        </div>
+                                        <div class="mb-3 link-input-group" style="display:none;">
+                                            <label class="form-label">Link URL</label>
+                                            <input type="url" name="external_url" class="form-control" placeholder="https://example.com">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-info">Save Material</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
 
 
@@ -219,4 +323,67 @@
 </script>
 
 
+    <script>
+        $(document).on('change', '.material-type-select', function() {
+            let modal = $(this).closest('.modal');
+            if ($(this).val() === 'link') {
+                modal.find('.file-input-group').hide();
+                modal.find('.link-input-group').show();
+            } else {
+                modal.find('.file-input-group').show();
+                modal.find('.link-input-group').hide();
+            }
+        });
+
+        $(document).on('change', '.material-type-select-edit', function() {
+            let modal = $(this).closest('.modal');
+            if ($(this).val() === 'link') {
+                modal.find('.file-input-group-edit').hide();
+                modal.find('.link-input-group-edit').show();
+            } else {
+                modal.find('.file-input-group-edit').show();
+                modal.find('.link-input-group-edit').hide();
+            }
+        });
+
+        $(document).on('click', '.delete-quiz', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let deleteUrl = "{{ route('instructor.quiz.destroy', ':id') }}".replace(':id', id);
+
+            Swal.fire({
+                title: 'Delete this quiz?',
+                text: "All progress and questions for this quiz will be lost.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form').attr('action', deleteUrl).submit();
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-material', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let deleteUrl = "{{ route('instructor.instructor.material.destroy', ':id') }}".replace(':id', id);
+
+            Swal.fire({
+                title: 'Delete this material?',
+                text: "This file/link will be removed from the course.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form').attr('action', deleteUrl).submit();
+                }
+            });
+        });
+    </script>
 @endpush

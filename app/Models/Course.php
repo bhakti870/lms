@@ -23,9 +23,43 @@ class Course extends Model
         return $this->belongsTo(User::class, 'instructor_id', 'id');
     }
 
+    public function instructor()
+    {
+        return $this->belongsTo(User::class, 'instructor_id', 'id');
+    }
+
     public function course_goal()
     {
         return $this->hasMany(CourseGoal::class, 'course_id', 'id');
     }
 
+    public function sections()
+    {
+        return $this->hasMany(CourseSection::class, 'course_id', 'id')->orderBy('display_order');
+    }
+
+    public function lectures()
+    {
+        return $this->hasMany(CourseLecture::class, 'course_id', 'id')->orderBy('display_order');
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class, 'course_id', 'id')->orderBy('display_order');
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(CourseMaterial::class, 'course_id', 'id')->orderBy('display_order');
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'course_id', 'id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'course_id', 'id')->where('status', 1)->latest();
+    }
 }

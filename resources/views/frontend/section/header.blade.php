@@ -21,13 +21,13 @@ $categories = getCategories();
                 <div class="col-lg-6">
                     <div class="header-widget d-flex flex-wrap align-items-center justify-content-end">
                         <div class="theme-picker d-flex align-items-center">
-                            <button class="theme-picker-btn dark-mode-btn" title="Dark mode">
+                            <button class="theme-picker-btn dark-mode-btn" id="dark-mode-btn" title="Dark mode">
                                 <svg id="moon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                                 </svg>
                             </button>
-                            <button class="theme-picker-btn light-mode-btn" title="Light mode">
+                            <button class="theme-picker-btn light-mode-btn" id="light-mode-btn" title="Light mode">
                                 <svg id="sun" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="5"></circle>
@@ -42,6 +42,38 @@ $categories = getCategories();
                                 </svg>
                             </button>
                         </div>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const darkModeBtn = document.getElementById('dark-mode-btn');
+                                const lightModeBtn = document.getElementById('light-mode-btn');
+                                const body = document.body;
+                                const html = document.documentElement;
+
+                                function setTheme(theme) {
+                                    if (theme === 'dark') {
+                                        body.classList.add('dark-theme');
+                                        html.classList.add('dark-theme');
+                                        localStorage.setItem('theme', 'dark');
+                                        darkModeBtn.style.display = 'none';
+                                        lightModeBtn.style.display = 'block';
+                                    } else {
+                                        body.classList.remove('dark-theme');
+                                        html.classList.remove('dark-theme');
+                                        localStorage.setItem('theme', 'light');
+                                        darkModeBtn.style.display = 'block';
+                                        lightModeBtn.style.display = 'none';
+                                    }
+                                }
+
+                                // Initial Setup
+                                const currentTheme = localStorage.getItem('theme') || 'light';
+                                setTheme(currentTheme);
+
+                                darkModeBtn.addEventListener('click', () => setTheme('dark'));
+                                lightModeBtn.addEventListener('click', () => setTheme('light'));
+                            });
+                        </script>
 
                         @if (!auth()->user())
                             <ul
@@ -57,16 +89,12 @@ $categories = getCategories();
                                 <li class="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i
                                         class="la la-sign-in mr-1"></i>
 
-                                    @if (auth()->user()->role == 'user')
-                                        <a href="{{ route('user.dashboard') }}">Dashboard</a>
-                                    @endif
-
                                     @if (auth()->user()->role == 'admin')
                                         <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                    @endif
-
-                                    @if (auth()->user()->role == 'instructor')
+                                    @elseif (auth()->user()->role == 'instructor')
                                         <a href="{{ route('instructor.dashboard') }}">Dashboard</a>
+                                    @else
+                                        <a href="{{ route('user.dashboard') }}">My Learning</a>
                                     @endif
                                 </li>
 
@@ -107,7 +135,7 @@ $categories = getCategories();
                         </div>
                     </div><!-- end col-lg-2 -->
                     <div class="col-lg-10">
-                        <div class="menu-wrapper">
+                        <div class="menu-wrapper d-flex align-items-center justify-content-between">
                             <div class="menu-category">
                                 <ul>
                                     <li>
@@ -116,7 +144,7 @@ $categories = getCategories();
 
                                             @foreach($categories as $item)
                                             <li>
-                                                <a href="course-grid.html">{{$item->name}} <i
+                                                <a href="{{ route('all.courses') }}">{{$item->name}} <i
                                                         class="la la-angle-right"></i></a>
                                                 <ul class="sub-menu">
                                                     @foreach ($item['subcategory'] as $data)
@@ -133,31 +161,29 @@ $categories = getCategories();
                                     </li>
                                 </ul>
                             </div><!-- end menu-category -->
-                            <form method="post">
+                            <!-- <form method="post">
                                 <div class="form-group mb-0">
                                     <input class="form-control form--control pl-3" type="text" name="search"
                                         placeholder="Search for anything">
                                     <span class="la la-search search-icon"></span>
                                 </div>
-                            </form>
-                            <nav class="main-menu">
+                            </form> -->
+                            <nav class="main-menu" mx-auto>
                                 <ul>
                                     <li>
                                         <a href="/">Home </a>
-
                                     </li>
                                     <li>
-                                        <a href="#">All Courses </a>
-
+                                        <a href="{{ route('all.courses') }}">All Courses</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('all.instructors') }}">All Instructors</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('cart') }}">Cart</a>
-
                                     </li>
-
                                     <li>
                                         <a href="#">Blog </a>
-
                                     </li>
                                 </ul><!-- end ul -->
                             </nav><!-- end main-menu -->
@@ -210,10 +236,88 @@ $categories = getCategories();
 
 
                             <div class="shop-cart mr-4" id='cart'>
-
-                                <!--ajax loaded for cart frontend.pages.home.partial.cart  -->
-
+                                <!--ajax loaded for cart -->
                             </div><!-- end shop-cart -->
+
+
+                             @if(auth()->check())
+                             <div class="shop-cart user-profile-cart">
+                                 <ul>
+                                     <li>
+                                         <div class="shop-cart-btn">
+                                             <div class="avatar-xs">
+                                                 <img class="rounded-full img-fluid"
+                                                     src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="Avatar image">
+                                             </div>
+                                             <span class="pl-2 pr-2 fs-15 text-black">{{ auth()->user()->name }}</span>
+                                             <span class="la la-angle-down text-black"></span>
+                                         </div>
+                                         <ul class="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
+                                             <li class="menu-heading-block d-flex align-items-center">
+                                                 <a href="{{ route('user.profile') }}" class="avatar-sm flex-shrink-0 d-block">
+                                                     <img class="rounded-full img-fluid"
+                                                         src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}"
+                                                         alt="Avatar image">
+                                                 </a>
+                                                 <div class="ml-2">
+                                                     <h4><a href="{{ route('user.profile') }}" class="text-black">{{ auth()->user()->name }}</a></h4>
+                                                     <span class="d-block fs-14 lh-20">{{ auth()->user()->email }}</span>
+                                                 </div>
+                                             </li>
+                                             <li>
+                                                 <ul class="generic-list-item">
+                                                     @if(auth()->user()->role == 'user')
+                                                     <li>
+                                                         <a href="{{ route('user.dashboard') }}">
+                                                             <i class="la la-user mr-2"></i> My Dashboard
+                                                         </a>
+                                                     </li>
+                                                     <li>
+                                                         <a href="{{ route('user.profile') }}">
+                                                             <i class="la la-gear mr-2"></i> Account Settings
+                                                         </a>
+                                                     </li>
+                                                     <li>
+                                                         <a href="{{ route('user.purchase.history') }}">
+                                                             <i class="la la-file-video-o mr-2"></i> My Courses
+                                                         </a>
+                                                     </li>
+                                                     <li>
+                                                         <a href="{{ route('user.wishlist.index') }}">
+                                                             <i class="la la-heart-o mr-2"></i> My Wishlist
+                                                         </a>
+                                                     </li>
+                                                     @elseif(auth()->user()->role == 'admin')
+                                                     <li>
+                                                         <a href="{{ route('admin.dashboard') }}">
+                                                             <i class="la la-dashboard mr-2"></i> Admin Panel
+                                                         </a>
+                                                     </li>
+                                                     @elseif(auth()->user()->role == 'instructor')
+                                                     <li>
+                                                         <a href="{{ route('instructor.dashboard') }}">
+                                                             <i class="la la-dashboard mr-2"></i> Instructor Panel
+                                                         </a>
+                                                     </li>
+                                                     @endif
+                                                     <li>
+                                                         <div class="section-block"></div>
+                                                     </li>
+                                                     <li>
+                                                         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
+                                                             <i class="la la-power-off mr-2"></i> Logout
+                                                         </a>
+                                                         <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                             @csrf
+                                                         </form>
+                                                     </li>
+                                                 </ul>
+                                             </li>
+                                         </ul>
+                                     </li>
+                                 </ul>
+                             </div><!-- end shop-cart -->
+                             @endif
 
 
 
@@ -243,32 +347,25 @@ $categories = getCategories();
             <i class="la la-times"></i>
         </div><!-- end off-canvas-menu-close -->
         <ul class="generic-list-item off-canvas-menu-list pt-90px">
-            <li>
-                <a href="#">Home</a>
-
-            </li>
-            <li>
-                <a href="#">cart</a>
-
-            </li>
-            <li>
-                <a href="{{ route('login') }}">Login</a>
-
-            </li>
-            <li>
-                <a href=""">All Courses</a>
-
-            </li>
-            <li>
-                <a href="">Blog</a>
-
-            </li>
-
-            <li>
-                <a href="">Contact Us</a>
-
-            </li>
-
+            <li><a href="/">Home</a></li>
+            <li><a href="{{ route('cart') }}">Cart</a></li>
+            @auth
+                <li><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ route('user.profile') }}">Account Settings</a></li>
+                <li><a href="{{ route('user.wishlist.index') }}">Wishlist</a></li>
+                <li><a href="{{ route('user.purchase.history') }}">My Courses</a></li>
+                <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); text-danger">Logout</a></li>
+                <form id="logout-form-mobile" action="{{ route('user.logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            @else
+                <li><a href="{{ route('login') }}">Login</a></li>
+                <li><a href="{{ route('register') }}">Register</a></li>
+            @endauth
+            <li><a href="{{ route('all.courses') }}">All Courses</a></li>
+            <li><a href="{{ route('all.instructors') }}">All Instructors</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact Us</a></li>
         </ul>
     </div><!-- end off-canvas-menu -->
 

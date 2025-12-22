@@ -8,7 +8,17 @@ class CourseSection extends Model
 {
     protected $guarded = [];
 
-    public function lecture(){
-        return $this->hasMany(CourseLecture::class, 'section_id', 'id');
+    public function lectures(){
+        return $this->hasMany(CourseLecture::class, 'section_id', 'id')->orderBy('display_order');
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class, 'section_id', 'id')->orderBy('display_order');
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(CourseMaterial::class, 'section_id', 'id')->orderBy('display_order');
     }
 }

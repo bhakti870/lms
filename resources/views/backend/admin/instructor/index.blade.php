@@ -60,11 +60,17 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="form-check form-switch" >
-                                            <input class="form-check-input" style="cursor: pointer" type="checkbox" role="switch"
-                                                id="flexSwitchCheckDefault{{ $item->id }}"
-                                                data-user-id="{{ $item->id }}"
-                                                {{ $item->status == 1 ? 'checked' : '' }}>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check form-switch" title="Change Status">
+                                                <input class="form-check-input" style="cursor: pointer" type="checkbox" role="switch"
+                                                    id="flexSwitchCheckDefault{{ $item->id }}"
+                                                    data-user-id="{{ $item->id }}"
+                                                    {{ $item->status == 1 ? 'checked' : '' }}>
+                                            </div>
+
+                                            <a href="{{ route('admin.delete.instructor', $item->id) }}" id="delete" class="btn btn-danger btn-sm" title="Delete Instructor">
+                                                <i class="bx bx-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
