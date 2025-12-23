@@ -7,18 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InstructorRegistrationNotification extends Notification
+class UserReviewNotification extends Notification
 {
     use Queueable;
 
-    protected $user;
+    protected $review;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($user)
+    public function __construct($review)
     {
-        $this->user = $user;
+        $this->review = $review;
     }
 
     /**
@@ -39,11 +39,14 @@ class InstructorRegistrationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'user_id' => $this->user->id,
-            'name' => $this->user->name,
-            'photo' => $this->user->photo,
-            'email' => $this->user->email,
-            'message' => 'New ' . ucfirst($this->user->role ?? 'User') . ' Registered: ' . $this->user->name,
+            'user_id' => $this->review->user_id,
+            'name' => $this->review->user->name,
+            'photo' => $this->review->user->photo,
+            'course_id' => $this->review->course_id,
+            'course_title' => $this->review->course->course_name,
+            'rating' => $this->review->rating,
+            'message' => 'New Review from ' . $this->review->user->name . ' for course: ' . $this->review->course->course_name,
+            'link' => route('instructor.all.review'),
         ];
     }
 }

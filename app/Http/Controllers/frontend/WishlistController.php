@@ -25,8 +25,13 @@ class WishlistController extends Controller
 
     public function getWishlist()
     {
-        $user_id = Auth::user()->id;
-        $wishlist = Wishlist::where('user_id', $user_id)->with('course', 'course.user')->get();
+        // Ensure user is authenticated
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Please login to access wishlist.',
+            ], 401);
+        }
 
         $html = view('frontend.dashboard.partials.wishlist_items', compact('wishlist'))->render();
 

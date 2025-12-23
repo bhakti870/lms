@@ -76,4 +76,24 @@ class FrontendDashboardController extends Controller
         $courses = Course::with('user', 'category')->paginate(12);
         return view('frontend.course.index', compact('courses'));
     }
+
+    public function categoryDetails($slug)
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+        $courses = Course::where('category_id', $category->id)
+            ->where('status', 1)
+            ->with(['user', 'category'])
+            ->paginate(12);
+        return view('frontend.course.index', compact('courses', 'category'));
+    }
+
+    public function subcategoryDetails($slug)
+    {
+        $subcategory = \App\Models\Subcategory::where('slug', $slug)->firstOrFail();
+        $courses = Course::where('subcategory_id', $subcategory->id)
+            ->where('status', 1)
+            ->with(['user', 'category'])
+            ->paginate(12);
+        return view('frontend.course.index', compact('courses', 'subcategory'));
+    }
 }

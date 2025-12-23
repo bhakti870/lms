@@ -151,7 +151,7 @@
                                                         href="{{ route('course-details', $item->course->course_name_slug) }}">{{ $item->course->course_name_slug }}</a>
                                                 </h5>
                                                 <p class="text-black font-weight-semi-bold lh-18">
-                                                    ${{ $item->course->discount_price ? $item->course->discount_price : $item->course->selling_price }}
+                                                    ₹{{ $item->course->discount_price ? $item->course->discount_price : $item->course->selling_price }}
                                                 </p>
                                             </div>
                                         </div><!-- end media -->
@@ -171,22 +171,42 @@
                                 <ul class="generic-list-item generic-list-item-flash fs-15">
                                     <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                                         <span class="text-black">Original price:</span>
-                                        <span>${{ $total }}</span>
+                                        <span id="originalPrice">₹{{ $total }}</span>
                                         <input type="hidden" name="original_price" value="{{ $total }}" />
                                     </li>
 
-                                    @if (session()->get('coupon'))
-                                        <li
-                                            class="d-flex align-items-center justify-content-between font-weight-semi-bold">
-                                            <span class="text-black">Coupon discounts:</span>
-                                            <span>-${{ session()->get('coupon') }}</span>
-
-                                        </li>
+                                    @if (!session()->get('coupon'))
+                                    <li class="mt-3">
+                                        <form id="couponFormCheckout">
+                                            @csrf
+                                            @foreach ($cart as $item)
+                                                <input type="hidden" name="course_id[]" value="{{ $item->course->id }}">
+                                                <input type="hidden" name="instructor_id[]" value="{{ $item->course->user->id }}">
+                                            @endforeach
+                                            <div class="input-group">
+                                                <input class="form-control form--control pl-3" type="text" name="coupon" id="couponInput" placeholder="Coupon Code">
+                                                <div class="input-group-append">
+                                                    <button type="button" id="applyCouponBtnCheckout" class="btn theme-btn">Apply</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </li>
                                     @endif
+
+                                    <li id="couponDiscountItem" class="d-flex align-items-center justify-content-between font-weight-semi-bold" style="{{ session()->get('coupon') ? '' : 'display: none !important' }}">
+                                        <span class="text-black">Coupon discounts:</span>
+                                        <span id="couponDiscountAmount">
+                                            @if (session()->get('coupon'))
+                                                -₹{{ session()->get('coupon') }}
+                                            @else
+                                                -₹0
+                                            @endif
+                                        </span>
+                                    </li>
                                     <li class="d-flex align-items-center justify-content-between font-weight-bold">
                                         <span class="text-black">Total:</span>
-                                        <span>${{ $total - session()->get('coupon') }}</span>
-                                        <input type="hidden" name="total_price"
+                                        <span id="checkoutTotalAmount">₹{{ $total - session()->get('coupon') }}</span>
+                                        <input type="hidden" name="total_price" id="totalPriceInput"
                                             value="{{ $total - session()->get('coupon') }}" />
                                     </li>
                                 </ul>
@@ -212,4 +232,66 @@
 
 
 @push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#applyCouponBtnCheckout').click(function() {
+            let formData = $('#couponFormCheckout').serialize();
+
+            $.ajax({
+                url: "/apply-coupon",
+                type: "POST",
+                data: formData,
+                success: function(response) {
+                    let totalDiscount = response.discounts.reduce((sum, item) => {
+                        return sum + parseFloat(item.discount);
+                    }, 0);
+
+                    // Update UI
+                    $('#couponDiscountAmount').text(`-₹${totalDiscount.toFixed(2)}`);
+                    $('#couponDiscountItem').show();
+                    
+                    let originalPrice = parseFloat("{{ $total }}");
+                    let finalAmount = originalPrice - totalDiscount;
+                    
+                    $('#checkoutTotalAmount').text(`₹${finalAmount.toFixed(2)}`);
+                    $('#totalPriceInput').val(finalAmount.toFixed(2));
+
+                    $('#couponFormCheckout').fadeOut();
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Coupon applied successfully!',
+                        showConfirmButton: false,
+                        toast: true,
+                        timer: 3000,
+                        background: '#7079e7',
+                        color: '#fff'
+                    });
+                },
+                error: function(xhr) {
+                    let message = 'Coupon could not be applied.';
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+                        message = Object.values(errors).flat().join('<br>');
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: message,
+                        toast: true,
+                        timer: 3000,
+                        showConfirmButton: false,
+                        background: '#f27474',
+                        color: '#fff'
+                    });
+                }
+            });
+        });
+    });
+</script>
 @endpush

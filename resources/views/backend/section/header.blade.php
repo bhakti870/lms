@@ -40,10 +40,13 @@
                             </a>
                             <div class="header-notifications-list">
                                 @foreach($notifications as $notification)
+                                @php
+                                    $user = \App\Models\User::find($notification->data['user_id'] ?? null);
+                                @endphp
                                 <a class="dropdown-item" href="{{ route('admin.instructor.index') }}">
                                     <div class="d-flex align-items-center">
                                         <div class="user-online">
-                                            <img src="{{ asset('backend/assets/images/avatars/avatar-1.png') }}" class="msg-avatar"
+                                            <img src="{{ (!empty($user->photo)) ? asset($user->photo) : asset('backend/assets/images/avatars/avatar-1.png') }}" class="msg-avatar"
                                                 alt="user avatar">
                                         </div>
                                         <div class="flex-grow-1">

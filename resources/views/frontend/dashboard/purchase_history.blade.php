@@ -43,12 +43,29 @@
                                         <a href="{{ route('user.course.learn', $enrollment->course_id) }}" class="btn theme-btn theme-btn-sm mr-2"><i class="la la-play-circle mr-1"></i>Start Learning</a>
                                         <button class="btn theme-btn theme-btn-sm theme-btn-transparent mr-2" data-toggle="collapse" data-target="#details-{{ $enrollment->id }}"><i class="la la-info-circle"></i> Details</button>
                                         
+                                        {{-- Certificate Button --}}
+                                        @php
+                                            $certificate = \App\Models\Certificate::where('user_id', Auth::id())->where('course_id', $enrollment->course_id)->first();
+                                        @endphp
+                                        @if($certificate)
+                                            <a href="{{ route('user.course.certificate', $enrollment->course_id) }}" class="btn theme-btn theme-btn-sm btn-success mr-2" title="Download Certificate"><i class="la la-certificate"></i></a>
+                                        @else
+                                            <button class="btn theme-btn theme-btn-sm btn-secondary mr-2" disabled title="Complete all lectures to earn certificate"><i class="la la-certificate"></i></button>
+                                        @endif
+
                                         @php
                                             $order = \App\Models\Order::where('user_id', Auth::id())->where('course_id', $enrollment->course_id)->latest()->first();
                                         @endphp
                                         @if($order && $order->payment_id)
-                                            <a href="{{ route('user.invoice', $order->payment_id) }}" class="btn theme-btn theme-btn-sm theme-btn-transparent" target="_blank" title="Invoice"><i class="la la-file-invoice"></i></a>
+                                            <a href="{{ route('user.invoice', $order->payment_id) }}" class="btn theme-btn theme-btn-sm theme-btn-transparent mr-2" target="_blank" title="Invoice"><i class="la la-file-invoice"></i></a>
                                         @endif
+
+                                        {{-- Remove Course Button --}}
+                                        <form action="{{ route('user.course.remove', $enrollment->id) }}" method="POST" id="remove-course-{{ $enrollment->id }}" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn theme-btn theme-btn-sm btn-danger" onclick="confirmRemoval({{ $enrollment->id }})" title="Remove Course"><i class="la la-trash"></i></button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -114,4 +131,21 @@
         </div>
     </div>
 </section>
+<script>
+    function confirmRemoval(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This will remove the course from your account. You might lose your progress!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('remove-course-' + id).submit();
+            }
+        })
+    }
+</script>
 @endsection

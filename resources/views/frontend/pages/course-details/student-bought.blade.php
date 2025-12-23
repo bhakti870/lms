@@ -50,17 +50,17 @@
                 </div><!-- end rating-wrap -->
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="card-price text-black font-weight-bold">
-                        ${{ $course->discount_price }} <span
-                            class="before-price font-weight-medium">{{ $course->selling_price }}</span>
+                        @if($course->discount_price)
+                            ₹{{ $course->discount_price }} <span class="before-price font-weight-medium">₹{{ $course->selling_price }}</span>
+                        @else
+                            ₹{{ $course->selling_price }}
+                        @endif
                     </p>
 
 
                     <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon"
                         title="Add to Wishlist" data-course-id="{{ $course->id }}">
-
-
-
-
+                        <i class="la {{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'la-heart' : 'la-heart-o' }}"></i>
                     </div>
 
 

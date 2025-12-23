@@ -20,6 +20,41 @@ class AdminController extends Controller
         return view('backend.admin.dashboard.index');
     }
 
+    public function loginStore(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
+            
+            // Check if user is admin
+            if ($user->role !== 'admin') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'You are not authorized to access admin panel.',
+                ])->onlyInput('email');
+            }
+
+            // Check if user is banned
+            if ($user->status === '0') {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Your account is banned. Please contact support.',
+                ])->onlyInput('email');
+            }
+
+            $request->session()->regenerate();
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
     public function markAllAsRead()
     {
         auth()->user()->unreadNotifications->markAsRead();

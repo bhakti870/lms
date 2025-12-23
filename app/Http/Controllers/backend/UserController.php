@@ -62,4 +62,12 @@ class UserController extends Controller
 
         return redirect('/login');
     }
+
+    public function removeCourse($id)
+    {
+        $enrollment = Enrollment::where('user_id', Auth::id())->where('id', $id)->firstOrFail();
+        $enrollment->delete();
+
+        return redirect()->back()->with('success', 'Course removed from your enrollment successfully.');
+    }
 }

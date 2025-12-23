@@ -6,12 +6,28 @@
     <div class="container">
         <div class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between">
             <div class="section-heading">
-                <h2 class="section__title text-white">All Courses</h2>
+                <h2 class="section__title text-white">
+                    @if(isset($category))
+                        {{ $category->name }}
+                    @elseif(isset($subcategory))
+                        {{ $subcategory->name }}
+                    @else
+                        All Courses
+                    @endif
+                </h2>
             </div>
             <ul class="generic-list-item generic-list-item-white generic-list-item-arrow d-flex flex-wrap align-items-center">
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li>Courses</li>
-                <li>All Courses</li>
+                <li>
+                    @if(isset($category))
+                        {{ $category->name }}
+                    @elseif(isset($subcategory))
+                        {{ $subcategory->name }}
+                    @else
+                        All Courses
+                    @endif
+                </li>
             </ul>
         </div><!-- end breadcrumb-content -->
     </div><!-- end container -->

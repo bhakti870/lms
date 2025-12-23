@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="form-body">
 
-                                        <form class="row g-3" method="post" action="{{ route('login') }}">
+                                        <form class="row g-3" method="post" action="{{ route('admin.login.store') }}">
                                             @csrf
 											<div class="col-12">
 												<label for="inputEmailAddress" class="form-label">Email</label>

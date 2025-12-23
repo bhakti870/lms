@@ -4,7 +4,7 @@
         <div class="divider"><span></span></div>
         <ul class="generic-list-item">
             @foreach($all_category as $item)
-            <li><a href="#">{{$item->name}}</a></li>
+            <li><a href="{{ route('category.details', $item->slug) }}">{{$item->name}}</a></li>
             @endforeach
 
         </ul>

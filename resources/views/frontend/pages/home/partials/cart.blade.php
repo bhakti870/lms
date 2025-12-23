@@ -18,9 +18,9 @@
                         </h5>
                         <span class="d-block lh-18 py-1">{{ $item->course->user->name }}</span>
                         <p class="text-black font-weight-semi-bold lh-18">
-                            ${{ number_format($item->course->discount_price, 2) }}
+                            ₹{{ number_format($item->course->discount_price, 2) }}
                             @if($item->course->selling_price > $item->course->discount_price)
-                                <span class="before-price fs-14">${{ number_format($item->course->selling_price, 2) }}</span>
+                                <span class="before-price fs-14">₹{{ number_format($item->course->selling_price, 2) }}</span>
                             @endif
                         </p>
                     </div>
@@ -29,7 +29,7 @@
 
             <li class="media media-card">
                 <div class="media-body fs-16">
-                    <p class="text-black font-weight-semi-bold lh-18">Total: <span class="cart-total">${{$subTotal}}</span></p>
+                    <p class="text-black font-weight-semi-bold lh-18">Total: <span class="cart-total">₹{{$subTotal}}</span></p>
                 </div>
             </li>
 

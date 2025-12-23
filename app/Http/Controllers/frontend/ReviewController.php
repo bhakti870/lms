@@ -33,13 +33,19 @@ class ReviewController extends Controller
             return back()->with('error', 'You have already reviewed this course.');
         }
 
-        Review::create([
+        $review = Review::create([
             'course_id' => $request->course_id,
             'user_id' => $user_id,
             'comment' => $request->comment,
             'rating' => $request->rating,
-            'status' => 0, // Pending by default
+            'status' => 0, 
         ]);
+
+        // Notify Instructor
+        $instructor = $review->course->user;
+        if ($instructor) {
+            $instructor->notify(new \App\Notifications\UserReviewNotification($review));
+        }
 
         return back()->with('success', 'Review submitted successfully! It will be visible after approval.');
     }

@@ -20,33 +20,42 @@
 
 
 
+                    @php
+                        $notifications = auth()->user()->unreadNotifications;
+                    @endphp
                     <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative"
-                            href="#" data-bs-toggle="dropdown"><span class="alert-count">7</span>
+                            href="#" data-bs-toggle="dropdown"><span class="alert-count">{{ count($notifications) }}</span>
                             <i class='bx bx-bell'></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a href="javascript:;">
                                 <div class="msg-header">
                                     <p class="msg-header-title">Notifications</p>
-                                    <p class="msg-header-badge">8 New</p>
+                                    <p class="msg-header-badge">{{ count($notifications) }} New</p>
                                 </div>
                             </a>
                             <div class="header-notifications-list">
-                                <a class="dropdown-item" href="javascript:;">
+                                @forelse($notifications as $notification)
+                                @php
+                                    $user = \App\Models\User::find($notification->data['user_id'] ?? null);
+                                @endphp
+                                <a class="dropdown-item" href="{{ $notification->data['link'] ?? 'javascript:;' }}">
                                     <div class="d-flex align-items-center">
                                         <div class="user-online">
-                                            <img src="{{asset('backend/assets/images/avatars/avatar-1.png')}}" class="msg-avatar"
+                                            <img src="{{ (!empty($user->photo)) ? asset($user->photo) : asset('backend/assets/images/avatars/avatar-1.png') }}" class="msg-avatar"
                                                 alt="user avatar">
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h6 class="msg-name">Daisy Anderson<span
-                                                    class="msg-time float-end">5 sec
-                                                    ago</span></h6>
-                                            <p class="msg-info">The standard chunk of lorem</p>
+                                            <h6 class="msg-name">{{ $notification->data['name'] ?? 'System' }}<span
+                                                    class="msg-time float-end">{{ $notification->created_at->diffForHumans() }}</span></h6>
+                                            <p class="msg-info">{{ $notification->data['message'] }}</p>
                                         </div>
                                     </div>
                                 </a>
+                                @empty
+                                    <p class="text-center p-3">No new notifications</p>
+                                @endforelse
 
 
 

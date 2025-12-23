@@ -46,12 +46,52 @@ class InstructorController extends Controller
 
         \Illuminate\Support\Facades\Auth::login($user);
 
+        // Note: existing return statement retained
         return redirect()->route('instructor.dashboard')->with($notification);
     }
 
+    // Existing dashboard method retained
     public function dashboard()
     {
         return view('backend.instructor.dashboard.index');
+    }
+
+    /**
+     * Handle instructor login POST request.
+     */
+    public function loginStore(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (\Illuminate\Support\Facades\Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+
+            // Ensure the user is an instructor
+            if ($user->role !== 'instructor') {
+                \Illuminate\Support\Facades\Auth::logout();
+                return back()->withErrors([
+                    'email' => 'You are not authorized to access instructor panel.',
+                ])->onlyInput('email');
+            }
+
+            // Check if instructor account is pending approval (status == '0')
+            if ($user->status === '0') {
+                \Illuminate\Support\Facades\Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Your instructor account is pending approval.',
+                ])->onlyInput('email');
+            }
+
+            $request->session()->regenerate();
+            return redirect()->intended('/instructor/dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     public function destroy(Request $request): RedirectResponse

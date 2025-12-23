@@ -11,7 +11,7 @@
                     <div class="card card-item">
                         <div class="card-image">
 
-                            <a href="course-details.html" class="d-block">
+                            <a href="{{ route('course-details', $course->course_name_slug) }}" class="d-block">
                                 <img class="card-img-top lazy" width="240" height="240"
                                     src="{{ asset($course->course_image) }}"
                                     data-src="{{ asset($course->course_image) }}" alt="Card image cap">
@@ -69,12 +69,15 @@
                             <div class="d-flex justify-content-between align-items-center">
 
                                 <p class="card-price text-black font-weight-bold">
-                                    ${{ $course->discount_price }} <span
-                                        class="before-price font-weight-medium">{{ $course->selling_price }}</span>
+                                    @if($course->discount_price)
+                                        ₹{{ $course->discount_price }} <span class="before-price font-weight-medium">₹{{ $course->selling_price }}</span>
+                                    @else
+                                        ₹{{ $course->selling_price }}
+                                    @endif
                                 </p>
 
-                                <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
-                                    title="Add to Wishlist"><i class="la la-heart-o"></i></div>
+                                <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon"
+                                    title="Add to Wishlist" data-course-id="{{ $course->id }}"><i class="la {{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'la-heart' : 'la-heart-o' }}"></i></div>
                             </div>
                         </div><!-- end card-body -->
                     </div><!-- end card -->

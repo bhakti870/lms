@@ -52,6 +52,7 @@ Route::get('/auth/google-callback', [SocialController::class, 'googleAuthenticat
 /* Admin Route   */
 
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('/admin/login', [AdminController::class, 'loginStore'])->name('admin.login.store');
 
 
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -123,6 +124,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 
 /*  Instructor Route  */
 Route::get('/instructor/login', [InstructorController::class, 'login'])->name('instructor.login');
+Route::post('/instructor/login', [InstructorController::class, 'loginStore'])->name('instructor.login.store');
 Route::get('/instructor/register', [InstructorController::class, 'register'])->name('instructor.register');
 Route::post('/instructor/register', [InstructorController::class, 'instructorRegister'])->name('instructor.register.store');
 Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->name('instructor.')->group(function () {
@@ -198,6 +200,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::get('/purchase-history', [UserController::class, 'purchaseHistory'])->name('purchase.history');
     Route::get('/invoice/{id}', [UserController::class, 'downloadInvoice'])->name('invoice');
     Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('leaderboard');
+    Route::delete('/course-remove/{id}', [UserController::class, 'removeCourse'])->name('course.remove');
 });
 
 
@@ -210,6 +213,8 @@ Route::get('/instructor/details/{id}', [App\Http\Controllers\Frontend\Instructor
 // All Courses
 Route::get('/courses', [App\Http\Controllers\Frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
 Route::get('/course-details/{slug}', [FrontendDashboardController::class, 'view'])->name('course-details');
+Route::get('/category/{slug}', [FrontendDashboardController::class, 'categoryDetails'])->name('category.details');
+Route::get('/subcategory/{slug}', [FrontendDashboardController::class, 'subcategoryDetails'])->name('subcategory.details');
 
 /* wishlist controller  */
 

@@ -63,8 +63,8 @@
                     </p>
                 </div><!-- end d-flex -->
                 <div class="bread-btn-box pt-3">
-                    <button class="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2">
-                        <i class="la la-heart-o mr-1"></i>
+                    <button class="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2 wishlist-icon" data-course-id="{{ $course->id }}">
+                        <i class="la {{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'la-heart' : 'la-heart-o' }} mr-1"></i>
                         <span class="swapping-btn" data-text-swap="Wishlisted"
                             data-text-original="Wishlist">Wishlist</span>
                     </button>

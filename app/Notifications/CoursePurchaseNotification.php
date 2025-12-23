@@ -7,18 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InstructorRegistrationNotification extends Notification
+class CoursePurchaseNotification extends Notification
 {
     use Queueable;
 
-    protected $user;
+    protected $order;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($user)
+    public function __construct($order)
     {
-        $this->user = $user;
+        $this->order = $order;
     }
 
     /**
@@ -39,11 +39,14 @@ class InstructorRegistrationNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'user_id' => $this->user->id,
-            'name' => $this->user->name,
-            'photo' => $this->user->photo,
-            'email' => $this->user->email,
-            'message' => 'New ' . ucfirst($this->user->role ?? 'User') . ' Registered: ' . $this->user->name,
+            'user_id' => $this->order->user_id,
+            'name' => $this->order->user->name,
+            'photo' => $this->order->user->photo,
+            'course_id' => $this->order->course_id,
+            'course_title' => $this->order->course_title,
+            'amount' => $this->order->price,
+            'message' => 'Course Purchased: ' . $this->order->course_title . ' by ' . $this->order->user->name,
+            // 'link' => route('instructor.order.details', $this->order->id), // Link if we have a specific order page for instructors
         ];
     }
 }

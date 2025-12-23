@@ -80,7 +80,7 @@ class CourseSectionController extends Controller
      */
     public function destroy(string $id)
     {
-        $section = CourseSection::with('lecture')->findOrFail($id);
+        $section = CourseSection::with('lectures')->findOrFail($id);
 
 
         $section->delete();

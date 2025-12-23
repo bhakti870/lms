@@ -33,8 +33,8 @@
                                 </td>
                                 <td>
                                     <ul class="generic-list-item font-weight-semi-bold">
-                                        <li class="text-black lh-18">${{ $item->course->discount_price }}</li>
-                                        <li class="before-price lh-18">${{ $item->course->selling_price }}</li>
+                                        <li class="text-black lh-18">₹{{ $item->course->discount_price }}</li>
+                                        <li class="before-price lh-18">₹{{ $item->course->selling_price }}</li>
                                     </ul>
                                 </td>
 
@@ -102,7 +102,7 @@
                     <ul class="generic-list-item pb-4">
                         <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Subtotal:</span>
-                            <span id="subTotalValue">${{ $subTotal }}</span> <!-- Update ID for easy targeting -->
+                            <span id="subTotalValue">₹{{ $subTotal }}</span> <!-- Update ID for easy targeting -->
                         </li>
 
 
@@ -123,7 +123,7 @@
                             class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Total Discount:</span>
                             <span id="totalDiscount">
-                                ${{ session()->get('coupon') ?? '0.00' }}
+                                ₹{{ session()->get('coupon') ?? '0.00' }}
                             </span>
                         </li>
                     @endif
@@ -135,9 +135,9 @@
 
                             <span id="totalAmount">
                                 @if (session()->get('coupon'))
-                                    ${{ $subTotal - session()->get('coupon') }}
+                                    ₹{{ $subTotal - session()->get('coupon') }}
                                 @else
-                                    ${{ $subTotal }}
+                                    ₹{{ $subTotal }}
                                 @endif
                             </span>
                             <!-- Total amount is also updated with new id -->
@@ -179,14 +179,14 @@
 
                     // Update the Discount Amount
                     $('#totalDiscount').text(
-                        `$${totalDiscount.toFixed(2)}`); // Show the total discount amount
+                        `₹${totalDiscount.toFixed(2)}`); // Show the total discount amount
                     $('#totalDiscountItem').show(); // Show the discount item
 
                     // Update the Total Price after applying the discount
                     let subTotal = parseFloat("{{ $subTotal }}");
                     let totalAmount = subTotal - totalDiscount;
                     $('#totalAmount').text(
-                        `$${totalAmount.toFixed(2)}`); // Show the updated total
+                        `₹${totalAmount.toFixed(2)}`); // Show the updated total
 
                     // Hide the Coupon Form
                     $('#couponForm')

@@ -38,12 +38,19 @@
         </div><!-- end preview-course-video -->
         <div class="preview-course-feature-content pt-40px">
             <p class="d-flex align-items-center pb-2">
-                <span class="fs-35 font-weight-semi-bold text-black">$76.99</span>
-                <span class="before-price mx-1">$104.99</span>
-                <span class="price-discount">24% off</span>
+                @if($course->discount_price)
+                    <span class="fs-35 font-weight-semi-bold text-black">₹{{ $course->discount_price }}</span>
+                    <span class="before-price mx-1">₹{{ $course->selling_price }}</span>
+                    @php
+                        $discount = (($course->selling_price - $course->discount_price) / $course->selling_price) * 100;
+                    @endphp
+                    <span class="price-discount">{{ round($discount) }}% off</span>
+                @else
+                    <span class="fs-35 font-weight-semi-bold text-black">₹{{ $course->selling_price }}</span>
+                @endif
             </p>
             <p class="preview-price-discount-text pb-35px">
-                <span class="text-color-3">4 days</span> left at this price!
+                <span class="text-color-3">Limited time offer</span> at this price!
             </p>
             <div class="buy-course-btn-box">
                 @if($is_enrolled)
@@ -51,10 +58,10 @@
                         <i class="la la-play-circle fs-18 mr-1"></i> Start Learning
                     </a>
                 @else
-                    <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart" data-id="{{ $course->id }}">
+                    <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart-btn" data-course-id="{{ $course->id }}">
                         <i class="la la-shopping-cart fs-18 mr-1"></i> Add to cart
                     </button>
-                    <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2">
+                    <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2 buy-now-btn" data-course-id="{{ $course->id }}">
                         <i class="la la-shopping-bag mr-1"></i> Buy this course
                     </button>
                 @endif

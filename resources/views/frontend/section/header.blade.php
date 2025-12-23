@@ -144,11 +144,11 @@ $categories = getCategories();
 
                                             @foreach($categories as $item)
                                             <li>
-                                                <a href="{{ route('all.courses') }}">{{$item->name}} <i
+                                                <a href="{{ route('category.details', $item->slug) }}">{{$item->name}} <i
                                                         class="la la-angle-right"></i></a>
                                                 <ul class="sub-menu">
                                                     @foreach ($item['subcategory'] as $data)
-                                                    <li><a href="#">{{$data->name}}</a></li>
+                                                    <li><a href="{{ route('subcategory.details', $data->slug) }}">{{$data->name}}</a></li>
                                                     @endforeach
 
                                                 </ul>

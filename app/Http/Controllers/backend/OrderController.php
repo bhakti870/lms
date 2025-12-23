@@ -116,7 +116,8 @@ class OrderController extends Controller
          $stripeData = session('stripe_data'); // Assuming this is where the order data is stored.
          // Create order and enrollment records for each course
          foreach ($stripeData['course_id'] as $index => $courseId) {
-             Order::create([
+             // Create Order
+             $order = Order::create([
                  'payment_id' => $paymentId, // Associate with the created payment record
                  'user_id' => auth()->user()->id, // Assuming user is authenticated
                  'course_id' => $courseId,
@@ -124,6 +125,12 @@ class OrderController extends Controller
                  'course_title' => $stripeData['course_name'][$index],
                  'price' => $stripeData['course_price'][$index],
              ]);
+
+             // Notify Instructor
+             $instructor = \App\Models\User::find($order->instructor_id);
+             if ($instructor) {
+                 $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
+             }
 
              // Create Enrollment
              \App\Models\Enrollment::updateOrCreate(
@@ -175,7 +182,7 @@ class OrderController extends Controller
 
             // Create Orders
              foreach ($orderPayload['course_id'] as $index => $courseId) {
-                 Order::create([
+                 $order = Order::create([
                      'payment_id' => $payment->id,
                      'user_id' => auth()->user()->id,
                      'course_id' => $courseId,
@@ -183,6 +190,12 @@ class OrderController extends Controller
                      'course_title' => $orderPayload['course_name'][$index],
                      'price' => $orderPayload['course_price'][$index],
                  ]);
+
+                 // Notify Instructor
+                 $instructor = \App\Models\User::find($order->instructor_id);
+                 if ($instructor) {
+                     $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
+                 }
 
                  // Create Enrollment
                  \App\Models\Enrollment::updateOrCreate(

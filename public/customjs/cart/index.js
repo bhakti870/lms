@@ -63,6 +63,46 @@ $(document).on('click', '.add-to-cart-btn', function () {
     });
 });
 
+$(document).on('click', '.buy-now-btn', function () {
+    var courseId = $(this).data('course-id');
+    var quantity = 1;
+
+    $.ajax({
+        url: '/cart/add',
+        method: 'POST',
+        data: {
+            course_id: courseId,
+            quantity: quantity,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                window.location.href = '/checkout';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: response.message,
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Something went wrong!',
+                text: xhr.responseJSON?.message || error,
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false,
+            });
+        }
+    });
+});
+
 //getwishlist
 
 function getCart(){
