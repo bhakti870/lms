@@ -40,14 +40,14 @@
                 @foreach($payment->orders as $order)
                 <tr>
                     <td>{{ $order->course_title }}</td>
-                    <td>${{ number_format($order->price, 2) }}</td>
+                    <td>₹{{ number_format($order->price, 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
         
         <div class="total">
-            Total: ${{ number_format($payment->total_amount, 2) }}
+            Total: ₹{{ number_format($payment->total_amount, 2) }}
         </div>
     </div>
     

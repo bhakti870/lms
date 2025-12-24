@@ -88,7 +88,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 
     /* control instructor  */
     Route::resource('instructor', AdminInstructorController::class);
-    Route::post('/update-status', [AdminInstructorController::class, 'updateStatus'])->name('instructor.status');
+    Route::post('/update-status', [AdminInstructorInstructorController::class, 'updateStatus'])->name('instructor.status');
     Route::get('/instructor-active-list', [AdminInstructorController::class, 'instructorActive'])->name('instructor.active');
     Route::get('/delete-instructor/{id}', [AdminInstructorController::class, 'delete'])->name('delete.instructor');
 
@@ -164,6 +164,10 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')
     Route::post('/update-review-status/{id}', [BackendReviewController::class, 'updateReviewStatus'])->name('update.review.status');
     Route::delete('/delete-review/{id}', [BackendReviewController::class, 'deleteReview'])->name('delete.review');
 
+    // Notifications
+    Route::get('/mark-notification-as-read/{id}', [InstructorController::class, 'markAsRead'])->name('mark.notification.read');
+    Route::get('/mark-all-notifications-as-read', [InstructorController::class, 'markAllAsRead'])->name('mark.all.notifications.read');
+
     Route::resource('coupon', CouponController::class);
 });
 
@@ -191,9 +195,9 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     /* Course Delivery & Learning */
     Route::get('/course-learn/{id}', [CourseDeliveryController::class, 'learn'])->name('course.learn');
     Route::get('/course-content/{course_id}/{type}/{id}', [CourseDeliveryController::class, 'getContent'])->name('course.content');
-    Route::post('/course-progress', [CourseDeliveryController::class, 'saveProgress'])->name('course.progress');
+    Route::post('/course/note/save', [CourseDeliveryController::class, 'saveNote'])->name('course.note.save');
+    Route::post('/course/progress', [CourseDeliveryController::class, 'saveProgress'])->name('course.progress');
     Route::post('/course-quiz-submit', [CourseDeliveryController::class, 'submitQuiz'])->name('course.quiz.submit');
-    Route::post('/course-note', [CourseDeliveryController::class, 'saveNote'])->name('course.note.save');
     Route::get('/course-certificate/{course_id}', [CourseDeliveryController::class, 'downloadCertificate'])->name('course.certificate');
 
     /* Purchase History */

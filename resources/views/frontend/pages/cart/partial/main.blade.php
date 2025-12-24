@@ -114,7 +114,7 @@
                         class="d-flex align-items-center justify-content-between font-weight-semi-bold" style="display: none !important">
                         <span class="text-black">Total Discount:</span>
                         <span id="totalDiscount">
-                            $0.00
+                            ₹0.00
                         </span>
                     </li>
 

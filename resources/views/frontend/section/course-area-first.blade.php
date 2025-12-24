@@ -87,8 +87,8 @@
                                             <div class="d-flex justify-content-between align-items-center">
 
                                                 <p class="card-price text-black font-weight-bold">
-                                                    ${{ $course->discount_price }} <span
-                                                        class="before-price font-weight-medium">{{ $course->selling_price }}</span>
+                                                    ₹{{ $course->discount_price }} <span
+                                                        class="before-price font-weight-medium">₹{{ $course->selling_price }}</span>
                                                 </p>
 
 
@@ -96,21 +96,24 @@
                                                     title="Add to Wishlist" data-course-id="{{ $course->id }}">
 
                                                     <?php
-                                                    // Check if the user is authenticated
+                                                    $isEnrolled = false;
+                                                    $inCart = false;
+                                                    $isWishlisted = false;
+
                                                     if (auth()->check()) {
                                                         $user_id = auth()->user()->id;
-
-                                                        // Check if the course is in the wishlist
+                                                        $isEnrolled = \App\Models\Enrollment::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                                        $inCart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
                                                         $isWishlisted = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->first();
-                                                    } else {
-                                                        $isWishlisted = null; // Default value for non-authenticated users
                                                     }
                                                     ?>
 
-                                                    @if ($isWishlisted)
-                                                        <i class="la la-heart"></i>
+                                                    @if ($isEnrolled)
+                                                        <i class="la la-graduation-cap" title="You purchased this course"></i>
+                                                    @elseif ($isWishlisted)
+                                                        <i class="la la-heart" title="Already in Wishlist"></i>
                                                     @else
-                                                        <i class="la la-heart-o"></i>
+                                                        <i class="la la-heart-o" title="{{ $inCart ? 'Already in Cart' : 'Add to Wishlist' }}"></i>
                                                     @endif
 
 

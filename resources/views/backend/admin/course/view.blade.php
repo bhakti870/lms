@@ -89,14 +89,14 @@
                                 <h6> Selling Price</h6>
 
                                 <span class="" style="font-size: 17px">
-                                    ${{$course->selling_price}}
+                                    ₹{{$course->selling_price}}
                                 </span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <h6> Discount Price</h6>
 
                                 <span class="" style="font-size: 17px">
-                                    ${{$course->discount_price}}
+                                    ₹{{$course->discount_price}}
                                 </span>
                             </li>
 

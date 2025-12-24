@@ -771,12 +771,14 @@ Author Email:   contact@techydevs.com
         });
 
         /*========= International Telephone Dial Codes ========*/
+        /*
         if ($(internationalTelephoneInput).length) {
             $(internationalTelephoneInput).intlTelInput({
                 separateDialCode: true,
                 utilsScript: "js/utils.js",
             });
         }
+        */
         /*========= Resume upload ========*/
         if ($(fileUploaderInput).length) {
             $(fileUploaderInput).MultiFile({

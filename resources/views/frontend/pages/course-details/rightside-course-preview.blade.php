@@ -53,9 +53,23 @@
                 <span class="text-color-3">Limited time offer</span> at this price!
             </p>
             <div class="buy-course-btn-box">
+                @php
+                    $in_cart = false;
+                    $in_wishlist = false;
+                    if (Auth::check()) {
+                        $user_id = Auth::id();
+                        $in_cart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                        $in_wishlist = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                    }
+                @endphp
+
                 @if($is_enrolled)
                     <a href="{{ route('user.course.learn', $course->id) }}" class="btn theme-btn w-100 mb-2">
                         <i class="la la-play-circle fs-18 mr-1"></i> Start Learning
+                    </a>
+                @elseif($in_cart)
+                    <a href="{{ route('cart') }}" class="btn theme-btn w-100 mb-2">
+                        <i class="la la-shopping-cart fs-18 mr-1"></i> Already in Cart
                     </a>
                 @else
                     <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart-btn" data-course-id="{{ $course->id }}">
@@ -64,6 +78,11 @@
                     <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2 buy-now-btn" data-course-id="{{ $course->id }}">
                         <i class="la la-shopping-bag mr-1"></i> Buy this course
                     </button>
+                    <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon {{ $in_wishlist ? 'active' : '' }} w-100 text-center" 
+                        title="{{ $in_wishlist ? 'Already in Wishlist' : 'Add to Wishlist' }}" 
+                        data-course-id="{{ $course->id }}" style="height: 45px; line-height: 45px; margin-bottom: 10px;">
+                        <i class="la {{ $in_wishlist ? 'la-heart' : 'la-heart-o' }}"></i> Add to Wishlist
+                    </div>
                 @endif
             </div>
             <p class="fs-14 text-center pb-4">30-Day Money-Back Guarantee</p>

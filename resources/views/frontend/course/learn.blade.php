@@ -331,13 +331,17 @@
             </div>
             
             <div id="content-display-area">
-                <div class="text-center mt-5 p-5 content-card bg-white">
-                    <div class="mb-4">
-                        <i class="la la-graduation-cap text-primary" style="font-size: 100px;"></i>
+                @if(!empty($initialHtml))
+                    {!! $initialHtml !!}
+                @else
+                    <div class="text-center mt-5 p-5 content-card bg-white">
+                        <div class="mb-4">
+                            <i class="la la-graduation-cap text-primary" style="font-size: 100px;"></i>
+                        </div>
+                        <h2 class="font-weight-bold">Ready to learn, {{ Auth::user()->name }}?</h2>
+                        <p class="text-muted fs-18">Select a lesson from the sidebar to begin your journey.</p>
                     </div>
-                    <h2 class="font-weight-bold">Ready to learn, {{ Auth::user()->name }}?</h2>
-                    <p class="text-muted fs-18">Select a lesson from the sidebar to begin your journey.</p>
-                </div>
+                @endif
             </div>
         </div>
 
@@ -416,10 +420,26 @@
             loadContent($(this).data('type'), $(this).data('id'));
         });
 
-        // Initialize first content
+        // Initialize first content / Auto-resume
         const initialActive = $('.content-item.active');
         if (initialActive.length && initialActive.data('locked') !== true) {
-            loadContent(initialActive.data('type'), initialActive.data('id'));
+            // Content is already pre-rendered by Laravel, so just setup tracking
+            const type = initialActive.data('type');
+            const id = initialActive.data('id');
+            
+            if (type === 'lecture') {
+                currentLectureId = id;
+                $('#notes-placeholder').hide();
+                $('#notes-container').show();
+                renderNotes(id);
+                setupVideoEndTracking(id);
+            }
+            
+            // Scroll to active item
+            initialActive[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Open the accordion parent if closed
+            initialActive.closest('.collapse').addClass('show');
         }
 
         // Toggle notes

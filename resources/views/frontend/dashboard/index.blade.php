@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="pl-4">
                                     <p class="card-text fs-18">Total Spend</p>
-                                    <h5 class="card-title pt-2 fs-26">${{ number_format($totalPurchase, 2) }}</h5>
+                                    <h5 class="card-title pt-2 fs-26">₹{{ number_format($totalPurchase, 2) }}</h5>
                                 </div>
                             </div>
                         </div>

@@ -34,8 +34,8 @@
                             <span class="rating-total pl-1">(20,230)</span>
                         </div><!-- end rating-wrap -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="card-price text-black font-weight-bold">12.99 <span
-                                    class="before-price font-weight-medium">129.99</span></p>
+                            <p class="card-price text-black font-weight-bold">₹12.99 <span
+                                    class="before-price font-weight-medium">₹129.99</span></p>
                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
                                 title="Add to Wishlist"><i class="la la-heart-o"></i></div>
                         </div>
@@ -67,7 +67,7 @@
                             <span class="rating-total pl-1">(20,230)</span>
                         </div><!-- end rating-wrap -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="card-price text-black font-weight-bold">129.99</p>
+                            <p class="card-price text-black font-weight-bold">₹129.99</p>
                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
                                 title="Add to Wishlist"><i class="la la-heart-o"></i></div>
                         </div>
@@ -128,7 +128,7 @@
                             <span class="rating-total pl-1">(20,230)</span>
                         </div><!-- end rating-wrap -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="card-price text-black font-weight-bold">129.99</p>
+                            <p class="card-price text-black font-weight-bold">₹129.99</p>
                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
                                 title="Add to Wishlist"><i class="la la-heart-o"></i></div>
                         </div>
@@ -160,7 +160,7 @@
                             <span class="rating-total pl-1">(20,230)</span>
                         </div><!-- end rating-wrap -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="card-price text-black font-weight-bold">129.99</p>
+                            <p class="card-price text-black font-weight-bold">₹129.99</p>
                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
                                 title="Add to Wishlist"><i class="la la-heart-o"></i></div>
                         </div>
@@ -192,7 +192,7 @@
                             <span class="rating-total pl-1">(20,230)</span>
                         </div><!-- end rating-wrap -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="card-price text-black font-weight-bold">129.99</p>
+                            <p class="card-price text-black font-weight-bold">₹129.99</p>
                             <div class="icon-element icon-element-sm shadow-sm cursor-pointer"
                                 title="Add to Wishlist"><i class="la la-heart-o"></i></div>
                         </div>

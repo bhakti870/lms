@@ -37,6 +37,7 @@ class LectureController extends Controller
     public function store(LectureRequest $request)
     {
         $validatedData = $request->validated();
+        $validatedData['is_live'] = $request->has('is_live') ? 1 : 0;
 
         $this->lectureService->createLecture($validatedData);
 
@@ -66,6 +67,7 @@ class LectureController extends Controller
     public function update(LectureRequest $request, string $id)
     {
         $validatedData = $request->validated();
+        $validatedData['is_live'] = $request->has('is_live') ? 1 : 0;
 
         $this->lectureService->updateLecture($validatedData, $id);
 
@@ -84,3 +86,4 @@ class LectureController extends Controller
         return redirect()->back()->with('success', 'Data deleted successfully.');
     }
 }
+    

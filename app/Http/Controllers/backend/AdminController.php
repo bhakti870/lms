@@ -17,7 +17,14 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        return view('backend.admin.dashboard.index');
+        $total_orders = \App\Models\Order::count();
+        $total_revenue = \App\Models\Payment::where('status', 'completed')->sum('total_amount');
+        $total_courses = \App\Models\Course::count();
+        $total_instructors = \App\Models\User::where('role', 'instructor')->count();
+        $total_students = \App\Models\User::where('role', 'user')->count();
+        $recent_orders = \App\Models\Order::latest()->limit(10)->get();
+
+        return view('backend.admin.dashboard.index', compact('total_orders', 'total_revenue', 'total_courses', 'total_instructors', 'total_students', 'recent_orders'));
     }
 
     public function loginStore(Request $request): RedirectResponse

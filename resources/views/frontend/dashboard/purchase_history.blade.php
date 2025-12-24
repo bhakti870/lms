@@ -36,7 +36,18 @@
                                     </div>
                                 </td>
                                 <td>{{ $enrollment->created_at->format('d M, Y') }}</td>
-                                <td>${{ number_format($enrollment->amount, 2) }}</td>
+                                <td>
+                                    @php
+                                        $order = \App\Models\Order::where('user_id', Auth::id())->where('course_id', $enrollment->course_id)->latest()->first();
+                                    @endphp
+                                    @if($enrollment->amount > 0)
+                                        ₹{{ number_format($enrollment->amount, 2) }}
+                                    @elseif($order)
+                                        ₹{{ number_format($order->price, 2) }}
+                                    @else
+                                        ₹{{ number_format($enrollment->course->discount_price ?: $enrollment->course->selling_price, 2) }}
+                                    @endif
+                                </td>
                                 <td><span class="badge {{ $enrollment->status == 'active' ? 'badge-success' : 'badge-danger' }} text-white px-2 py-1">{{ ucfirst($enrollment->status) }}</span></td>
                                 <td class="text-right">
                                     <div class="d-flex justify-content-end align-items-center">
@@ -53,9 +64,6 @@
                                             <button class="btn theme-btn theme-btn-sm btn-secondary mr-2" disabled title="Complete all lectures to earn certificate"><i class="la la-certificate"></i></button>
                                         @endif
 
-                                        @php
-                                            $order = \App\Models\Order::where('user_id', Auth::id())->where('course_id', $enrollment->course_id)->latest()->first();
-                                        @endphp
                                         @if($order && $order->payment_id)
                                             <a href="{{ route('user.invoice', $order->payment_id) }}" class="btn theme-btn theme-btn-sm theme-btn-transparent mr-2" target="_blank" title="Invoice"><i class="la la-file-invoice"></i></a>
                                         @endif

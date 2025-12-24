@@ -48,13 +48,37 @@ $course_category = getCourseCategories();
                         </ul>
 
                         <div class="d-flex justify-content-between align-items-center">
-                            
-                            <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart-btn" data-course-id="{{ $course->id }}">
-                                <i class="la la-shopping-cart fs-18 mr-1"></i> Add to cart
-                            </button>
+                            @php
+                                $isEnrolled = false;
+                                $inCart = false;
+                                $inWishlist = false;
 
-                            <div class="icon-element icon-element-sm shadow-sm cursor-pointer" title="Add to Wishlist">
-                                <i class="la la-heart-o"></i>
+                                if (Auth::check()) {
+                                    $user_id = Auth::id();
+                                    $isEnrolled = \App\Models\Enrollment::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                    $inCart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                    $inWishlist = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                }
+                            @endphp
+
+                            @if($isEnrolled)
+                                <a href="{{ route('user.course.learn', $course->id) }}" class="btn theme-btn w-100 mb-2">
+                                    <i class="la la-graduation-cap fs-18 mr-1"></i> Start Learning
+                                </a>
+                            @elseif($inCart)
+                                <a href="{{ route('cart') }}" class="btn theme-btn w-100 mb-2">
+                                    <i class="la la-shopping-cart fs-18 mr-1"></i> Already in Cart
+                                </a>
+                            @else
+                                <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart-btn" data-course-id="{{ $course->id }}">
+                                    <i class="la la-shopping-cart fs-18 mr-1"></i> Add to cart
+                                </button>
+                            @endif
+
+                            <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon {{ $inWishlist ? 'active' : '' }}" 
+                                title="{{ $inWishlist ? 'Already in Wishlist' : 'Add to Wishlist' }}" 
+                                data-course-id="{{ $course->id }}">
+                                <i class="la {{ $inWishlist ? 'la-heart' : 'la-heart-o' }}"></i>
                             </div>
                         </div>
                     </div>

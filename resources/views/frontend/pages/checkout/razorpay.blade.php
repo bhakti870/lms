@@ -4,8 +4,6 @@
 <div class="container pt-5 pb-5 text-center">
     <h3>Process Payment</h3>
     <p>Please wait while we open the payment gateway...</p>
-    
-    <button id="rzp-button1" class="btn btn-primary mt-3">Pay Now</button>
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -76,9 +74,6 @@ window.onload = function(){
     rzp1.open();
 };
 
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
-}
+
 </script>
 @endsection

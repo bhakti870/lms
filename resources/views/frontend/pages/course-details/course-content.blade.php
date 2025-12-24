@@ -55,6 +55,9 @@
                                         <span>
                                             <i class="la la-play-circle mr-1"></i>
                                             {{ $lecture->lecture_title }}
+                                            @if($lecture->is_live)
+                                                <span class="badge badge-danger ml-1">Live class</span>
+                                            @endif
                                             @if($lecture->is_free)
                                                 <span class="badge badge-success ml-1">Free Preview</span>
                                             @endif

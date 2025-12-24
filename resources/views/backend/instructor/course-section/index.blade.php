@@ -103,7 +103,11 @@
                                     <div class="d-flex align-items-center justify-content-between mb-2 p-2 border rounded">
                                         <div class="d-flex align-items-center">
                                             <i class='bx bx-play-circle fs-4 me-2'></i>
-                                            <p class="mb-0">{{ $lecture->lecture_title }}</p>
+                                            <p class="mb-0">{{ $lecture->lecture_title }} 
+                                                @if($lecture->is_live)
+                                                    <span class="badge bg-danger ms-2" style="font-size: 10px;">LIVE</span>
+                                                @endif
+                                            </p>
                                         </div>
                                         <div>
                                             <a class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#course-edit-{{ $lecture->id }}">

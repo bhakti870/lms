@@ -80,24 +80,31 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 @if($course->discount_price)
                                     <p class="card-price text-black font-weight-bold">
-                                        ${{ $course->discount_price }} <span class="before-price font-weight-medium">${{ $course->selling_price }}</span>
+                                        ₹{{ $course->discount_price }} <span class="before-price font-weight-medium">₹{{ $course->selling_price }}</span>
                                     </p>
                                 @else
                                     <p class="card-price text-black font-weight-bold">
-                                        ${{ $course->selling_price }}
+                                        ₹{{ $course->selling_price }}
                                     </p>
                                 @endif
                                 <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon" title="Add to Wishlist" data-course-id="{{ $course->id }}">
                                     @php
+                                        $isEnrolled = false;
+                                        $inCart = false;
                                         $isWishlisted = false;
                                         if (auth()->check()) {
-                                            $isWishlisted = \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists();
+                                            $user_id = auth()->id();
+                                            $isEnrolled = \App\Models\Enrollment::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                            $inCart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                            $isWishlisted = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->exists();
                                         }
                                     @endphp
-                                    @if ($isWishlisted)
-                                        <i class="la la-heart"></i>
+                                    @if ($isEnrolled)
+                                        <i class="la la-graduation-cap" title="You purchased this course"></i>
+                                    @elseif ($isWishlisted)
+                                        <i class="la la-heart" title="Already in Wishlist"></i>
                                     @else
-                                        <i class="la la-heart-o"></i>
+                                        <i class="la la-heart-o" title="{{ $inCart ? 'Already in Cart' : 'Add to Wishlist' }}"></i>
                                     @endif
                                 </div>
                             </div>

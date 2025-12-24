@@ -6,6 +6,8 @@ use App\Models\Enrollment;
 use App\Models\QuizResult;
 use App\Models\CourseProgress;
 use App\Models\Course;
+use App\Models\Order;
+use App\Models\Wishlist;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -16,8 +18,8 @@ class UserController extends Controller
     public function dashboard(){
         $id = Auth::user()->id;
         $enrolledCourses = Enrollment::where('user_id', $id)->count();
-        $wishlistCount = \App\Models\Wishlist::where('user_id', $id)->count();
-        $totalPurchase = Enrollment::where('user_id', $id)->sum('amount');
+        $wishlistCount = Wishlist::where('user_id', $id)->count();
+        $totalPurchase = Order::where('user_id', $id)->sum('price');
         
         return view('frontend.dashboard.index', compact('enrolledCourses', 'wishlistCount', 'totalPurchase'));
     }

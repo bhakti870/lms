@@ -17,18 +17,24 @@ class LectureRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, 
      */
     public function rules(): array
     {
         return [
 
-            'course_id' => 'required|exists:courses,id', // Optional but must exist in courses table if provided
-            'section_id' => 'required|exists:course_sections,id', // Required and must exist in course_sections table
-            'lecture_title' => 'required|string|max:255', // Optional, must be a string, max length 255
-            'url' => 'nullable|url|max:255', // Optional, must be a valid URL, max length 255
-            'content' => 'required|string', // Optional, must be a string
-            'video_duration' => 'nullable'
+            'course_id' => 'required|exists:courses,id', 
+            'section_id' => 'required|exists:course_sections,id', 
+            'lecture_title' => 'required|string|max:255', 
+            'url' => 'nullable|url|max:255', 
+            'content' => 'required|string', 
+            'video_duration' => 'nullable',
+            'is_live' => 'nullable|boolean',
+            'live_link' => 'nullable|url|max:255',
+            'live_id' => 'nullable|string|max:255',
+            'live_password' => 'nullable|string|max:255',
+            'live_date' => 'nullable|date',
+            'live_time' => 'nullable',
 
         ];
     }

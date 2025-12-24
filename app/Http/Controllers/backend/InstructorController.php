@@ -53,7 +53,14 @@ class InstructorController extends Controller
     // Existing dashboard method retained
     public function dashboard()
     {
-        return view('backend.instructor.dashboard.index');
+        $id = Auth::id();
+        $total_orders = \App\Models\Order::where('instructor_id', $id)->count();
+        $total_revenue = \App\Models\Order::where('instructor_id', $id)->sum('price');
+        $total_courses = \App\Models\Course::where('instructor_id', $id)->count();
+        $total_students = \App\Models\Order::where('instructor_id', $id)->distinct('user_id')->count();
+        $recent_orders = \App\Models\Order::where('instructor_id', $id)->latest()->limit(10)->get();
+
+        return view('backend.instructor.dashboard.index', compact('total_orders', 'total_revenue', 'total_courses', 'total_students', 'recent_orders'));
     }
 
     /**
@@ -103,6 +110,27 @@ class InstructorController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/instructor/login');
+    }
+
+    public function markAsRead($id)
+    {
+        $notification = auth()->user()->notifications()->where('id', $id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return response()->json(['success' => true]);
+    }
+
+    public function markAllAsRead()
+    {
+        auth()->user()->unreadNotifications->markAsRead();
+        
+        $notification = array(
+            'message' => 'All notifications marked as read',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->back()->with($notification);
     }
 
 

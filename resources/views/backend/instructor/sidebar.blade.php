@@ -1,7 +1,7 @@
 <div class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
         <div>
-            <img src="{{asset('backend/assets/images/logo-icon.png')}}" class="logo-icon" alt="logo icon">
+            <img src="{{asset('backend/assets/images/book-graduation-cap-logo.avif')}}" class="logo-icon" alt="logo icon">
         </div>
         <div>
             <h4 class="logo-text">Instructor</h4>
@@ -13,7 +13,7 @@
     <ul class="metismenu" id="menu">
         <li>
             <a href="{{route('instructor.dashboard')}}">
-                <div class="parent-icon"><i class='bx bx-category'></i>
+                <div class="parent-icon"><i class='bx bx-home-circle'></i>
                 </div>
                 <div class="menu-title">Dashboard</div>
             </a>
@@ -26,7 +26,7 @@
 
         <li class="{{ setSidebar(['instructor.course*', 'instructor.course-section*']) }}">
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-book-open"></i>
                 </div>
                 <div class="menu-title">Manage Courses</div>
             </a>
@@ -40,7 +40,7 @@
 
          <li class="{{ setSidebar(['instructor.coupon*']) }}">
             <a href="javascript:;" class="has-arrow">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="bx bx-purchase-tag"></i>
                 </div>
                 <div class="menu-title">Managed Coupon</div>
             </a>

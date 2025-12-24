@@ -180,21 +180,23 @@ class OrderController extends Controller
                 'status' => 'completed',
             ]);
 
-            // Create Orders
+             // Create Orders
              foreach ($orderPayload['course_id'] as $index => $courseId) {
                  $order = Order::create([
                      'payment_id' => $payment->id,
                      'user_id' => auth()->user()->id,
                      'course_id' => $courseId,
-                     'instructor_id' => $orderPayload['instructor_id'][$index],
-                     'course_title' => $orderPayload['course_name'][$index],
-                     'price' => $orderPayload['course_price'][$index],
+                     'instructor_id' => $orderPayload['instructor_id'][$index] ?? null,
+                     'course_title' => $orderPayload['course_name'][$index] ?? 'Course',
+                     'price' => $orderPayload['course_price'][$index] ?? 0,
                  ]);
 
                  // Notify Instructor
-                 $instructor = \App\Models\User::find($order->instructor_id);
-                 if ($instructor) {
-                     $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
+                 if ($order->instructor_id) {
+                     $instructor = \App\Models\User::find($order->instructor_id);
+                     if ($instructor) {
+                         $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
+                     }
                  }
 
                  // Create Enrollment
@@ -204,7 +206,7 @@ class OrderController extends Controller
                         'course_id' => $courseId,
                     ],
                     [
-                        'amount' => $orderPayload['course_price'][$index],
+                        'amount' => $orderPayload['course_price'][$index] ?? 0,
                         'status' => 'active',
                         'enrolled_at' => now(),
                     ]

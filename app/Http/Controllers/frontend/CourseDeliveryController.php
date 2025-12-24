@@ -59,10 +59,33 @@ class CourseDeliveryController extends Controller
         // Get saved notes
         $notes = \App\Models\CourseNote::where('user_id', $user_id)->where('course_id', $id)->get()->groupBy('lecture_id');
 
-        // Find the first/last incomplete lesson to show
+        // Find the first incomplete lesson to show
         $currentContent = $this->getResumeContent($course, $user_id);
+        
+        // PRE-RENDER initial content for faster first load
+        $initialHtml = '';
+        $initialTitle = '';
+        if($currentContent) {
+            $type = $currentContent['type'];
+            $id = $currentContent['id'];
+            
+            if ($type === 'lecture') {
+                $content = CourseLecture::find($id);
+            } elseif ($type === 'quiz') {
+                $content = Quiz::with('questions')->find($id);
+                $previousResult = QuizResult::where('user_id', $user_id)->where('quiz_id', $id)->latest()->first();
+                if($content) $content->previous_result = $previousResult;
+            } elseif ($type === 'material') {
+                $content = CourseMaterial::find($id);
+            }
 
-        return view('frontend.course.learn', compact('course', 'progress', 'currentContent', 'notes'));
+            if($content) {
+                $initialHtml = view('frontend.course.partials.content_view', compact('type', 'content', 'course'))->render();
+                $initialTitle = $content->lecture_title ?? $content->quiz_title ?? $content->material_title;
+            }
+        }
+
+        return view('frontend.course.learn', compact('course', 'progress', 'currentContent', 'notes', 'initialHtml', 'initialTitle'));
     }
 
     public function getContent($course_id, $type, $id)
@@ -80,7 +103,7 @@ class CourseDeliveryController extends Controller
             if ($content->drip_days > $days) {
                 return response()->json(['error' => 'Content is locked until ' . \Carbon\Carbon::parse($enrollment->enrolled_at)->addDays($content->drip_days)->format('d M Y')], 403);
             }
-            
+
         } elseif ($type === 'quiz') {
             $content = Quiz::with('questions')->findOrFail($id);
             $previousResult = QuizResult::where('user_id', $user_id)->where('quiz_id', $id)->latest()->first();
@@ -262,10 +285,35 @@ class CourseDeliveryController extends Controller
 
     private function getResumeContent($course, $user_id)
     {
-        // Ideally return the first uncompleted item
-        return [
-            'type' => 'lecture',
-            'id' => $course->sections->first()?->lectures?->first()?->id
-        ];
+        $completedIds = CourseProgress::where('user_id', $user_id)
+            ->where('course_id', $course->id)
+            ->where('is_completed', true)
+            ->get()
+            ->groupBy('content_type');
+
+        foreach ($course->sections as $section) {
+            // Check Lectures
+            foreach ($section->lectures as $lecture) {
+                if (!isset($completedIds['lecture']) || !$completedIds['lecture']->contains('content_id', $lecture->id)) {
+                    return ['type' => 'lecture', 'id' => $lecture->id];
+                }
+            }
+            // Check Quizzes
+            foreach ($section->quizzes as $quiz) {
+                if (!isset($completedIds['quiz']) || !$completedIds['quiz']->contains('content_id', $quiz->id)) {
+                    return ['type' => 'quiz', 'id' => $quiz->id];
+                }
+            }
+            // Check Materials
+            foreach ($section->materials as $material) {
+                if (!isset($completedIds['material']) || !$completedIds['material']->contains('content_id', $material->id)) {
+                    return ['type' => 'material', 'id' => $material->id];
+                }
+            }
+        }
+
+        // Fallback to first lecture if all completed
+        $firstLecture = $course->sections->first()?->lectures?->first();
+        return $firstLecture ? ['type' => 'lecture', 'id' => $firstLecture->id] : null;
     }
 }
