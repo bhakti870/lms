@@ -1,15 +1,19 @@
-<section class="breadcrumb-area section-padding img-bg-2">
-    <div class="overlay"></div>
-    <div class="container">
-        <div class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between">
-            <div class="section-heading">
-                <h2 class="section__title text-white">{{$title}}</h2>
+<section class="py-5 bg-light border-bottom">
+    <div class="container mt-4">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-2">{{ $title }}</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}" class="text-theme text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $title }}</li>
+                    </ol>
+                </nav>
             </div>
-            <ul class="generic-list-item generic-list-item-white generic-list-item-arrow d-flex flex-wrap align-items-center">
-                <li><a href="index.html">Home</a></li>
-                <li>Pages</li>
-                <li>Shopping Cart</li>
-            </ul>
-        </div><!-- end breadcrumb-content -->
-    </div><!-- end container -->
+            <div class="col-md-6 text-md-end d-none d-md-block">
+                <i class="bi bi-mortarboard text-theme opacity-25" style="font-size: 4rem;"></i>
+            </div>
+        </div>
+    </div>
 </section>
+

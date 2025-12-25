@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olan Header Clone</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-xl bg-white shadow-sm sticky-top py-3">
+        <div class="container-fluid px-lg-5"> <a class="navbar-brand fw-bold fs-3 d-flex align-items-center me-4"
+                href="#">
+                <i class="bi bi-mortarboard-fill text-theme me-2"></i>
+                <span>skillpoint</span>
+            </a>
+
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                                class="bi bi-list-ul" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                            </svg>
+                            Dropdown
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item dropend">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Dropdown
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+
+
+                                </ul>
+                            </li>
+                            <li class="nav-item dropend">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Dropdown
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+
+
+                                </ul>
+                            </li>
+                            <li class="nav-item dropend">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Dropdown
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Pages</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Instructors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0">
+                    <form class="search-form d-none d-lg-block">
+                        <input type="text" class="form-control search-input" placeholder="Search for anything">
+                        <button type="submit" class="search-btn">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                    <a href="#" class="btn btn-theme">Login/Signup &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- <section>
+        <div class="image-container">
+            <img src="pastel-gradient-2.jpg" alt="My Image" class="my-image">
+
+            <div class="hero-wave-curves bottom-wave-section"></div>
+        </div>
+    </section> -->
+
+    <section>
+        <div class="image-container">
+            <img src="pastel-gradient-2.jpg" alt="Background" class="my-image">
+
+            <div class="container position-relative content-layer">
+                <div class="row align-items-center">
+
+                    <div class="col-lg-3 d-none d-lg-block">
+                        <div class="image-group left-group">
+                            <img src="smile1.png" class="hero-float-img float-back" alt="Left Image">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5 text-center text-content">
+                        <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-mortarboard-fill me-2"></i>Online Training
+                        </span>
+                        <h1 class="display-4 fw-bold mb-3">
+                            Level Up With Expert-Led <br>
+                            <span class="text-theme">Online Training</span>
+                        </h1>
+                        <p class="lead mb-4 text-muted">
+                            Flexible, career-focused courses designed to help individuals and teams grow.
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="btn btn-theme btn-lg">Start Learning</a>
+                            <a href="#" class="btn btn-outline-dark btn-lg">Browse Courses</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 d-none d-lg-block position-relative">
+                        <div class="right-image-composition">
+
+                            <img src="smile2.jpg" alt="Student" class="hero-img right-back-img">
+
+                            <img src="smile3.jpg" alt="Student" class="hero-img right-front-img">
+
+                            <div class="active-learners-badge">
+                                <div class="avatar-group">
+                                    <img src="https://placehold.co/40x40/111/fff" alt="User">
+                                    <img src="https://placehold.co/40x40/222/fff" alt="User">
+                                    <img src="https://placehold.co/40x40/333/fff" alt="User">
+                                </div>
+                                <div class="learner-text">
+                                    <strong>6.8k+</strong><br>
+                                    <span>Active Learners</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-wave-curves bottom-wave-section"></div>
+        </div>
+    </section>
+
+    <section class="about-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                    <div class="about-image-wrapper" data-aos="fade-up" data-aos-delay="300">
+
+
+                        <img src="about2.jpg" alt="About Student" class="about-main-img">
+
+                        <div class="about-card card-top-right shadow-sm">
+                            <div class="icon-wrapper mb-2">
+                                <i class="bi bi-people text-theme fs-4"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0">60K+</h4>
+                            <span class="text-muted small">Active Learners</span>
+                        </div>
+
+                        <div class="about-card card-bottom-left shadow-lg">
+                            <div class="icon-wrapper mb-2">
+                                <i class="bi bi-person-video3 text-white fs-4"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0 text-white">4500+</h4>
+                            <span class="text-white small opacity-75">Expert Instructors</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 ps-lg-5" data-aos="fade-up" data-aos-delay="450">
+                    <span class="text-theme fw-bold text-uppercase small">About Olan</span>
+                    <h2 class="display-5 fw-bold mb-4 mt-2">One Platform. Infinite <br> Learning Possibilities.</h2>
+
+                    <p class="text-muted mb-4">
+                        At Olan, we believe quality education should be accessible, engaging, and empowering—for
+                        everyone, everywhere.
+                    </p>
+
+                    <div class="about-features d-flex flex-column gap-3 mb-4">
+
+                        <div class="d-flex align-items-start">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-check-lg text-white bg-theme rounded-circle p-1"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Learn from Anywhere</h6>
+                                <p class="text-muted small mb-0">Access your courses anytime, on any device—at home, at
+                                    work, or on the go.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-check-lg text-white bg-theme rounded-circle p-1"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Teach with Confidence</h6>
+                                <p class="text-muted small mb-0">All the tools you need to build, launch, and scale your
+                                    courses stress-free.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start">
+                            <div class="feature-icon me-3">
+                                <i class="bi bi-check-lg text-white bg-theme rounded-circle p-1"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Earn Real Certificates</h6>
+                                <p class="text-muted small mb-0">Complete courses and receive professional certificates
+                                    to boost your career.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <a href="#" class="btn btn-theme btn-lg">Learn More About Us &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section py-5">
+        <div class="container">
+            <div class="row justify-content-center g-0">
+
+                <div class="col-lg-3 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="ot-fun-box-item">
+                        <div class="content">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <h3 class="counter">6.8</h3>
+                                <h3 class="sub">M+</h3>
+                            </div>
+                            <p>Active Learners</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6" data-aos="fade-up" data-aos-delay="450">
+                    <div class="ot-fun-box-item wrap2">
+                        <div class="content">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <h3 class="counter">7.5</h3>
+                                <h3 class="sub">K+</h3>
+                            </div>
+                            <p>Courses Available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6" data-aos="fade-up" data-aos-delay="550">
+                    <div class="ot-fun-box-item wrap3">
+                        <div class="content">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <h3 class="counter">120</h3>
+                                <h3 class="sub">+</h3>
+                            </div>
+                            <p>Countries Reached</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-6" data-aos="fade-up" data-aos-delay="650">
+                    <div class="ot-fun-box-item wrap4">
+                        <div class="content">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <h3 class="counter">4.9</h3>
+                            </div>
+                            <p>Avg Course Rating</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light">
+        <div class="container mb-4">
+            <h3 class="text-center fw-bold">Our Course Categories</h3>
+            <p class="text-center text-muted">Explore our latest series and collections</p>
+        </div>
+
+        <div class="marquee__track">
+            <div class="marquee__grid">
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/5b50d6/ffffff?text=React" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">React from Scratch</h4>
+                        <p class="instructor-text">With <span class="text-theme">Simon Vrachliotis</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>27 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Beginner</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Frameworks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="https://placehold.co/80x80/ffc107/ffffff?text=UI" alt="Icon">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">shadcn/ui Design</h4>
+                        <p class="instructor-text">With <span class="text-theme">Alex Brown</span></p>
+
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>10 Episodes</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>Advanced</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> <span>Design System</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+
+    </section>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

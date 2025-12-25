@@ -30,14 +30,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
+             <div class="col">
                 <div class="card radius-10 border-start border-0 border-4 border-danger">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div>
-                                <p class="mb-0 text-secondary">Total Students</p>
-                                <h4 class="my-1 text-danger">{{ $total_students }}</h4>
-                                <p class="mb-0 font-13">Unique enrolled students</p>
+                                <p class="mb-0 text-secondary">Total Revenue</p>
+                                <h4 class="my-1 text-danger">₹{{ number_format($total_revenue, 2) }}</h4>
+                                <p class="mb-0 font-13">Total earnings from sales</p>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-burning text-white ms-auto">
                                 <i class='bx bxs-wallet'></i>
@@ -115,8 +115,9 @@
                                         <th>Photo</th>
                                         <th>Product ID</th>
                                         <th>Status</th>
-                                        <th>Amount</th>
+                                         <th>Amount</th>
                                         <th>Date</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                     <tbody>
@@ -124,7 +125,7 @@
                                         <tr>
                                             <td>{{ $order->course_title }}</td>
                                             <td><img src="{{ !empty($order->course->course_image) ? asset($order->course->course_image) : asset('upload/no_image.jpg') }}" class="product-img-2"
-                                                    alt="product img"></td>
+                                                     alt="product img"></td>
                                             <td>#{{ $order->invoice_no ?? $order->payment_id }}</td>
                                             <td>
                                                 @if($order->payment->status == 'completed')
@@ -133,8 +134,11 @@
                                                 <span class="badge bg-gradient-bloody text-white shadow-sm w-100">{{ $order->payment->status }}</span>
                                                 @endif
                                             </td>
-                                            <td>₹{{ number_format($order->price, 2) }}</td>
+                                            <td>${{ number_format($order->price, 2) }}</td>
                                             <td>{{ $order->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                <a href="{{ route('instructor.orders.show', $order->id) }}" class="btn btn-primary btn-sm">View</a>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>

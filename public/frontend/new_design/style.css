@@ -1,0 +1,863 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    /* scroll-behavior: smooth; */
+}
+
+.sticky-top {
+    z-index: 1030 !important;
+    /* Above other fixed/absolute elements */
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Merriweather', serif;
+}
+
+/* --- Theme Colors --- */
+.text-theme {
+    color: #5b50d6;
+}
+
+.bg-theme {
+    background-color: #5b50d6;
+}
+
+/* --- Search Bar Styling --- */
+.search-form {
+    position: relative;
+    min-width: 250px;
+    /* Adjust width of search bar */
+}
+
+.search-input {
+    border-radius: 50px;
+    /* Fully rounded pill shape */
+    background-color: #f4f6f9;
+    border: 1px solid transparent;
+    padding-right: 40px;
+    /* Space for the search icon */
+    padding-left: 20px;
+    height: 45px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    background-color: #fff;
+    border-color: #5b50d6;
+    /* Purple border on focus */
+    box-shadow: 0 0 0 4px rgba(91, 80, 214, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #666;
+    padding: 5px 10px;
+}
+
+/* --- Login Button Styling --- */
+.btn-theme {
+    background-color: #5b50d6;
+    color: white;
+    border: 1px solid #5b50d6;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-theme:hover {
+    background-color: #4a41b5;
+    color: white;
+}
+
+/* --- Nav Link Styling --- */
+.navbar-nav .nav-link {
+    color: #1c1c1c;
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    /* Aligns SVG icon with text */
+    gap: 8px;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #5b50d6;
+}
+
+.nav-link.dropdown-toggle::after {
+    vertical-align: middle;
+    border-top: .35em solid;
+    border-right: .35em solid transparent;
+    border-bottom: 0;
+    border-left: .35em solid transparent;
+}
+
+
+/* --- Category Specifics --- */
+.category-icon {
+    margin-right: 5px;
+}
+
+/* @media (min-width: 992px) {
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+} */
+
+.dropend .dropdown-toggle {
+    color: black;
+    margin-left: 1em;
+}
+
+.dropdown-item {
+    font-size: 15px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #5b50d6;
+    color: #fff;
+}
+
+.dropdown-menu {
+    border: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 10px;
+}
+
+
+.dropdown .dropdown-menu {
+    display: none;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 12px;
+}
+
+.dropdown:hover>.dropdown-menu,
+.dropend:hover>.dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+/* --- Cart & Wishlist Dropdowns --- */
+#cart-dropdown,
+#wishlist-dropdown,
+.dropdown-menu-end {
+    position: absolute;
+    top: 100%;
+    right: 0 !important;
+    left: auto !important;
+    z-index: 1050;
+    min-width: 280px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border: none;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    display: block !important;
+    /* Always in DOM for transitions */
+}
+
+/* Show on hover */
+#cart:hover #cart-dropdown,
+#wishlist-menu:hover #wishlist-dropdown,
+.dropdown:hover>.dropdown-menu-end {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(15px);
+}
+
+
+#cart-dropdown::before,
+#wishlist-dropdown::before,
+.dropdown-menu-end::before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: transparent;
+}
+
+
+
+.cart-wishlist-icon {
+    position: relative;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+}
+
+.cart-wishlist-icon:hover {
+    background-color: #f4f6f9;
+    color: #5b50d6 !important;
+}
+
+.badge-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    font-weight: 700;
+}
+
+.navbar-brand:hover {
+    opacity: 0.8;
+}
+
+.navbar-nav .nav-link {
+    transition: all 0.3s ease;
+}
+
+.btn-theme-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+
+/* --- 1. Container & Background Image --- */
+.image-container {
+    position: relative;
+    width: 100%;
+    /* No fixed height; height is determined by the content inside + padding */
+    overflow: hidden;
+}
+
+.my-image {
+    position: absolute;
+    /* Takes image out of flow to sit behind text */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image covers area without stretching */
+    z-index: 0;
+}
+
+/* --- 2. Content Layout --- */
+.content-layer {
+    position: relative;
+    z-index: 2;
+    /* Sits on top of image */
+    padding-top: 100px;
+    padding-bottom: 140px;
+    /* Extra padding at bottom so text doesn't hit the wave */
+}
+
+/* --- 3. Floating Image Styling --- */
+.image-group {
+    position: relative;
+    height: 350px;
+    /* Fixed height for the floating area */
+    width: 100%;
+}
+
+.hero-float-img {
+    /* position: absolute;
+    border: 5px solid #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); */
+    object-fit: cover;
+}
+
+/* Left Side Specifics */
+.left-group .float-back {
+    width: 300px;
+    height: 350px;
+    top: 0;
+    left: 20px;
+    z-index: 1;
+}
+
+.left-group .float-front {
+    width: 220px;
+    height: 220px;
+    bottom: 0;
+    right: 10px;
+    z-index: 2;
+}
+
+
+/* --- Right Side Composition Container --- */
+.right-image-composition {
+    position: relative;
+    height: 450px;
+    width: 100%;
+    /* Ensure the images don't get cut off if they slide slightly right */
+    overflow: visible;
+}
+
+/* --- Common Image Styles --- */
+.hero-img {
+    position: absolute;
+    object-fit: cover;
+    border: 10px solid #ffffff;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+}
+
+/* The Man (Back Image) - Positioning */
+.right-back-img {
+    width: 280px;
+    height: 350px;
+    top: 0;
+    right: 0;
+    /* Aligns strictly to the right edge of the column */
+    z-index: 1;
+}
+
+/* The Woman (Front Image) - Positioning */
+.right-front-img {
+    width: 190px;
+    height: 230px;
+    bottom: 80px;
+    left: 20px;
+    /* Overlaps correctly */
+    z-index: 2;
+}
+
+/* --- Active Learners Badge --- */
+.active-learners-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.8);
+    /* Optional: slight background for readability */
+    padding: 10px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    /* distinct look */
+}
+
+/* Avatar Group (Overlapping Circles) */
+.avatar-group {
+    display: flex;
+}
+
+.avatar-group img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    margin-left: -15px;
+    /* Creates the overlap effect */
+}
+
+.avatar-group img:first-child {
+    margin-left: 0;
+}
+
+/* Text next to avatars */
+.learner-text {
+    line-height: 1.2;
+    color: #333;
+}
+
+.learner-text strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.learner-text span {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* --- 4. The Wave (Unchanged) --- */
+.bottom-wave-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    max-height: 86px;
+    z-index: 3;
+    /* Topmost layer */
+    pointer-events: none;
+}
+
+.hero-wave-curves {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='rgb(255,255,255)' %3E%3C/path%3E%3C/svg%3E");
+}
+
+/* --- About Section Styling --- */
+
+.about-section {
+    background-color: #fff;
+    /* White background for the section */
+}
+
+/* 1. Wrapper to hold image + cards together */
+.about-image-wrapper {
+    position: relative;
+    padding: 30px;
+    /* Space for cards to poke out */
+    display: inline-block;
+}
+
+/* 2. The Blue Background Rectangle */
+.about-bg-shape {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 0;
+    background-color: #dbeafe;
+    /* Light Blue color like the reference */
+    border-radius: 20px;
+    z-index: 0;
+    /* Behind everything */
+}
+
+/* 3. Main Image */
+.about-main-img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    /* Adjust based on your image size */
+    border-radius: 0 0 20px 20px;
+    /* Rounded bottom to match shape */
+    display: block;
+}
+
+/* 4. Floating Cards Common Styles */
+.about-card {
+    position: absolute;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 160px;
+    z-index: 2;
+    /* On top of image */
+    text-align: center;
+}
+
+/* Card 1: Top Right (White) */
+.card-top-right {
+    top: 60px;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    /* Soft Shadow */
+}
+
+/* Card 2: Bottom Left (Cyan/Blue) */
+.card-bottom-left {
+    bottom: 40px;
+    left: 0;
+    background: #0dcaf0;
+    /* Bootstrap Info Cyan color */
+    color: white;
+    /* Or use a custom cyan if needed: background: #00cba9; */
+}
+
+/* 5. Content Side Styling */
+.feature-icon i {
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Uses .bg-theme from your existing CSS for purple color */
+}
+
+/* --- Stats Section Styling --- */
+
+.stats-section {
+    background-color: #fff;
+    overflow: hidden;
+    /* Ensures circles don't spill out */
+}
+
+/* Common Circle Style */
+.ot-fun-box-item {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    /* Limits size so it doesn't get too huge */
+    aspect-ratio: 1/1;
+    /* Forces it to be a perfect square/circle */
+    border-radius: 50%;
+    /* Makes it round */
+    margin: 0 auto;
+    /* Centers it in the column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid transparent;
+    /* Placeholder for border */
+    transition: transform 0.3s ease;
+}
+
+.ot-fun-box-item:hover {
+    transform: scale(1.05);
+
+    /* Slight zoom on hover */
+}
+
+/* Typography inside Circle */
+.ot-fun-box-item h3 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+}
+
+.ot-fun-box-item p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    color: #666;
+}
+
+/* --- Color Themes --- */
+
+/* 1. Default Blue (First Item) */
+.ot-fun-box-item {
+    background-color: #ebf0fe;
+    /* Light Blue BG */
+    border-color: #4e57d4;
+    /* Dark Blue Border */
+    color: #4e57d4;
+    /* Dark Blue Text */
+}
+
+/* 2. Cyan (.wrap2) */
+.ot-fun-box-item.wrap2 {
+    background-color: #e0fbf8;
+    /* Light Cyan BG */
+    border-color: #20c997;
+    /* Teal Border */
+    color: #20c997;
+    /* Teal Text */
+}
+
+/* 3. Yellow (.wrap3) */
+.ot-fun-box-item.wrap3 {
+    background-color: #fff8e1;
+    /* Light Yellow BG */
+    border-color: #ffc107;
+    /* Gold Border */
+    color: #ffc107;
+    /* Gold Text */
+}
+
+/* 4. Orange/Red (.wrap4) */
+.ot-fun-box-item.wrap4 {
+    background-color: #ffebe5;
+    /* Light Red BG */
+    border-color: #ff5722;
+    /* Red Border */
+    color: #ff5722;
+    /* Red Text */
+}
+
+/* --- Marquee Container --- */
+.marquee__track {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 20px 0;
+    /* Space for shadows */
+}
+
+.marquee__grid {
+    display: flex;
+    gap: 24px;
+    /* Space between cards */
+    width: max-content;
+    /* Important: Ensures row doesn't wrap */
+    animation: marquee 40s linear infinite;
+    /* Smooth scrolling */
+}
+
+/* Pause animation on hover */
+.marquee__track:hover .marquee__grid {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    /* NOTE: For -50% to work perfectly, you must duplicate your content 
+       once in the HTML. e.g. [Cards A, B, C] + [Cards A, B, C] */
+}
+
+
+
+.course-card-inner {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+}
+
+
+
+
+/* --- Professional Card Overrides --- */
+
+/* 1. Neutralize the Domain Name (Category) */
+.badge-domain {
+    color: #4b5563 !important;
+    /* Dark Gray instead of rainbow colors */
+    font-weight: 700;
+    /* Optional: Add a subtle background pill */
+    background-color: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+}
+
+/* 2. Neutralize the Instructor Avatar */
+.instructor-avatar {
+    background-color: #f3f4f6 !important;
+    /* Light Gray background */
+    color: #1f2937 !important;
+    /* Dark text for initials */
+    border: 1px solid #e5e7eb;
+    /* Subtle border for definition */
+
+    /* Ensure the text inside is centered and clean */
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Optional: Hover Effect for Avatar to make it interactive */
+.course-card-inner:hover .instructor-avatar {
+    background-color: #5b50d6 !important;
+    /* Changes to your Theme Purple on hover */
+    color: #fff !important;
+    border-color: #5b50d6;
+    transition: all 0.3s ease;
+}
+
+/* --- Course Card Top Image Styling --- */
+
+/* --- NEW PIXEL POP-OUT CARD STYLES --- */
+
+/* 1. The Card Container */
+.marquee_card {
+    width: 280px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    /* CRITICAL: visible allows the icon to pop out of the top */
+    overflow: visible;
+    position: relative;
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
+
+    /* Important: Add margin top so the pop-out icon isn't cut off by the row above */
+    margin-top: 40px;
+    margin-right: 20px;
+    /* Space between cards */
+}
+
+.marquee_card:hover {
+    transform: translateY(-5px);
+}
+
+/* 2. The Pop-out Icon */
+.card-icon-top {
+    width: 80px;
+    height: 80px;
+    background: #fff;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    /* This pulls the icon UP by half its height */
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.card-icon-top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 3. Card Content */
+.pixel-card-inner {
+    padding: 20px 24px 24px;
+    text-align: left;
+    margin-top: 35px;
+    /* Pushes text down so it doesn't hide behind the icon */
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    /* Extra bold */
+    color: #1a1a2e;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.instructor-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    /* Techy font vibe */
+}
+
+.card-divider {
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+    opacity: 1;
+}
+
+/* 4. Meta List (The icons at bottom) */
+.meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.meta-icon {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    width: 20px;
+    text-align: center;
+}
+
+/* 3. Adjust padding of the text area below */
+/* We need slightly less top padding now that there is an image above it */
+
+/* --- Stats Section Overlap Fix --- */
+
+/* Only apply overlap on Large Screens (Desktop) */
+@media (min-width: 992px) {
+
+    /* 1. Create the Overlap */
+    .stats-section .row>[class*="col-"] {
+        margin-left: -55px;
+        /* Pulls the item to the left to overlap */
+    }
+
+    /* 2. Reset the first item so it doesn't get pulled */
+    .stats-section .row>[class*="col-"]:first-child {
+        margin-left: 0;
+    }
+
+    /* 3. Stack Order (Left on top of Right) */
+    .stats-section .row>[class*="col-"]:nth-child(1) {
+        z-index: 4;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(2) {
+        z-index: 3;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(3) {
+        z-index: 2;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(4) {
+        z-index: 1;
+    }
+
+    /* Optional: Ensure the hover effect still pops up above neighbors */
+    .ot-fun-box-item:hover {
+        z-index: 10 !important;
+        /* Forces hovered item to top */
+        position: relative;
+    }
+}
+
+/* Responsive Fix for Mobile */
+@media (max-width: 991px) {
+    .about-image-wrapper {
+        margin-bottom: 40px;
+        display: block;
+        text-align: center;
+    }
+
+    .about-main-img {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .dropend:hover>.dropdown-menu {
+        position: absolute;
+        top: 0;
+        left: 100%;
+    }
+
+    .dropend .dropdown-toggle {
+        margin-left: 0.5em;
+    }
+}

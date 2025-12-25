@@ -52,6 +52,14 @@
             </ul>
         </li>
 
+         <li class="{{ setSidebar(['instructor.orders*']) }}">
+            <a href="{{ route('instructor.orders.index') }}">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title">Order History</div>
+            </a>
+        </li>
+
         <li class="{{ setSidebar(['instructor.all.review*']) }}">
             <a href="{{ route('instructor.all.review') }}">
                 <div class="parent-icon"><i class='bx bx-star'></i>

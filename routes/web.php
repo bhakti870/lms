@@ -7,7 +7,7 @@ use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\AdminCourseController;
 use App\Http\Controllers\backend\AdminInstructorController;
 use App\Http\Controllers\backend\AdminProfileController;
-use App\Http\Controllers\backend\BackendOrderController;
+use App\Http\Controllers\backend\BackendOrderController;    
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CouponController;
 use App\Http\Controllers\backend\CourseController;
@@ -35,6 +35,7 @@ use App\Http\Controllers\frontend\CourseDeliveryController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\backend\ReviewController as BackendReviewController;
 use App\Http\Controllers\frontend\ReviewController as FrontendReviewController;
+use App\Http\Controllers\backend\InstructorOrderController;
 use App\Http\Controllers\SocialController;
 
 /*
@@ -88,7 +89,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 
     /* control instructor  */
     Route::resource('instructor', AdminInstructorController::class);
-    Route::post('/update-status', [AdminInstructorInstructorController::class, 'updateStatus'])->name('instructor.status');
+    Route::post('/update-status', [AdminInstructorController::class, 'updateStatus'])->name('instructor.status');
     Route::get('/instructor-active-list', [AdminInstructorController::class, 'instructorActive'])->name('instructor.active');
     Route::get('/delete-instructor/{id}', [AdminInstructorController::class, 'delete'])->name('delete.instructor');
 
@@ -169,6 +170,10 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')
     Route::get('/mark-all-notifications-as-read', [InstructorController::class, 'markAllAsRead'])->name('mark.all.notifications.read');
 
     Route::resource('coupon', CouponController::class);
+
+    // Instructor Order History
+    Route::get('/orders', [InstructorOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/view/{id}', [InstructorOrderController::class, 'show'])->name('orders.show');
 });
 
 
@@ -189,8 +194,9 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     /* Wishlist controller */
 
     Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::get('/wishlist-data', [WishlistController::class, 'getWishlist']);
+    Route::get('/wishlist-data', [WishlistController::class, 'getWishlist'])->name('wishlist.data');
     Route::delete('/wishlist/{id}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+
 
     /* Course Delivery & Learning */
     Route::get('/course-learn/{id}', [CourseDeliveryController::class, 'learn'])->name('course.learn');

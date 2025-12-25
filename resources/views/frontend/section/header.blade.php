@@ -3,373 +3,120 @@
 $categories = getCategories();
 ?>
 
-<header class="header-menu-area bg-white">
-    <div class="header-top pr-150px pl-150px border-bottom border-bottom-gray py-1">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="header-widget">
-                        <ul class="generic-list-item d-flex flex-wrap align-items-center fs-14">
-                            <li class="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i
-                                    class="la la-phone mr-1"></i><a href="tel:00123456789"> (00) 123 456 789</a>
+<nav class="navbar navbar-expand-xl bg-white shadow-sm sticky-top py-3">
+    <div class="container-fluid px-lg-5">
+        <a class="navbar-brand fw-bold fs-3 d-flex align-items-center me-4" href="{{ route('frontend.home') }}">
+            <i class="bi bi-mortarboard-fill text-theme me-2"></i>
+            <span>skillpoint</span>
+        </a>
+
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                            class="bi bi-list-ul" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                        </svg>
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach($categories as $item)
+                        <li class="dropend">
+                            <a class="dropdown-item dropdown-toggle" href="{{ route('category.details', $item->slug) }}">
+                                {{$item->name}}
+                            </a>
+                            <ul class="dropdown-menu">
+                                @foreach ($item['subcategory'] as $data)
+                                <li><a class="dropdown-item" href="{{ route('subcategory.details', $data->slug) }}">{{$data->name}}</a></li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+                </li>
+
+                <li class="nav-item"><a class="nav-link" href="{{ route('frontend.home') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('all.courses') }}">Courses</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('all.instructors') }}">Instructors</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('cart') }}">Cart</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0 ms-auto">
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Wishlist -->
+                    <div class="position-relative" id='wishlist-menu'>
+                        <a href="{{ route('user.wishlist.index') }}" class="cart-wishlist-icon text-dark fs-4 d-inline-block">
+                            <i class="bi bi-heart"></i>
+                            <span class="badge badge-dot rounded-pill bg-theme" id="wishlist-count">
+                                @auth
+                                    {{ \App\Models\Wishlist::where('user_id', auth()->id())->count() }}
+                                @else
+                                    0
+                                @endauth
+                            </span>
+                        </a>
+                        <div id="wishlist-course">
+                             <!---ajax loaded wishlist -->
+                        </div>
+                    </div>
+
+                    <!-- Cart AJAX container -->
+                    <div id="cart" class="position-relative">
+                        <!-- AJAX loaded cart content -->
+                    </div>
+
+
+                    @guest
+                        <a href="{{ route('login') }}" class="btn btn-theme btn-theme-sm ms-2">Login/Signup &rarr;</a>
+                    @endguest
+
+
+                    @auth
+                    <div class="dropdown ms-2">
+                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                            <img src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="user" width="35" height="35" class="rounded-circle me-2 border">
+                            <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li class="p-3 border-bottom mb-2">
+                                <p class="mb-0 fw-bold">{{ auth()->user()->name }}</p>
+                                <p class="mb-0 small text-muted">{{ auth()->user()->email }}</p>
                             </li>
-                            <li class="d-flex align-items-center"><i class="la la-envelope-o mr-1"></i><a
-                                    href="mailto:contact@aduca.com"> contact@aduca.com</a></li>
+                            @if(auth()->user()->role == 'user')
+                                <li><a class="dropdown-item py-2" href="{{ route('user.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('user.profile') }}"><i class="bi bi-person me-2"></i> Profile</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('user.purchase.history') }}"><i class="bi bi-play-circle me-2"></i> My Courses</a></li>
+                            @elseif(auth()->user()->role == 'admin')
+                                <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Admin Panel</a></li>
+                            @elseif(auth()->user()->role == 'instructor')
+                                <li><a class="dropdown-item py-2" href="{{ route('instructor.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Instructor Panel</a></li>
+                            @endif
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger py-2" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                                <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
+                            </li>
                         </ul>
-                    </div><!-- end header-widget -->
-                </div><!-- end col-lg-6 -->
-                <div class="col-lg-6">
-                    <div class="header-widget d-flex flex-wrap align-items-center justify-content-end">
-                        <div class="theme-picker d-flex align-items-center">
-                            <button class="theme-picker-btn dark-mode-btn" id="dark-mode-btn" title="Dark mode">
-                                <svg id="moon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                                </svg>
-                            </button>
-                            <button class="theme-picker-btn light-mode-btn" id="light-mode-btn" title="Light mode">
-                                <svg id="sun" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="5"></circle>
-                                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const darkModeBtn = document.getElementById('dark-mode-btn');
-                                const lightModeBtn = document.getElementById('light-mode-btn');
-                                const body = document.body;
-                                const html = document.documentElement;
-
-                                function setTheme(theme) {
-                                    if (theme === 'dark') {
-                                        body.classList.add('dark-theme');
-                                        html.classList.add('dark-theme');
-                                        localStorage.setItem('theme', 'dark');
-                                        darkModeBtn.style.display = 'none';
-                                        lightModeBtn.style.display = 'block';
-                                    } else {
-                                        body.classList.remove('dark-theme');
-                                        html.classList.remove('dark-theme');
-                                        localStorage.setItem('theme', 'light');
-                                        darkModeBtn.style.display = 'block';
-                                        lightModeBtn.style.display = 'none';
-                                    }
-                                }
-
-                                // Initial Setup
-                                const currentTheme = localStorage.getItem('theme') || 'light';
-                                setTheme(currentTheme);
-
-                                darkModeBtn.addEventListener('click', () => setTheme('dark'));
-                                lightModeBtn.addEventListener('click', () => setTheme('light'));
-                            });
-                        </script>
-
-                        @if (!auth()->user())
-                            <ul
-                                class="generic-list-item d-flex flex-wrap align-items-center fs-14 border-left border-left-gray pl-3 ml-3">
-                                <li class="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i
-                                        class="la la-sign-in mr-1"></i><a href="{{ route('login') }}"> Login</a></li>
-                                <li class="d-flex align-items-center"><i class="la la-user mr-1"></i><a
-                                        href="{{ route('register') }}"> Register</a></li>
-                            </ul>
-                        @else
-                            <ul
-                                class="generic-list-item d-flex flex-wrap align-items-center fs-14 border-left border-left-gray pl-3 ml-3">
-                                <li class="d-flex align-items-center pr-3 mr-3 border-right border-right-gray"><i
-                                        class="la la-sign-in mr-1"></i>
-
-                                    @if (auth()->user()->role == 'admin')
-                                        <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                                    @elseif (auth()->user()->role == 'instructor')
-                                        <a href="{{ route('instructor.dashboard') }}">Dashboard</a>
-                                    @else
-                                        <a href="{{ route('user.dashboard') }}">My Learning</a>
-                                    @endif
-                                </li>
-
-                            </ul>
-                        @endif
-
-
-
-
-
-                    </div><!-- end header-widget -->
-                </div><!-- end col-lg-6 -->
-            </div><!-- end row -->
-        </div><!-- end container-fluid -->
-    </div><!-- end header-top -->
-    <div class="header-menu-content pr-150px pl-150px bg-white">
-        <div class="container-fluid">
-            <div class="main-menu-content">
-                <a href="#" class="down-button"><i class="la la-angle-down"></i></a>
-                <div class="row align-items-center">
-                    <div class="col-lg-2">
-                        <div class="logo-box">
-                            <a href="{{ route('frontend.home') }}" class="logo"><img src="{{asset('frontend/images/logo.png')}}" alt="logo"></a>
-                            <div class="user-btn-action">
-                                <div class="search-menu-toggle icon-element icon-element-sm shadow-sm mr-2"
-                                    data-toggle="tooltip" data-placement="top" title="Search">
-                                    <i class="la la-search"></i>
-                                </div>
-                                <div class="off-canvas-menu-toggle cat-menu-toggle icon-element icon-element-sm shadow-sm mr-2"
-                                    data-toggle="tooltip" data-placement="top" title="Category menu">
-                                    <i class="la la-th-large"></i>
-                                </div>
-                                <div class="off-canvas-menu-toggle main-menu-toggle icon-element icon-element-sm shadow-sm"
-                                    data-toggle="tooltip" data-placement="top" title="Main menu">
-                                    <i class="la la-bars"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- end col-lg-2 -->
-                    <div class="col-lg-10">
-                        <div class="menu-wrapper d-flex align-items-center justify-content-between">
-                            <div class="menu-category">
-                                <ul>
-                                    <li>
-                                        <a href="#">Categories <i class="la la-angle-down fs-12"></i></a>
-                                        <ul class="cat-dropdown-menu">
-
-                                            @foreach($categories as $item)
-                                            <li>
-                                                <a href="{{ route('category.details', $item->slug) }}">{{$item->name}} <i
-                                                        class="la la-angle-right"></i></a>
-                                                <ul class="sub-menu">
-                                                    @foreach ($item['subcategory'] as $data)
-                                                    <li><a href="{{ route('subcategory.details', $data->slug) }}">{{$data->name}}</a></li>
-                                                    @endforeach
-
-                                                </ul>
-                                            </li>
-                                            @endforeach
-
-
-
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div><!-- end menu-category -->
-                            <!-- <form method="post">
-                                <div class="form-group mb-0">
-                                    <input class="form-control form--control pl-3" type="text" name="search"
-                                        placeholder="Search for anything">
-                                    <span class="la la-search search-icon"></span>
-                                </div>
-                            </form> -->
-                            <nav class="main-menu" mx-auto>
-                                <ul>
-                                    <li>
-                                        <a href="/">Home </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('all.courses') }}">All Courses</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('all.instructors') }}">All Instructors</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('cart') }}">Cart</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Blog </a>
-                                    </li>
-                                </ul><!-- end ul -->
-                            </nav><!-- end main-menu -->
-
-
-
-                             <!-----wishlist start--->
-
-                             <div class="shop-cart mr-4">
-                                <ul>
-                                    <li>
-                                        <p class="shop-cart-btn d-flex align-items-center">
-
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                <path
-                                                    d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
-                                            </svg>
-
-                                            <?php
-                                            if (auth()->check()) {
-                                                $user_id = auth()->user()->id; // Get the authenticated user's ID
-                                                $wishlist = getWishlist(); // Get wishlist data
-                                                $wishlist_count = \App\Models\Wishlist::where('user_id', $user_id)->count(); // Count wishlist items
-                                            } else {
-                                                // Handle the case when the user is not logged in
-                                                $wishlist = collect(); // Empty collection if not logged in
-                                                $wishlist_count = 0; // No wishlist count if not logged in
-                                            }
-                                            ?>
-
-
-                                            <span class="product-count" id="wishlist-count"
-                                                style="margin-left: 5px">{{ $wishlist_count }}</span>
-
-                                        </p>
-
-                                        <div id="wishlist-course">
-
-                                            <!---ajax loaded wishlist  frontend.pages.home.partial.wishlist  -->
-
-
-
-                                        </div>
-
-
-                                    </li>
-                                </ul>
-                            </div><!-- end wishlist -->
-
-
-                            <div class="shop-cart mr-4" id='cart'>
-                                <!--ajax loaded for cart -->
-                            </div><!-- end shop-cart -->
-
-
-                             @if(auth()->check())
-                             <div class="shop-cart user-profile-cart">
-                                 <ul>
-                                     <li>
-                                         <div class="shop-cart-btn">
-                                             <div class="avatar-xs">
-                                                 <img class="rounded-full img-fluid"
-                                                     src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="Avatar image">
-                                             </div>
-                                             <span class="pl-2 pr-2 fs-15 text-black">{{ auth()->user()->name }}</span>
-                                             <span class="la la-angle-down text-black"></span>
-                                         </div>
-                                         <ul class="cart-dropdown-menu after-none p-0 notification-dropdown-menu">
-                                             <li class="menu-heading-block d-flex align-items-center">
-                                                 <a href="{{ route('user.profile') }}" class="avatar-sm flex-shrink-0 d-block">
-                                                     <img class="rounded-full img-fluid"
-                                                         src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}"
-                                                         alt="Avatar image">
-                                                 </a>
-                                                 <div class="ml-2">
-                                                     <h4><a href="{{ route('user.profile') }}" class="text-black">{{ auth()->user()->name }}</a></h4>
-                                                     <span class="d-block fs-14 lh-20">{{ auth()->user()->email }}</span>
-                                                 </div>
-                                             </li>
-                                             <li>
-                                                 <ul class="generic-list-item">
-                                                     @if(auth()->user()->role == 'user')
-                                                     <li>
-                                                         <a href="{{ route('user.dashboard') }}">
-                                                             <i class="la la-user mr-2"></i> My Dashboard
-                                                         </a>
-                                                     </li>
-                                                     <li>
-                                                         <a href="{{ route('user.profile') }}">
-                                                             <i class="la la-gear mr-2"></i> Account Settings
-                                                         </a>
-                                                     </li>
-                                                     <li>
-                                                         <a href="{{ route('user.purchase.history') }}">
-                                                             <i class="la la-file-video-o mr-2"></i> My Courses
-                                                         </a>
-                                                     </li>
-                                                     <li>
-                                                         <a href="{{ route('user.wishlist.index') }}">
-                                                             <i class="la la-heart-o mr-2"></i> My Wishlist
-                                                         </a>
-                                                     </li>
-                                                     @elseif(auth()->user()->role == 'admin')
-                                                     <li>
-                                                         <a href="{{ route('admin.dashboard') }}">
-                                                             <i class="la la-dashboard mr-2"></i> Admin Panel
-                                                         </a>
-                                                     </li>
-                                                     @elseif(auth()->user()->role == 'instructor')
-                                                     <li>
-                                                         <a href="{{ route('instructor.dashboard') }}">
-                                                             <i class="la la-dashboard mr-2"></i> Instructor Panel
-                                                         </a>
-                                                     </li>
-                                                     @endif
-                                                     <li>
-                                                         <div class="section-block"></div>
-                                                     </li>
-                                                     <li>
-                                                         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
-                                                             <i class="la la-power-off mr-2"></i> Logout
-                                                         </a>
-                                                         <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                             @csrf
-                                                         </form>
-                                                     </li>
-                                                 </ul>
-                                             </li>
-                                         </ul>
-                                     </li>
-                                 </ul>
-                             </div><!-- end shop-cart -->
-                             @endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        </div><!-- end menu-wrapper -->
-                    </div><!-- end col-lg-10 -->
-                </div><!-- end row -->
+                    </div>
+                    @endauth
+                </div>
             </div>
-        </div><!-- end container-fluid -->
-    </div><!-- end header-menu-content -->
 
+        </div>
+    </div>
+</nav>
 
-    <div class="off-canvas-menu custom-scrollbar-styled main-off-canvas-menu">
-        <div class="off-canvas-menu-close main-menu-close icon-element icon-element-sm shadow-sm"
-            data-toggle="tooltip" data-placement="left" title="Close menu">
-            <i class="la la-times"></i>
-        </div><!-- end off-canvas-menu-close -->
-        <ul class="generic-list-item off-canvas-menu-list pt-90px">
-            <li><a href="/">Home</a></li>
-            <li><a href="{{ route('cart') }}">Cart</a></li>
-            @auth
-                <li><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
-                <li><a href="{{ route('user.profile') }}">Account Settings</a></li>
-                <li><a href="{{ route('user.wishlist.index') }}">Wishlist</a></li>
-                <li><a href="{{ route('user.purchase.history') }}">My Courses</a></li>
-                <li><a href="#" onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit(); text-danger">Logout</a></li>
-                <form id="logout-form-mobile" action="{{ route('user.logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-            @else
-                <li><a href="{{ route('login') }}">Login</a></li>
-                <li><a href="{{ route('register') }}">Register</a></li>
-            @endauth
-            <li><a href="{{ route('all.courses') }}">All Courses</a></li>
-            <li><a href="{{ route('all.instructors') }}">All Instructors</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact Us</a></li>
-        </ul>
-    </div><!-- end off-canvas-menu -->
-
-
-
-
-</header><!-- end header-menu-area -->

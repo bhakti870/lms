@@ -4,7 +4,9 @@
 
 @include('frontend.section.hero')
 
-@include('frontend.section.feature')
+@include('frontend.section.about')
+
+@include('frontend.section.stats')
 
 @include('frontend.section.category')
 
@@ -12,3 +14,4 @@
 
 
 @endsection
+

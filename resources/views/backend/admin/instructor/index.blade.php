@@ -14,7 +14,7 @@
 @section('content')
     <div class="page-content">
         <!--breadcrumb-->
-        @include('backend.section.breadcrumb', ['title'=> 'Instructor', 'sub_title'=> 'Managed Instructor']);
+        @include('backend.section.breadcrumb', ['title'=> 'Instructor', 'sub_title'=> 'Managed Instructor'])
         <!--end breadcrumb-->
         <div style="display: flex; align-items:center; justify-content:space-between">
             <h6 class="mb-0 text-uppercase">All Instructor</h6>

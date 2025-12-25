@@ -1,49 +1,72 @@
-<section class="category-area pb-90px">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-9">
-                <div class="category-content-wrap">
-                    <div class="section-heading">
-                        <h5 class="ribbon ribbon-lg mb-2">Categories</h5>
-                        <h2 class="section__title">Popular Categories</h2>
-                        <span class="section-divider"></span>
-                    </div><!-- end section-heading -->
-                </div>
-            </div><!-- end col-lg-9 -->
-            <div class="col-lg-3">
-                <div class="category-btn-box text-right">
-                    <a href="categories.html" class="btn theme-btn">All Categories <i
-                            class="la la-arrow-right icon ml-1"></i></a>
-                </div><!-- end category-btn-box-->
-            </div><!-- end col-lg-3 -->
-        </div><!-- end row -->
-        <div class="category-wrapper mt-30px">
-            <div class="row">
+<section class="py-5 bg-light">
+    <div class="container mb-4">
+        <h3 class="text-center fw-bold">Our Course Categories</h3>
+        <p class="text-center text-muted">Explore our latest series and collections</p>
+    </div>
 
-                @foreach($all_categories as $item)
+    <div class="marquee__track">
+        <div class="marquee__grid">
+            @foreach($all_categories as $item)
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">{{ $item->name }}</h4>
+                        <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 
-                <div class="col-lg-4 responsive-column-half">
-                    <div class="category-item">
-                        <img class="cat__img lazy" src="{{asset($item->image)}}" data-src="{{ asset($item->image ?? 'frontend/images/img2.jpg') }}"
-                            alt="Category image" width="370" height="246">
-                        <div class="category-content">
-                            <div class="category-inner">
-                                <h3 class="cat__title">
-                                    <a href="#">{{ $item->name }}</a>
-                                </h3>
-                                <p class="cat__meta">0 courses</p>
-                                <a href="#" class="btn theme-btn theme-btn-sm theme-btn-white">Explore<i
-                                        class="la la-arrow-right icon ml-1"></i></a>
+                        <hr class="card-divider">
+
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>
+                                    <?php
+                                        echo \App\Models\Course::where('category_id', $item->id)->count();
+                                    ?>
+                                Courses</span>
                             </div>
-                        </div><!-- end category-content -->
-                    </div><!-- end category-item -->
-                </div><!-- end col-lg-4 -->
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>All Levels</span>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ route('category.details', $item->slug) }}" class="btn btn-sm btn-theme text-white">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
 
-                @endforeach
+            {{-- Duplicate for smooth marquee if needed, but the CSS usually handles it --}}
+            @foreach($all_categories as $item)
+                <div class="marquee_card">
+                    <div class="card-icon-top">
+                        <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                    </div>
+                    <div class="pixel-card-inner">
+                        <h4 class="course-title">{{ $item->name }}</h4>
+                        <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 
+                        <hr class="card-divider">
 
+                        <div class="meta-list">
+                            <div class="meta-item">
+                                <i class="bi bi-collection-play meta-icon"></i> <span>
+                                    <?php
+                                        echo \App\Models\Course::where('category_id', $item->id)->count();
+                                    ?>
+                                Courses</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>All Levels</span>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ route('category.details', $item->slug) }}" class="btn btn-sm btn-theme text-white">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-            </div><!-- end row -->
-        </div><!-- end category-wrapper -->
-    </div><!-- end container -->
-</section><!-- end category-area -->

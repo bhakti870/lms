@@ -1,0 +1,70 @@
+1. Admin Panel (Backend)
+
+
+Multi-Role Authentication: Secure login/logout system with role-based access control (RBAC).
+Role & Permission Management:
+Create, edit, and delete user roles.
+Manage specific permissions and assign them to roles.
+Instructor Management:
+Approve or reject instructor registrations.
+Toggle instructor status (Active/Inactive).
+User Management: View all registered students/users and manage their accounting status.
+Category & Subcategory Management: Tree-structured management for organizing courses.
+Course Administration:
+Review and approve courses submitted by instructors.
+Global visibility control for all available courses.
+Order & Sales Tracking: View and manage all student purchases and transaction details.
+Site Settings:
+General settings (Logo, Title, Contact Info).
+<!-- Application settings (Mail configuration, API keys). -->
+Slider and Partner logo management for the homepage.
+
+2) Instructor Panel
+
+Designed for educators to manage their content and students.
+
+Course Management (Complete CRUD):
+Add new courses with detailed info (Title, Price, Goals, Prerequisites).
+Course Builder: Organize courses into Sections and Lectures.
+Material Upload: Attach downloadable PDF or ZIP resources to lectures.
+Quiz System: Create and manage quizzes within course sections.
+Coupon System:
+Create unique coupon codes for specific courses.
+Set validity periods and discount amounts.
+Logic: Prevents coupon application if the discount price exceeds the course price.
+Review Management:
+View and respond to student reviews on their courses.
+Dashboard analytics for total reviews and ratings.
+Order History: Track earnings and see which students have enrolled in their courses.
+Profile Management: Update instructor bio, photos, and professional details.
+
+
+3. Frontend (Student/User Panel)
+The interface for the end-users to browse and learn.
+
+Course Browsing:
+Dynamic category and subcategory filtering.
+<!-- Smart search functionality for courses. -->
+Shopping Cart & Wishlist:
+AJAX-based "Add to Cart" and "Add to Wishlist".
+Real-time header updates for cart count.
+Advanced Checkout Flow:
+Razorpay Integration: Supports Cards, NetBanking, and UPI payments.
+Coupon Integration: Dynamic AJAX coupon application with instant price updates and error handling.
+Student Learning Dashboard:
+LeaderBoard and Rankig Students
+Course Player: Structured sidebar for navigating through sections and lectures.
+Progress Tracking: Mark lectures as completed to track learning progress.
+Quizzes: Take quizzes attached to courses.
+Notes: Save personal notes specifically for each lecture.
+Purchase History:
+View all enrolled courses.
+PDF Invoices: Download official invoices for every purchase.
+Theme Customization: Dual-theme support (Dark Mode and Light Mode) with persistence via LocalStorage.
+Responsive UI: Modern, premium design fully optimized for mobile and desktop screens.
+
+Key Technical Features
+AJAX Driven Actions: Cart management and coupon applications happen without page refreshes.
+Security: Global CSRF token management for all AJAX requests.
+Social Login: Support for Google Authentication.
+Notifications: Real-time notifications for instructors when a student purchases a course.
