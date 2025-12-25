@@ -21,6 +21,12 @@
 <script src="{{ asset('frontend/js/main.js') }}"></script>
 
 <script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     var player = new Plyr('#player');
 </script>
 

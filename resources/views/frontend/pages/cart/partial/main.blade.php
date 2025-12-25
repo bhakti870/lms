@@ -33,8 +33,12 @@
                                 </td>
                                 <td>
                                     <ul class="generic-list-item font-weight-semi-bold">
-                                        <li class="text-black lh-18">₹{{ $item->course->discount_price }}</li>
-                                        <li class="before-price lh-18">₹{{ $item->course->selling_price }}</li>
+                                        @if($item->course->discount_price > 0)
+                                            <li class="text-black lh-18">₹{{ $item->course->discount_price }}</li>
+                                            <li class="before-price lh-18">₹{{ $item->course->selling_price }}</li>
+                                        @else
+                                            <li class="text-black lh-18">₹{{ $item->course->selling_price }}</li>
+                                        @endif
                                     </ul>
                                 </td>
 
@@ -111,36 +115,21 @@
 
 
                         <li id="totalDiscountItem"
-                        class="d-flex align-items-center justify-content-between font-weight-semi-bold" style="display: none !important">
-                        <span class="text-black">Total Discount:</span>
-                        <span id="totalDiscount">
-                            ₹0.00
-                        </span>
-                    </li>
-
-                    @if (session()->get('coupon'))
-                        <li
-                            class="d-flex align-items-center justify-content-between font-weight-semi-bold">
-                            <span class="text-black">Total Discount:</span>
+                            class="d-flex align-items-center justify-content-between font-weight-semi-bold" 
+                            style="{{ session()->has('coupon') ? '' : 'display: none !important' }}">
+                            <span class="text-black">Total Discount: 
+                                <a href="javascript:void(0)" id="removeCoupon" class="text-danger ml-1" title="Remove Coupon"><i class="la la-times-circle"></i></a>
+                            </span>
                             <span id="totalDiscount">
-                                ₹{{ session()->get('coupon') ?? '0.00' }}
+                                -₹{{ session()->get('coupon') ?? '0.00' }}
                             </span>
                         </li>
-                    @endif
-
 
                         <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Total:</span>
-
-
                             <span id="totalAmount">
-                                @if (session()->get('coupon'))
-                                    ₹{{ $subTotal - session()->get('coupon') }}
-                                @else
-                                    ₹{{ $subTotal }}
-                                @endif
+                                ₹{{ $subTotal - (session()->get('coupon') ?? 0) }}
                             </span>
-                            <!-- Total amount is also updated with new id -->
                         </li>
                     </ul>
 
@@ -171,28 +160,19 @@
                 type: "POST",
                 data: formData,
                 success: function(response) {
-                    // Calculate total discount
                     let totalDiscount = response.discounts.reduce((sum, item) => {
-                        return sum + parseFloat(item
-                            .discount); // Summing up discounts
+                        return sum + parseFloat(item.discount); 
                     }, 0);
 
-                    // Update the Discount Amount
-                    $('#totalDiscount').text(
-                        `₹${totalDiscount.toFixed(2)}`); // Show the total discount amount
-                    $('#totalDiscountItem').show(); // Show the discount item
+                    $('#totalDiscount').text(`-₹${totalDiscount.toFixed(2)}`);
+                    $('#totalDiscountItem').show(); 
 
-                    // Update the Total Price after applying the discount
                     let subTotal = parseFloat("{{ $subTotal }}");
                     let totalAmount = subTotal - totalDiscount;
-                    $('#totalAmount').text(
-                        `₹${totalAmount.toFixed(2)}`); // Show the updated total
+                    $('#totalAmount').text(`₹${totalAmount.toFixed(2)}`);
 
-                    // Hide the Coupon Form
-                    $('#couponForm')
-                        .hide(); // Hide the coupon area after successful application
+                    $('#couponForm').hide(); 
 
-                    // Success Toast Notification
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
@@ -205,41 +185,64 @@
                     });
                 },
                 error: function(xhr) {
+                    let errorMessage = 'Coupon not applied successfully!';
+                    
                     if (xhr.status === 422) {
-                        // Parse validation errors
                         let errors = xhr.responseJSON.errors;
-                        let errorMessage = '';
-
-                        // Construct the error message
+                        errorMessage = '';
                         for (let field in errors) {
                             errorMessage += errors[field].join('<br>') + '<br>';
                         }
-
-                        // Display the error messages in a Swal alert
-                        Swal.fire({
-                            position: 'top-end',
-                            title: 'Validation Errors',
-                            html: errorMessage,
-                            icon: 'error',
-                            toast: true, // Disable toast for detailed errors
-                            timer: 3000,
-                            showConfirmButton: false,
-                            background: '#dc3545',
-                            color: '#fff'
-                        });
-                    } else {
-                        // Generic error message for other errors
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Coupon not applied successfully!',
-                            showConfirmButton: false,
-                            toast: true,
-                            timer: 3000,
-                            background: '#dc3545',
-                            color: '#fff'
-                        });
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
                     }
+
+                    // On error, we should make sure the discount is not displayed if it's invalid
+                    // However, if there was a previous valid coupon, we might want to keep it.
+                    // But usually, an invalid attempt shouldn't destroy the current one unless specified.
+                    // "destroy the discount price not dispaly yet" -> maybe hide it on error?
+                    // $('#totalDiscountItem').hide(); // Uncomment if requirement is strictly hide on error
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Oops...',
+                        html: errorMessage,
+                        showConfirmButton: false,
+                        toast: true,
+                        timer: 3000,
+                        background: '#dc3545',
+                        color: '#fff'
+                    });
+                }
+            });
+        });
+
+        // Coupon Remove
+        $(document).on('click', '#removeCoupon', function() {
+            $.ajax({
+                url: "/coupon-remove",
+                type: "GET",
+                success: function(response) {
+                    $('#totalDiscountItem').hide();
+                    $('#totalDiscount').text('₹0.00');
+                    
+                    let subTotal = parseFloat("{{ $subTotal }}");
+                    $('#totalAmount').text(`₹${subTotal.toFixed(2)}`);
+                    
+                    $('#couponForm').show();
+                    $('#couponInput').val('');
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.success,
+                        showConfirmButton: false,
+                        toast: true,
+                        timer: 3000,
+                        background: '#28a745',
+                        color: '#fff'
+                    });
                 }
             });
         });

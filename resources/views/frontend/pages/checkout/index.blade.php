@@ -175,13 +175,11 @@
                                         <input type="hidden" name="original_price" value="{{ $total }}" />
                                     </li>
 
-                                    @if (!session()->get('coupon'))
                                     <li class="mt-3">
-                                        <form id="couponFormCheckout">
-                                            @csrf
+                                        <div id="couponAreaCheckout">
                                             @foreach ($cart as $item)
-                                                <input type="hidden" name="course_id[]" value="{{ $item->course->id }}">
-                                                <input type="hidden" name="instructor_id[]" value="{{ $item->course->user->id }}">
+                                                <input type="hidden" class="coupon-course-id" name="course_id[]" value="{{ $item->course->id }}">
+                                                <input type="hidden" class="coupon-instructor-id" name="instructor_id[]" value="{{ $item->course->user->id }}">
                                             @endforeach
                                             <div class="input-group">
                                                 <input class="form-control form--control pl-3" type="text" name="coupon" id="couponInput" placeholder="Coupon Code">
@@ -189,20 +187,21 @@
                                                     <button type="button" id="applyCouponBtnCheckout" class="btn theme-btn">Apply</button>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </li>
-                                    @endif
 
                                     <li id="couponDiscountItem" class="d-flex align-items-center justify-content-between font-weight-semi-bold" style="{{ session()->get('coupon') ? '' : 'display: none !important' }}">
-                                        <span class="text-black">Coupon discounts:</span>
-                                        <span id="couponDiscountAmount">
-                                            @if (session()->get('coupon'))
-                                                -₹{{ session()->get('coupon') }}
-                                            @else
-                                                -₹0
-                                            @endif
-                                        </span>
-                                    </li>
+                                         <span class="text-black">Coupon discounts: 
+                                             <a href="javascript:void(0)" id="removeCouponCheckout" class="text-danger ml-1" title="Remove Coupon"><i class="la la-times-circle"></i></a>
+                                         </span>
+                                         <span id="couponDiscountAmount">
+                                             @if (session()->get('coupon'))
+                                                 -₹{{ session()->get('coupon') }}
+                                             @else
+                                                 -₹0
+                                             @endif
+                                         </span>
+                                     </li>
                                     <li class="d-flex align-items-center justify-content-between font-weight-bold">
                                         <span class="text-black">Total:</span>
                                         <span id="checkoutTotalAmount">₹{{ $total - session()->get('coupon') }}</span>
@@ -235,12 +234,18 @@
 <script>
     $(document).ready(function() {
         $('#applyCouponBtnCheckout').click(function() {
-            let formData = $('#couponFormCheckout').serialize();
+            let coupon = $('#couponInput').val();
+            let courseIds = $('.coupon-course-id').map(function(){return $(this).val();}).get();
+            let instructorIds = $('.coupon-instructor-id').map(function(){return $(this).val();}).get();
 
             $.ajax({
                 url: "/apply-coupon",
                 type: "POST",
-                data: formData,
+                data: {
+                    coupon: coupon,
+                    course_id: courseIds,
+                    instructor_id: instructorIds
+                },
                 success: function(response) {
                     let totalDiscount = response.discounts.reduce((sum, item) => {
                         return sum + parseFloat(item.discount);
@@ -256,7 +261,7 @@
                     $('#checkoutTotalAmount').text(`₹${finalAmount.toFixed(2)}`);
                     $('#totalPriceInput').val(finalAmount.toFixed(2));
 
-                    $('#couponFormCheckout').fadeOut();
+                    $('#couponAreaCheckout').fadeOut();
 
                     Swal.fire({
                         position: 'top-end',
@@ -278,6 +283,12 @@
                         message = xhr.responseJSON.message;
                     }
 
+                    // Hide discount on error as requested ("destroy the discount price")
+                    $('#couponDiscountItem').hide();
+                    let originalPrice = parseFloat("{{ $total }}");
+                    $('#checkoutTotalAmount').text(`₹${originalPrice.toFixed(2)}`);
+                    $('#totalPriceInput').val(originalPrice.toFixed(2));
+
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
@@ -287,6 +298,36 @@
                         timer: 3000,
                         showConfirmButton: false,
                         background: '#f27474',
+                        color: '#fff'
+                    });
+                }
+            });
+        });
+
+        // Coupon Remove
+        $(document).on('click', '#removeCouponCheckout', function() {
+            $.ajax({
+                url: "/coupon-remove",
+                type: "GET",
+                success: function(response) {
+                    $('#couponDiscountItem').hide();
+                    $('#couponDiscountAmount').text('-₹0');
+                    
+                    let originalPrice = parseFloat("{{ $total }}");
+                    $('#checkoutTotalAmount').text(`₹${originalPrice.toFixed(2)}`);
+                    $('#totalPriceInput').val(originalPrice.toFixed(2));
+                    
+                    $('#couponAreaCheckout').fadeIn();
+                    $('#couponInput').val('');
+
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: response.success,
+                        showConfirmButton: false,
+                        toast: true,
+                        timer: 3000,
+                        background: '#7079e7',
                         color: '#fff'
                     });
                 }

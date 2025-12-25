@@ -108,6 +108,17 @@ class CouponController extends Controller
             ], 400);
         }
 
+
+        // Validate if coupon discount is greater than course price
+        foreach ($discounts as $item) {
+            if ($item['course_price'] < $item['discount']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The coupon discount (₹' . $item['discount'] . ') is greater than the course price (₹' . $item['course_price'] . '). It cannot be applied.',
+                ], 400);
+            }
+        }
+
         // Calculate total discount
         $totalDiscount = collect($discounts)->sum('discount');
 
@@ -121,5 +132,11 @@ class CouponController extends Controller
             'message' => 'Coupon applied successfully!',
             'discounts' => $discounts,
         ]);
+    }
+
+    public function couponRemove()
+    {
+        session()->forget('coupon');
+        return response()->json(['success' => 'Coupon Removed Successfully']);
     }
 }

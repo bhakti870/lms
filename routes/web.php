@@ -237,6 +237,7 @@ Route::post('/remove/cart', [CartController::class, 'removeCart']);
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 /* Coupon Apply    */
 Route::post('/apply-coupon', [CouponController::class, 'applyCoupon']);
+Route::get('/coupon-remove', [CouponController::class, 'couponRemove']);
 
 
 /* Auth Protected Route */

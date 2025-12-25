@@ -26,10 +26,14 @@ class ApplyCouponRepository
                 ->first();
 
             if ($coupon) {
+                $course = \App\Models\Course::find($courseId);
+                $coursePrice = $course->discount_price > 0 ? $course->discount_price : $course->selling_price;
+                
                 $discounts[] = [
                     'course_id' => $courseId,
                     'instructor_id' => $instructorId,
                     'discount' => $coupon->coupon_discount,
+                    'course_price' => $coursePrice,
                     'validity' => $coupon->coupon_validity,
                 ];
             }
