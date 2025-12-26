@@ -138,17 +138,18 @@
 
 @if ($errors->any())
     <script>
+        var errorMessages = '';
         @foreach ($errors->all() as $error)
-
-
-
-            Swal.fire({
-                icon: 'warning',
-                title: '{{ $error }}',
-                showConfirmButton: true,
-
-            });
+            errorMessages += '<li class="text-start">{{ $error }}</li>';
         @endforeach
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Please fix the following errors:',
+            html: '<ul class="mt-2 list-unstyled">' + errorMessages + '</ul>',
+            showConfirmButton: true,
+            confirmButtonColor: '#5b50d6',
+        });
     </script>
 @endif
 

@@ -606,8 +606,7 @@ h6 {
 
 .marquee__grid {
     display: flex;
-    gap: 24px;
-    /* Space between cards */
+    /* gap: 24px; Removed to fix loop jerkiness, relying on margin-right */
     width: max-content;
     /* Important: Ensures row doesn't wrap */
     animation: marquee 40s linear infinite;

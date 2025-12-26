@@ -12,56 +12,62 @@
                         <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
                     </div>
                     <div class="pixel-card-inner">
-                        <h4 class="course-title">{{ $item->name }}</h4>
+                        <h4 class="course-title">
+                            <a href="{{ route('category.details', $item->slug) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
+                        </h4>
                         <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 
                         <hr class="card-divider">
 
                         <div class="meta-list">
                             <div class="meta-item">
-                                <i class="bi bi-collection-play meta-icon"></i> <span>
-                                    <?php
-                                        echo \App\Models\Course::where('category_id', $item->id)->count();
-                                    ?>
-                                Courses</span>
+                                <i class="bi bi-collection-play meta-icon"></i> 
+                                <span>
+                                    {{ \App\Models\Course::where('category_id', $item->id)->count() }} Episodes
+                                </span>
                             </div>
                             <div class="meta-item">
-                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>All Levels</span>
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> 
+                                <span>All Levels</span>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <a href="{{ route('category.details', $item->slug) }}" class="btn btn-sm btn-theme text-white">View Details</a>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> 
+                                <span>{{ $item->name }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             @endforeach
 
-            {{-- Duplicate for smooth marquee if needed, but the CSS usually handles it --}}
+            {{-- Duplicate for smooth marquee --}}
             @foreach($all_categories as $item)
                 <div class="marquee_card">
                     <div class="card-icon-top">
                         <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
                     </div>
                     <div class="pixel-card-inner">
-                        <h4 class="course-title">{{ $item->name }}</h4>
+                        <h4 class="course-title">
+                            <a href="{{ route('category.details', $item->slug) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
+                        </h4>
                         <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 
                         <hr class="card-divider">
 
                         <div class="meta-list">
                             <div class="meta-item">
-                                <i class="bi bi-collection-play meta-icon"></i> <span>
-                                    <?php
-                                        echo \App\Models\Course::where('category_id', $item->id)->count();
-                                    ?>
-                                Courses</span>
+                                <i class="bi bi-collection-play meta-icon"></i> 
+                                <span>
+                                    {{ \App\Models\Course::where('category_id', $item->id)->count() }} Episodes
+                                </span>
                             </div>
                             <div class="meta-item">
-                                <i class="bi bi-bar-chart-fill meta-icon"></i> <span>All Levels</span>
+                                <i class="bi bi-bar-chart-fill meta-icon"></i> 
+                                <span>All Levels</span>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <a href="{{ route('category.details', $item->slug) }}" class="btn btn-sm btn-theme text-white">View Details</a>
+                            <div class="meta-item">
+                                <i class="bi bi-folder meta-icon"></i> 
+                                <span>{{ $item->name }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
