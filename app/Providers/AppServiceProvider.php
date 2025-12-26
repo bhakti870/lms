@@ -3,67 +3,70 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Pagination\Paginator;
+use App\Models\Smtp;
+use Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Dynamic SMTP Settings from Database
-        if (\Illuminate\Support\Facades\Schema::hasTable('smtps')) {
-            $smtps = \App\Models\Smtp::first();
-            if ($smtps) {
-                $config = [
-                    'driver'     => $smtps->mailer,
-                    'host'       => $smtps->host,
-                    'port'       => $smtps->port,
-                    'username'   => $smtps->username,
-                    'password'   => $smtps->password,
-                    'encryption' => $smtps->encryption,
-                    'from'       => [
-                        'address' => $smtps->from_address,
-                        'name'    => 'SkillPoint LMS',
-                    ],
-                ];
-                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp', array_merge(\Illuminate\Support\Facades\Config::get('mail.mailers.smtp', []), $config));
-                \Illuminate\Support\Facades\Config::set('mail.from', $config['from']);
-                \Illuminate\Support\Facades\Config::set('mail.default', $smtps->mailer ?? 'smtp');
+        Paginator::useBootstrapFive();
+
+        /**
+         * ✅ Dynamic SMTP Settings (SAFE)
+         * - Will NOT run during migration
+         * - Will NOT crash if table missing
+         */
+        try {
+            if (Schema::hasTable('smtps')) {
+                $smtps = Smtp::query()->first();
+
+                if ($smtps) {
+                    Config::set('mail.mailers.smtp.host', $smtps->host);
+                    Config::set('mail.mailers.smtp.port', $smtps->port);
+                    Config::set('mail.mailers.smtp.username', $smtps->username);
+                    Config::set('mail.mailers.smtp.password', $smtps->password);
+                    Config::set('mail.mailers.smtp.encryption', $smtps->encryption);
+
+                    Config::set('mail.from.address', $smtps->from_address);
+                    Config::set('mail.from.name', 'SkillPoint LMS');
+
+                    Config::set('mail.default', 'smtp');
+                }
             }
+        } catch (\Exception $e) {
+            // Silently fail if table is missing or corrupted
         }
 
-        // Blade directive for checking if user has a permission
-        \Blade::if('hasPermission', function ($permission) {
-            return auth()->check() && auth()->user()->hasPermission($permission);
-        });
+        /**
+         * Blade Permission Directives
+         */
+        Blade::if('hasPermission', fn ($permission) =>
+            auth()->check() && auth()->user()->hasPermission($permission)
+        );
 
-        // Blade directive for checking if user has any of the given permissions
-        \Blade::if('hasAnyPermission', function ($permissions) {
-            return auth()->check() && auth()->user()->hasAnyPermission($permissions);
-        });
+        Blade::if('hasAnyPermission', fn ($permissions) =>
+            auth()->check() && auth()->user()->hasAnyPermission($permissions)
+        );
 
-        // Blade directive for checking if user has all of the given permissions
-        \Blade::if('hasAllPermissions', function ($permissions) {
-            return auth()->check() && auth()->user()->hasAllPermissions($permissions);
-        });
+        Blade::if('hasAllPermissions', fn ($permissions) =>
+            auth()->check() && auth()->user()->hasAllPermissions($permissions)
+        );
 
-        // Blade directive for checking if user has a role
-        \Blade::if('hasRole', function ($role) {
-            return auth()->check() && auth()->user()->hasRole($role);
-        });
+        Blade::if('hasRole', fn ($role) =>
+            auth()->check() && auth()->user()->hasRole($role)
+        );
 
-        // Blade directive for checking if user has any of the given roles
-        \Blade::if('hasAnyRole', function ($roles) {
-            return auth()->check() && auth()->user()->hasAnyRole($roles);
-        });
+        Blade::if('hasAnyRole', fn ($roles) =>
+            auth()->check() && auth()->user()->hasAnyRole($roles)
+        );
     }
 }

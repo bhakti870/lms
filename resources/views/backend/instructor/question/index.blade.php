@@ -16,9 +16,10 @@
     <div class="card radius-10">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table align-middle mb-0 table-hover">
-                    <thead class="table-light">
+                <table id="example" class="table table-striped table-bordered">
+                    <thead>
                         <tr>
+                            <th>SL</th>
                             <th>Student</th>
                             <th>Course</th>
                             <th>Question</th>
@@ -28,8 +29,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($questions as $item)
+                        @foreach($questions as $key => $item)
                         <tr>
+                            <td>{{ $key + 1 }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <img src="{{ !empty($item->user->photo) ? url($item->user->photo) : url('upload/no_image.jpg') }}" class="rounded-circle" width="40" height="40" alt="">
@@ -51,16 +53,9 @@
                                 <a href="{{ route('instructor.question.show', $item->id) }}" class="btn btn-primary btn-sm" title="View & Reply"><i class="bx bx-show"></i></a>
                             </td>
                         </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-4">No questions found.</td>
-                        </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="mt-3">
-                {{ $questions->links() }}
             </div>
         </div>
     </div>

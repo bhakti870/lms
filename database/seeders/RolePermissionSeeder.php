@@ -67,33 +67,59 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'Edit Instructor', 'slug' => 'edit-instructor', 'group_name' => 'Instructor Management'],
             ['name' => 'Delete Instructor', 'slug' => 'delete-instructor', 'group_name' => 'Instructor Management'],
 
+            // Quiz Management
+            ['name' => 'View Quizzes', 'slug' => 'view-quizzes', 'group_name' => 'Quiz Management'],
+            ['name' => 'Create Quiz', 'slug' => 'create-quiz', 'group_name' => 'Quiz Management'],
+            ['name' => 'Edit Quiz', 'slug' => 'edit-quiz', 'group_name' => 'Quiz Management'],
+            ['name' => 'Delete Quiz', 'slug' => 'delete-quiz', 'group_name' => 'Quiz Management'],
+
+            // Review Management
+            ['name' => 'View Reviews', 'slug' => 'view-reviews', 'group_name' => 'Review Management'],
+            ['name' => 'Approve Review', 'slug' => 'approve-review', 'group_name' => 'Review Management'],
+            ['name' => 'Delete Review', 'slug' => 'delete-review', 'group_name' => 'Review Management'],
+
+            // Material Management
+            ['name' => 'View Materials', 'slug' => 'view-materials', 'group_name' => 'Material Management'],
+            ['name' => 'Create Material', 'slug' => 'create-material', 'group_name' => 'Material Management'],
+            ['name' => 'Delete Material', 'slug' => 'delete-material', 'group_name' => 'Material Management'],
+
+            // Live Class Management
+            ['name' => 'Manage Live Classes', 'slug' => 'manage-live-classes', 'group_name' => 'Live Class Management'],
+
+            // Notification Management
+            ['name' => 'View Notifications', 'slug' => 'view-notifications', 'group_name' => 'Notification Management'],
+            ['name' => 'Send Notifications', 'slug' => 'send-notifications', 'group_name' => 'Notification Management'],
+
+            // Subcategory Management
+            ['name' => 'View Subcategories', 'slug' => 'view-subcategories', 'group_name' => 'Subcategory Management'],
+            ['name' => 'Create Subcategory', 'slug' => 'create-subcategory', 'group_name' => 'Subcategory Management'],
+            ['name' => 'Edit Subcategory', 'slug' => 'edit-subcategory', 'group_name' => 'Subcategory Management'],
+            ['name' => 'Delete Subcategory', 'slug' => 'delete-subcategory', 'group_name' => 'Subcategory Management'],
+
             // Reports
             ['name' => 'View Reports', 'slug' => 'view-reports', 'group_name' => 'Reports'],
             ['name' => 'Export Reports', 'slug' => 'export-reports', 'group_name' => 'Reports'],
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create($permission);
+            Permission::updateOrCreate(['slug' => $permission['slug']], $permission);
         }
 
         // Create Roles
-        $adminRole = Role::create([
+        $adminRole = Role::updateOrCreate(['slug' => 'admin'], [
             'name' => 'Administrator',
-            'slug' => 'admin',
             'description' => 'Full system access with all permissions',
             'is_active' => true,
         ]);
 
-        $instructorRole = Role::create([
+        $instructorRole = Role::updateOrCreate(['slug' => 'instructor'], [
             'name' => 'Instructor',
-            'slug' => 'instructor',
             'description' => 'Can create and manage their own courses',
             'is_active' => true,
         ]);
 
-        $userRole = Role::create([
+        $userRole = Role::updateOrCreate(['slug' => 'user'], [
             'name' => 'Student',
-            'slug' => 'user',
             'description' => 'Regular user who can enroll in courses',
             'is_active' => true,
         ]);
@@ -110,6 +136,15 @@ class RolePermissionSeeder extends Seeder
             'create-coupon',
             'edit-coupon',
             'delete-coupon',
+            'view-quizzes',
+            'create-quiz',
+            'edit-quiz',
+            'delete-quiz',
+            'view-materials',
+            'create-material',
+            'delete-material',
+            'manage-live-classes',
+            'view-reviews',
         ])->pluck('id');
         $instructorRole->permissions()->sync($instructorPermissions);
 

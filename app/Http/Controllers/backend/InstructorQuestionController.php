@@ -22,7 +22,7 @@ class InstructorQuestionController extends Controller
             ->whereNull('parent_id') 
             ->with(['course', 'user', 'replies'])
             ->latest()
-            ->paginate(10);
+            ->get();
 
         return view('backend.instructor.question.index', compact('questions'));
     }
