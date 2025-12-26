@@ -10,6 +10,18 @@ $categories = getCategories();
             <span>skillpoint</span>
         </a>
 
+        <!-- Mobile Icons (Show before burger on small screens) -->
+        <div class="d-flex align-items-center gap-2 ms-auto d-xl-none me-2">
+            @auth
+            <a href="{{ route('user.wishlist.index') }}" class="cart-wishlist-icon text-dark fs-5">
+                <i class="bi bi-heart"></i>
+            </a>
+            <a href="{{ route('cart') }}" class="cart-wishlist-icon text-dark fs-5">
+                <i class="bi bi-cart"></i>
+            </a>
+            @endauth
+        </div>
+
         <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
@@ -26,13 +38,13 @@ $categories = getCategories();
                         </svg>
                         Categories
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu shadow-lg">
                         @foreach($categories as $item)
                         <li class="dropend">
                             <a class="dropdown-item dropdown-toggle" href="{{ route('category.details', $item->slug) }}">
                                 {{$item->name}}
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu shadow-lg">
                                 @foreach ($item['subcategory'] as $data)
                                 <li><a class="dropdown-item" href="{{ route('subcategory.details', $data->slug) }}">{{$data->name}}</a></li>
                                 @endforeach
@@ -47,12 +59,10 @@ $categories = getCategories();
                 <li class="nav-item"><a class="nav-link" href="{{ route('all.instructors') }}">Instructors</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('cart') }}">Cart</a></li>
             </ul>
 
             <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0 ms-auto">
-                <div class="d-flex align-items-center gap-2">
-
+                <div class="d-flex align-items-center gap-2 d-none d-xl-flex">
                     <!-- Wishlist -->
                     <div class="position-relative" id='wishlist-menu'>
                         <a href="{{ route('user.wishlist.index') }}" class="cart-wishlist-icon text-dark fs-4 d-inline-block">
@@ -65,58 +75,51 @@ $categories = getCategories();
                                 @endauth
                             </span>
                         </a>
-                        <div id="wishlist-course">
-                             <!---ajax loaded wishlist -->
-                        </div>
+                        <div id="wishlist-course"></div>
                     </div>
 
                     <!-- Cart AJAX container -->
-                    <div id="cart" class="position-relative">
-                        <!-- AJAX loaded cart content -->
-                    </div>
-
-
-                    @guest
-                        <a href="{{ route('login') }}" class="btn btn-theme btn-theme-sm ms-2">Login/Signup &rarr;</a>
-                    @endguest
-
-
-                    @auth
-                    <div class="dropdown ms-2">
-                        <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="user" width="35" height="35" class="rounded-circle me-2 border">
-                            <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            <li class="p-3 border-bottom mb-2">
-                                <p class="mb-0 fw-bold">{{ auth()->user()->name }}</p>
-                                <p class="mb-0 small text-muted">{{ auth()->user()->email }}</p>
-                            </li>
-                            @if(auth()->user()->role == 'user')
-                                <li><a class="dropdown-item py-2" href="{{ route('user.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                                <li><a class="dropdown-item py-2" href="{{ route('user.profile') }}"><i class="bi bi-person me-2"></i> Profile</a></li>
-                                <li><a class="dropdown-item py-2" href="{{ route('user.purchase.history') }}"><i class="bi bi-play-circle me-2"></i> My Courses</a></li>
-                            @elseif(auth()->user()->role == 'admin')
-                                <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Admin Panel</a></li>
-                            @elseif(auth()->user()->role == 'instructor')
-                                <li><a class="dropdown-item py-2" href="{{ route('instructor.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Instructor Panel</a></li>
-                            @endif
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger py-2" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
-                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
-                                </a>
-                                <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                    @endauth
+                    <div id="cart" class="position-relative"></div>
                 </div>
-            </div>
 
+                @guest
+                    <a href="{{ route('login') }}" class="btn btn-theme btn-theme-sm ms-2">Login/Signup &rarr;</a>
+                @endguest
+
+                @auth
+                <div class="dropdown ms-2">
+                    <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle dashboard-toggle" data-bs-toggle="dropdown">
+                        <img src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="user" width="35" height="35" class="rounded-circle me-2 border shadow-sm">
+                        <span class="d-none d-md-inline fw-semibold small">{{ auth()->user()->name }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 rounded-4 p-2" style="min-width: 240px;">
+                        <li class="p-3 border-bottom mb-2 bg-light rounded-4">
+                            <p class="mb-0 fw-bold text-dark">{{ auth()->user()->name }}</p>
+                            <p class="mb-0 small text-muted opacity-75">{{ auth()->user()->email }}</p>
+                        </li>
+                        @if(auth()->user()->role == 'user')
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.profile') }}"><i class="bi bi-person me-2"></i> Profile Settings</a></li>
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.purchase.history') }}"><i class="bi bi-collection-play me-2"></i> My Library</a></li>
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.wishlist.index') }}"><i class="bi bi-heart-fill me-2 text-danger"></i> Saved Items</a></li>
+                        @elseif(auth()->user()->role == 'admin')
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('admin.dashboard') }}"><i class="bi bi-shield-lock me-2"></i> Administration</a></li>
+                        @elseif(auth()->user()->role == 'instructor')
+                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('instructor.dashboard') }}"><i class="bi bi-briefcase me-2"></i> Instructor Panel</a></li>
+                        @endif
+                        <li><hr class="dropdown-divider opacity-10"></li>
+                        <li>
+                            <a class="dropdown-item text-danger py-2 px-3 rounded-3" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                            </a>
+                            <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
-

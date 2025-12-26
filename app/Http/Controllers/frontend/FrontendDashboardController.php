@@ -9,6 +9,7 @@ use App\Models\CourseLecture;
 use App\Models\CourseSection;
 use App\Models\InfoBox;
 use App\Models\Slider;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +25,32 @@ class FrontendDashboardController extends Controller
         $categories = Category::all();
         $course_category = Category::with('course', 'course.user', 'course.course_goal')->get();
 
-        return view('frontend.index', compact('all_sliders', 'all_info', 'all_categories', 'categories', 'course_category'));
+        // New dynamic data for Hero Section
+        $top_instructors = User::where('role', 'instructor')
+            ->where('status', '1')
+            ->whereNotNull('photo')
+            ->limit(4)
+            ->get();
+
+        $active_learners_count = User::where('role', 'user')->count();
+        $learner_avatars = User::where('role', 'user')
+            ->whereNotNull('photo')
+            ->limit(3)
+            ->get();
+            
+        $instructors_count = User::where('role', 'instructor')->where('status', '1')->count();
+
+        return view('frontend.index', compact(
+            'all_sliders', 
+            'all_info', 
+            'all_categories', 
+            'categories', 
+            'course_category',
+            'top_instructors',
+            'active_learners_count',
+            'learner_avatars',
+            'instructors_count'
+        ));
     }
 
     public function view($slug)

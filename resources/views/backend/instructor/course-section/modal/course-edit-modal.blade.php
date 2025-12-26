@@ -1,5 +1,5 @@
 <div class="modal" id="course-edit-{{ $lecture->id }}">
-    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" style="max-height: 90vh;">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -10,7 +10,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form method="post" action="{{ route('instructor.lecture.update', $lecture->id) }}"
+                <form id="lecture-edit-form-{{ $lecture->id }}" method="post" action="{{ route('instructor.lecture.update', $lecture->id) }}"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -29,7 +29,7 @@
                         <label for="url" class="form-label">YouTube Video URL</label>
                         <input type="url" class="form-control video_url" name="url" placeholder="Enter the YouTube video URL"
                             value="{{ old('url', $lecture->url) }}">
-                        <iframe class="videoPreview" style="margin-top: 15px; width: 100%; height: 400px; display: none;"
+                        <iframe class="videoPreview" style="margin-top: 15px; width: 100%; height: 250px; display: none;"
                             frameborder="0" allowfullscreen></iframe>
                     </div>
 
@@ -78,9 +78,13 @@
                     </div>
 
 
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary w-100">Update</button>
                 </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="lecture-edit-form-{{ $lecture->id }}" class="btn btn-primary">Update</button>
             </div>
 
 

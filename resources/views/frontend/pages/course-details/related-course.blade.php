@@ -1,5 +1,5 @@
-<section class="related-course-area bg-gray pt-60px pb-60px">
-    <div class="container">
+<section class="related-course-area bg-light rounded-4 p-4">
+    <div class="">
         <div class="related-course-wrap">
 
             <h3 class="fs-28 font-weight-semi-bold pb-35px">More Courses by <a href="#"
@@ -87,5 +87,5 @@
 
             </div><!-- end view-more-carousel -->
         </div><!-- end related-course-wrap -->
-    </div><!-- end container -->
+    </div><!-- end wrapper -->
 </section><!-- end related-course-area -->

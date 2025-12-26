@@ -1,58 +1,42 @@
-<div class="card card-item">
-    <div class="card-body">
-        <div class="preview-course-video">
-            <a href="javascript:void(0)" data-toggle="modal" data-target="#previewModal">
-                <img src="{{ asset($course->course_image) }}"
-                    data-src="{{ asset($course->course_image) }}" alt="course-img"
-                    class="w-100 rounded lazy">
-                    
-                <div class="preview-course-video-content">
-                    <div class="overlay"></div>
-                    <div class="play-button">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px"
-                            y="0px" viewBox="-307.4 338.8 91.8 91.8"
-                            style=" enable-background:new -307.4 338.8 91.8 91.8;"
-                            xml:space="preserve">
-                            <style type="text/css">
-                                .st0 {
-                                    fill: #ffffff;
-                                    border-radius: 100px;
-                                }
-
-                                .st1 {
-                                    fill: #000000;
-                                }
-                            </style>
-                            <g>
-                                <circle class="st0" cx="-261.5" cy="384.7"
-                                    r="45.9"></circle>
-                                <path class="st1"
-                                    d="M-272.9,363.2l35.8,20.7c0.7,0.4,0.7,1.3,0,1.7l-35.8,20.7c-0.7,0.4-1.5-0.1-1.5-0.9V364C-274.4,363.3-273.5,362.8-272.9,363.2z">
-                                </path>
-                            </g>
-                        </svg>
+<div class="sidebar-widget p-0 border-0 bg-transparent">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden sticky-top" style="top: 100px; z-index: 1020;">
+        {{-- Video Preview --}}
+        <div class="position-relative">
+            <a href="javascript:void(0)" data-toggle="modal" data-target="#previewModal" class="d-block position-relative group-hover">
+                <img src="{{ asset($course->course_image) }}" alt="course-img" class="w-100 object-fit-cover" style="height: 200px;">
+                <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25 transition-all"></div>
+                <div class="position-absolute top-50 start-50 translate-middle">
+                    <div class="btn btn-white rounded-circle shadow-lg p-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="bi bi-play-fill fs-2 text-dark ms-1"></i>
                     </div>
-                    <p class="fs-15 font-weight-bold text-white pt-3">Preview this course</p>
+                </div>
+                <div class="position-absolute bottom-0 start-0 w-100 p-3 text-center text-white bg-gradient-to-t from-black-50">
+                    <span class="fw-bold">Preview this course</span>
                 </div>
             </a>
-        </div><!-- end preview-course-video -->
-        <div class="preview-course-feature-content pt-40px">
-            <p class="d-flex align-items-center pb-2">
+        </div>
+
+        <div class="card-body p-4 bg-white">
+            {{-- Price Section --}}
+            <div class="d-flex align-items-end gap-2 mb-3">
                 @if($course->discount_price)
-                    <span class="fs-35 font-weight-semi-bold text-black">₹{{ $course->discount_price }}</span>
-                    <span class="before-price mx-1">₹{{ $course->selling_price }}</span>
+                    <h2 class="fw-bold mb-0 text-dark">₹{{ $course->discount_price }}</h2>
+                    <span class="text-decoration-line-through text-muted fs-5">₹{{ $course->selling_price }}</span>
                     @php
                         $discount = (($course->selling_price - $course->discount_price) / $course->selling_price) * 100;
                     @endphp
-                    <span class="price-discount">{{ round($discount) }}% off</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 ms-auto">{{ round($discount) }}% OFF</span>
                 @else
-                    <span class="fs-35 font-weight-semi-bold text-black">₹{{ $course->selling_price }}</span>
+                    <h2 class="fw-bold mb-0 text-dark">₹{{ $course->selling_price }}</h2>
                 @endif
-            </p>
-            <p class="preview-price-discount-text pb-35px">
-                <span class="text-color-3">Limited time offer</span> at this price!
-            </p>
-            <div class="buy-course-btn-box">
+            </div>
+
+            <div class="text-danger small mb-4">
+                <i class="bi bi-alarm me-1"></i> <span class="fw-bold">5 hours</span> left at this price!
+            </div>
+
+            {{-- Action Buttons --}}
+            <div class="d-grid gap-2 mb-4">
                 @php
                     $in_cart = false;
                     $in_wishlist = false;
@@ -64,54 +48,37 @@
                 @endphp
 
                 @if($is_enrolled)
-                    <a href="{{ route('user.course.learn', $course->id) }}" class="btn theme-btn w-100 mb-2">
-                        <i class="la la-play-circle fs-18 mr-1"></i> Start Learning
+                    <a href="{{ route('user.course.learn', $course->id) }}" class="btn btn-dark btn-lg rounded-pill fw-bold">
+                        Go to Course
                     </a>
                 @elseif($in_cart)
-                    <a href="{{ route('cart') }}" class="btn theme-btn w-100 mb-2">
-                        <i class="la la-shopping-cart fs-18 mr-1"></i> Already in Cart
+                    <a href="{{ route('cart') }}" class="btn btn-dark btn-lg rounded-pill fw-bold">
+                        Go to Cart
                     </a>
                 @else
-                    <button type="button" class="btn theme-btn w-100 mb-2 add-to-cart-btn" data-course-id="{{ $course->id }}">
-                        <i class="la la-shopping-cart fs-18 mr-1"></i> Add to cart
+                    <button type="button" class="btn btn-theme btn-lg rounded-pill fw-bold add-to-cart-btn shadow-theme" data-course-id="{{ $course->id }}">
+                        Add to Cart
                     </button>
-                    <button type="button" class="btn theme-btn w-100 theme-btn-white mb-2 buy-now-btn" data-course-id="{{ $course->id }}">
-                        <i class="la la-shopping-bag mr-1"></i> Buy this course
+                    <button type="button" class="btn btn-outline-dark btn-lg rounded-pill fw-bold buy-now-btn" data-course-id="{{ $course->id }}">
+                        Buy Now
                     </button>
-                    <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon {{ $in_wishlist ? 'active' : '' }} w-100 text-center" 
-                        title="{{ $in_wishlist ? 'Already in Wishlist' : 'Add to Wishlist' }}" 
-                        data-course-id="{{ $course->id }}" style="height: 45px; line-height: 45px; margin-bottom: 10px;">
-                        <i class="la {{ $in_wishlist ? 'la-heart' : 'la-heart-o' }}"></i> Add to Wishlist
-                    </div>
                 @endif
             </div>
-            <p class="fs-14 text-center pb-4">30-Day Money-Back Guarantee</p>
-            <div class="preview-course-incentives">
-                <h3 class="card-title fs-18 pb-2">This course includes</h3>
-                <ul class="generic-list-item pb-3">
-                    <li><i class="la la-play-circle-o mr-2 text-color"></i>2.5 hours on-demand
-                        video</li>
-                    <li><i class="la la-file mr-2 text-color"></i>34 articles</li>
-                    <li><i class="la la-file-text mr-2 text-color"></i>12 downloadable
-                        resources</li>
-                    <li><i class="la la-code mr-2 text-color"></i>51 coding exercises</li>
-                    <li><i class="la la-key mr-2 text-color"></i>Full lifetime access</li>
-                    <li><i class="la la-television mr-2 text-color"></i>Access on mobile and
-                        TV</li>
-                    <li><i class="la la-certificate mr-2 text-color"></i>Certificate of
-                        Completion</li>
+
+            <p class="text-center text-muted small mb-4">30-Day Money-Back Guarantee</p>
+
+            {{-- Includes --}}
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3">This course includes:</h6>
+                <ul class="list-unstyled d-flex flex-column gap-2 small text-secondary">
+                    <li class="d-flex align-items-center"><i class="bi bi-camera-video me-2 text-dark"></i> 24 hours on-demand video</li>
+                    <li class="d-flex align-items-center"><i class="bi bi-file-earmark-text me-2 text-dark"></i> 15 articles</li>
+                    <li class="d-flex align-items-center"><i class="bi bi-download me-2 text-dark"></i> 10 downloadable resources</li>
+                    <li class="d-flex align-items-center"><i class="bi bi-infinity me-2 text-dark"></i> Full lifetime access</li>
+                    <li class="d-flex align-items-center"><i class="bi bi-phone me-2 text-dark"></i> Access on mobile and TV</li>
+                    <li class="d-flex align-items-center"><i class="bi bi-award me-2 text-dark"></i> Certificate of completion</li>
                 </ul>
-                <div class="section-block"></div>
-                <div class="buy-for-team-container pt-4">
-                    <h3 class="fs-18 font-weight-semi-bold pb-2">Training 5 or more people?
-                    </h3>
-                    <p class="lh-24 pb-3">Get your team access to 3,000+ top Aduca courses
-                        anytime, anywhere.</p>
-                    <a href="for-business.html"
-                        class="btn theme-btn theme-btn-sm theme-btn-transparent lh-30 w-100">Try
-                        Aduca for Business</a>
-                </div>
-            </div><!-- end preview-course-incentives -->
-        </div><!-- end preview-course-content -->
+            </div>
+                    </div>
     </div>
-</div><!-- end card -->
+</div>

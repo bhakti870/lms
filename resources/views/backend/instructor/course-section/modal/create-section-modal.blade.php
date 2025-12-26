@@ -11,7 +11,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form method="post" action="{{ route('instructor.course-section.store') }}">
+                <form id="create-section-form" method="post" action="{{ route('instructor.course-section.store') }}">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}" />
                     <div class="">
@@ -19,10 +19,14 @@
                         <input type="text" class="form-control" name="section_title" id="section-title"
                             placeholder="Enter the section">
                     </div>
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary w-100">Submit</button>
-                    </div>
+
                 </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="create-section-form" class="btn btn-primary">Submit</button>
             </div>
 
 

@@ -1,6 +1,6 @@
 @if($all_sliders->count() > 0)
 <section class="hero-carousel-wrapper">
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
         {{-- Indicators --}}
         @if($all_sliders->count() > 1)
         <div class="carousel-indicators">
@@ -13,49 +13,114 @@
         <div class="carousel-inner">
             @foreach($all_sliders as $key => $slider)
             <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                <div class="image-container">
-                    <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="my-image">
-                    
-                    <div class="container position-relative content-layer">
-                        <div class="row align-items-center">
-                            {{-- Left Side Float --}}
-                            <div class="col-lg-3 d-none d-lg-block">
-                                <div class="image-group left-group">
-                                    <img src="{{ asset('frontend/new_design/smile1.png') }}" class="hero-float-img float-back" alt="Left Image">
+                <div class="image-container hero-main-container">
+                    <img src="{{ asset($slider->image) }}" alt="{{ $slider->title }}" class="my-image hero-bg-img">
+                    <div class="hero-soft-overlay"></div>
+
+                    <div class="container position-relative content-layer h-100">
+                        <div class="row align-items-center h-100">
+                            {{-- Left Side: Exact Match Circular Composition --}}
+                            <div class="col-lg-4 d-none d-lg-block p-0">
+                                <div class="instructor-circle-wrapper position-relative" data-aos="fade-right" data-aos-duration="1200">
+                                    <div class="main-visual-container">
+                                        {{-- Large Main Circle --}}
+                                        <div class="instructor-main-circle shadow-lg">
+                                            @if(isset($top_instructors) && count($top_instructors) >= 1)
+                                                <img src="{{ asset($top_instructors[0]->photo) }}" alt="{{ $top_instructors[0]->name }}">
+                                            @else
+                                                <img src="{{ asset('frontend/new_design/smile3.jpg') }}" alt="Default">
+                                            @endif
+                                            
+                                            {{-- Curved Text attached to the large circle --}}
+                                            <div class="curved-text-overlay">
+                                                <svg viewBox="0 0 200 200" class="curved-svg">
+                                                    <path id="curve-{{ $key }}" d="M 185, 120 A 85, 85 0 0, 1 120, 185" fill="transparent" />
+                                                    <text class="curved-svg-text">
+                                                        <textPath xlink:href="#curve-{{ $key }}" startOffset="50%" text-anchor="middle">
+                                                            Top Rated Instructors
+                                                        </textPath>
+                                                    </text>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        {{-- Smaller Top/Right Overlapping Circle --}}
+                                        <div class="instructor-side-circle shadow-md">
+                                            @if(isset($top_instructors) && count($top_instructors) >= 2)
+                                                <img src="{{ asset($top_instructors[1]->photo) }}" alt="{{ $top_instructors[1]->name }}">
+                                            @else
+                                                <img src="{{ asset('frontend/new_design/smile1.png') }}" alt="Default">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    
+                                    {{-- Background Glow --}}
+                                    <div class="hero-blue-glow"></div>
                                 </div>
                             </div>
 
                             {{-- Center Content --}}
-                            <div class="col-lg-5 text-center text-content">
-                                <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill shadow-sm">
-                                    <i class="bi bi-mortarboard-fill me-2"></i>Online Training
-                                </span>
-                                <h1 class="display-4 fw-bold mb-3 text-white">
-                                    {{ $slider->title }}
+                            <div class="col-lg-4 text-center text-content">
+                                <div class="hero-center-badge mb-4" data-aos="fade-down">
+                                    <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm border premium-badge">
+                                        <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
+                                        Level Up with Flexible Online Training
+                                    </span>
+                                </div>
+                                <h1 class="display-4 fw-bold mb-4 text-black hero-heading" data-aos="fade-up" data-aos-delay="100">
+                                    @php
+                                        $title = $slider->title;
+                                        $keyword = "Online Training";
+                                        $parts = explode($keyword, $title);
+                                    @endphp
+                                    @if(count($parts) > 1)
+                                        {!! $parts[0] !!} <span class="position-relative hero-highlight">{{ $keyword }}<span class="title-underline"></span></span> {!! $parts[1] !!}
+                                    @else
+                                        {!! $title !!}
+                                    @endif
                                 </h1>
-                                <p class="lead mb-4 text-white opacity-75">
+                                <p class="lead mb-5 text-black opacity-90 hero-text" data-aos="fade-up" data-aos-delay="200">
                                     {{ $slider->short_description }}
                                 </p>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <a href="{{ route('all.courses') }}" class="btn btn-theme btn-lg text-white px-4">Start Learning</a>
-                                    <a href="{{ route('all.instructors') }}" class="btn btn-outline-light btn-lg px-4">Our Instructors</a>
+                                <div class="d-flex justify-content-center gap-3" data-aos="fade-up" data-aos-delay="300">
+                                    <a href="{{ route('all.courses') }}" class="btn btn-primary btn-premium-pill px-4">Start Learning Now <i class="bi bi-arrow-right ms-2"></i></a>
+                                    <a href="{{ route('all.courses') }}" class="btn btn-outline-dark btn-premium-pill px-4">Browse Courses</a>
                                 </div>
                             </div>
 
                             {{-- Right Side Images --}}
-                            <div class="col-lg-4 d-none d-lg-block position-relative">
-                                <div class="right-image-composition">
-                                    <img src="{{ asset('frontend/new_design/smile2.jpg') }}" alt="Student" class="hero-img right-back-img">
-                                    <img src="{{ asset('frontend/new_design/smile3.jpg') }}" alt="Student" class="hero-img right-front-img">
+                            <div class="col-lg-4 d-none d-lg-block position-relative h-100">
+                                <div class="right-visual-composition h-100" data-aos="fade-left" data-aos-duration="1200">
+                                    <div class="rect-frame rect-b-back shadow-sm">
+                                        @if(isset($top_instructors) && count($top_instructors) >= 3)
+                                            <img src="{{ asset($top_instructors[2]->photo) }}" alt="{{ $top_instructors[2]->name }}">
+                                        @else
+                                            <img src="{{ asset('frontend/new_design/smile2.jpg') }}" alt="Default">
+                                        @endif
+                                    </div>
 
-                                    <div class="active-learners-badge">
-                                        <div class="avatar-group">
-                                            <img src="https://i.pravatar.cc/150?u=1" alt="User">
-                                            <img src="https://i.pravatar.cc/150?u=2" alt="User">
-                                            <img src="https://i.pravatar.cc/150?u=3" alt="User">
+                                    <div class="rect-frame rect-b-front shadow-lg">
+                                        @if(isset($top_instructors) && count($top_instructors) >= 4)
+                                            <img src="{{ asset($top_instructors[3]->photo) }}" alt="{{ $top_instructors[3]->name }}">
+                                        @else
+                                            <img src="{{ asset('frontend/new_design/smile3.jpg') }}" alt="Default">
+                                        @endif
+                                    </div>
+
+                                    <div class="active-learners-badge-premium shadow-sm">
+                                        <div class="avatar-group-sm">
+                                            @if(isset($learner_avatars) && count($learner_avatars) > 0)
+                                                @foreach($learner_avatars as $learner)
+                                                    <img src="{{ asset($learner->photo) }}" alt="{{ $learner->name }}">
+                                                @endforeach
+                                            @else
+                                                <img src="https://i.pravatar.cc/100?u=1" alt="U">
+                                                <img src="https://i.pravatar.cc/100?u=2" alt="U">
+                                                <img src="https://i.pravatar.cc/100?u=3" alt="U">
+                                            @endif
                                         </div>
-                                        <div class="learner-text">
-                                            <strong>6.8k+</strong><br>
+                                        <div class="learner-stats-sm">
+                                            <strong>{{ isset($active_learners_count) ? number_format($active_learners_count/1000, 1) . 'k+' : '6.8k+' }}</strong>
                                             <span>Active Learners</span>
                                         </div>
                                     </div>
@@ -68,83 +133,287 @@
             </div>
             @endforeach
         </div>
-
-        {{-- Controls --}}
-        @if($all_sliders->count() > 1)
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon p-3 rounded-circle bg-dark bg-opacity-25" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon p-3 rounded-circle bg-dark bg-opacity-25" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-        @endif
     </div>
 </section>
+
+<style>
+/* Reset and Base Styles */
+.hero-main-container {
+    height: 90vh;
+    min-height: 700px;
+    background: #fff;
+    position: relative;
+}
+
+.hero-bg-img {
+    filter: brightness(1.02);
+}
+
+.hero-soft-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* --- Left Section EXACT MATCH --- */
+.instructor-circle-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-visual-container {
+    position: relative;
+    width: 350px;
+    height: 350px;
+    z-index: 2;
+}
+
+.instructor-main-circle {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    left: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 8px solid #fff;
+    overflow: hidden;
+    background: #fff;
+    z-index: 2;
+}
+
+.instructor-side-circle {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    top: 0;
+    right: 0;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    overflow: hidden;
+    background: #fff;
+    z-index: 3;
+}
+
+.instructor-main-circle img, .instructor-side-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.curved-text-overlay {
+    position: absolute;
+    width: 130%;
+    height: 130%;
+    top: -15%;
+    left: -15%;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.curved-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.curved-svg-text {
+    font-size: 13px;
+    font-weight: 500;
+    fill: #777;
+    font-family: 'Roboto', sans-serif;
+}
+
+.hero-blue-glow {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 191, 255, 0.15) 0%, rgba(255,255,255,0) 70%);
+    filter: blur(40px);
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.instructors-badge-premium {
+    position: absolute;
+    bottom: 20px;
+    left: -20px;
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 5;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* --- Content Styles (Black Font & Small Pill Buttons) --- */
+.hero-heading {
+    color: #000000 !important;
+    font-size: 3.2rem;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+}
+
+.hero-text {
+    color: #333 !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.premium-badge {
+    border-color: #eee !important;
+    color: #333 !important;
+    font-weight: 600;
+}
+
+.btn-premium-pill {
+    padding: 10px 24px !important;
+    border-radius: 50px !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+}
+
+.title-underline {
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    width: 100%;
+    height: 12px;
+    background: #FFBD00;
+    opacity: 0.7;
+    z-index: -1;
+    border-radius: 6px;
+}
+
+/* --- Right Side Fixes --- */
+.right-visual-composition {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.rect-frame {
+    border-radius: 20px;
+    border: 6px solid #fff;
+    overflow: hidden;
+    background: #fff;
+    position: absolute;
+}
+
+.rect-b-back {
+    width: 220px;
+    height: 380px;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+}
+
+.rect-b-front {
+    width: 180px;
+    height: 250px;
+    bottom: 15%;
+    right: 180px;
+    z-index: 2;
+}
+
+.rect-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.active-learners-badge-premium {
+    position: absolute;
+    bottom: 80px;
+    right: -10px;
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+}
+
+.avatar-group-sm {
+    display: flex;
+}
+
+.avatar-group-sm img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-left: -12px;
+}
+
+.avatar-group-sm img:first-child { margin-left: 0; }
+
+.learner-stats-sm {
+    display: flex;
+    flex-direction: column;
+}
+
+.learner-stats-sm strong { color: #000; font-size: 16px; line-height: 1; }
+.learner-stats-sm span { font-size: 12px; color: #666; }
+
+/* Responsive Adjustments */
+@media (max-width: 1400px) {
+    .main-visual-container { transform: scale(0.85); transform-origin: left center; }
+    .right-visual-composition { transform: scale(0.85); transform-origin: right center; }
+}
+
+@media (max-width: 1200px) {
+    .main-visual-container { transform: scale(0.7); }
+    .right-visual-composition { transform: scale(0.7); }
+    .hero-heading { font-size: 2.6rem; }
+}
+
+@media (max-width: 991px) {
+    .hero-heading { font-size: 2.2rem; }
+    .hero-main-container { height: auto; min-height: 600px; padding: 60px 0 100px; }
+    .main-visual-container, .right-visual-composition { display: none; }
+    .hero-text { font-size: 1rem; max-width: 100%; }
+}
+
+@media (max-width: 576px) {
+    .hero-heading { font-size: 1.8rem; }
+    .hero-btns-group { flex-direction: column; width: 100%; gap: 10px !important; }
+    .btn-premium-pill { width: 100%; }
+}
+</style>
 @else
 {{-- Fallback Hero if no sliders --}}
-<section>
-    <div class="image-container">
-        <img src="{{ asset('frontend/new_design/pastel-gradient-2.jpg') }}" alt="Background" class="my-image">
-
-        <div class="container position-relative content-layer">
-            <div class="row align-items-center">
-                <div class="col-lg-3 d-none d-lg-block">
-                    <div class="image-group left-group">
-                        <img src="{{ asset('frontend/new_design/smile1.png') }}" class="hero-float-img float-back" alt="Left Image">
-                    </div>
-                </div>
-
-                <div class="col-lg-5 text-center text-content">
-                    <span class="badge bg-white text-primary mb-3 px-3 py-2 rounded-pill shadow-sm">
-                        <i class="bi bi-mortarboard-fill me-2"></i>Online Training
-                    </span>
-                    <h1 class="display-4 fw-bold mb-3 text-white">
-                        Level Up With Expert-Led <br>
-                        <span class="text-theme">Online Training</span>
-                    </h1>
-                    <p class="lead mb-4 text-white opacity-75">
-                        Flexible, career-focused courses designed to help individuals and teams grow.
-                    </p>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="{{ route('all.courses') }}" class="btn btn-theme btn-lg text-white">Start Learning</a>
-                        <a href="{{ route('all.instructors') }}" class="btn btn-outline-light btn-lg">Browse Courses</a>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 d-none d-lg-block position-relative">
-                    <div class="right-image-composition">
-                        <img src="{{ asset('frontend/new_design/smile2.jpg') }}" alt="Student" class="hero-img right-back-img">
-                        <img src="{{ asset('frontend/new_design/smile3.jpg') }}" alt="Student" class="hero-img right-front-img">
-                        <div class="active-learners-badge">
-                            <div class="avatar-group">
-                                <img src="https://i.pravatar.cc/150?u=1" alt="User">
-                                <img src="https://i.pravatar.cc/150?u=4" alt="User">
-                                <img src="https://i.pravatar.cc/150?u=5" alt="User">
-                            </div>
-                            <div class="learner-text">
-                                <strong>6.8k+</strong><br>
-                                <span>Active Learners</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="hero-carousel-wrapper">
+    <div class="image-container hero-main-container">
+        <img src="{{ asset('frontend/new_design/pastel-gradient-2.jpg') }}" alt="Background" class="my-image hero-bg-img">
+        <div class="hero-soft-overlay"></div>
+        <div class="container h-100">
+             <div class="row align-items-center h-100">
+                  <div class="col-12 text-center">
+                       <h1 class="hero-heading">Welcome to Olan Learning</h1>
+                       <p class="hero-text">Empowering your future with expert-led courses.</p>
+                       <a href="{{ route('all.courses') }}" class="btn btn-primary btn-premium-pill">Browse Courses</a>
+                  </div>
+             </div>
         </div>
-        <div class="hero-wave-curves bottom-wave-section"></div>
     </div>
 </section>
 @endif
-
-<style>
-.hero-carousel-wrapper .carousel-indicators [data-bs-target] {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 5px;
-}
-.hero-carousel-wrapper .carousel-item {
-    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
-}
-</style>

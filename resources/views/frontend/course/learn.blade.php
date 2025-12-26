@@ -3,265 +3,185 @@
 @section('content')
 <style>
     :root {
-        --learning-bg: #f5f7fb;
-        --sidebar-bg: #ffffff;
-        --text-main: #2d3748;
-        --text-muted: #718096;
-        --accent-color: #7079e7;
-        --border-color: #edf2f7;
-        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --header-height: 70px;
-    }
-
-    [data-theme='dark'], .dark-theme {
-        --learning-bg: #1a202c;
-        --sidebar-bg: #2d3748;
-        --text-main: #e2e8f0;
-        --text-muted: #a0aec0;
-        --accent-color: #8c95ff;
-        --border-color: #4a5568;
-        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-    }
-
-    body {
-        background-color: var(--learning-bg) !important;
-        color: var(--text-main);
-        transition: background-color 0.3s ease;
-    }
-
-    .learning-container {
-        height: calc(100vh - var(--header-height));
-        display: flex;
-        overflow: hidden;
-        background: var(--learning-bg);
-    }
-
-    /* Sidebars */
-    .learning-sidebar, .notes-sidebar {
-        width: 300px;
-        background: var(--sidebar-bg);
-        border-right: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 10;
-        box-shadow: var(--card-shadow);
+        --sidebar-width: 350px;
+        --header-height: 70px; /* Adjust based on your actual header */
     }
     
-    .notes-sidebar {
-        border-right: none;
-        border-left: 1px solid var(--border-color);
-        width: 320px;
+    body {
+        overflow-x: hidden; /* Prevent horizontal scroll */
+        background-color: #f8f9fa;
+    }
+    
+    .course-player-wrapper {
+        display: flex;
+        min-height: calc(100vh - var(--header-height));
+        position: relative;
     }
 
-    /* Sidebar Header */
+    /* --- SIDEBAR --- */
+    .course-sidebar {
+        width: var(--sidebar-width);
+        background: #fff;
+        border-right: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - var(--header-height));
+        position: sticky;
+        top: var(--header-height);
+        overflow-y: auto;
+        z-index: 100;
+        transition: transform 0.3s ease;
+    }
+
     .sidebar-header {
         padding: 20px;
-        background: linear-gradient(135deg, var(--accent-color), #4e54c8);
+        background: var(--theme-color, #5b50d6);
         color: white;
     }
 
-    /* Content Area */
-    .main-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        scroll-behavior: smooth;
-    }
-
-    /* Sidebar Items */
-    .section-header {
-        padding: 15px 20px;
-        background: var(--learning-bg);
-        font-weight: 700;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .content-item {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border-color);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transition: all 0.2s ease;
-        position: relative;
+    /* Accordion Customization */
+    .course-accordion .accordion-button {
         background: transparent;
-    }
-
-    .content-item:hover:not(.locked) {
-        background: rgba(112, 121, 231, 0.05);
-        padding-left: 25px;
-    }
-
-    .content-item.active {
-        background: rgba(112, 121, 231, 0.1);
-        color: var(--accent-color);
+        color: #333;
         font-weight: 600;
-        border-left: 4px solid var(--accent-color);
+        box-shadow: none;
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
     }
 
-    .content-item.locked {
+    .course-accordion .accordion-button:not(.collapsed) {
+        background: rgba(91, 80, 214, 0.05);
+        color: var(--theme-color, #5b50d6);
+    }
+    
+    .course-accordion .accordion-body {
+        padding: 0;
+    }
+
+    /* Lesson Items */
+    .lesson-item {
+        padding: 12px 20px 12px 35px;
+        border-bottom: 1px solid #f1f1f1;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    .lesson-item:hover {
+        background-color: #f8f9fa;
+        color: var(--theme-color, #5b50d6);
+    }
+
+    .lesson-item.active {
+        background-color: #f0f2ff;
+        color: var(--theme-color, #5b50d6);
+        border-left: 4px solid var(--theme-color, #5b50d6);
+        padding-left: 31px; /* Compensate for border */
+        font-weight: 500;
+    }
+
+    .lesson-item.locked {
         opacity: 0.6;
         cursor: not-allowed;
     }
 
-    .item-icon {
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-        background: var(--learning-bg);
-        color: var(--text-muted);
+    /* --- MAIN CONTENT --- */
+    .course-content-area {
+        flex: 1;
+        padding: 30px;
+        overflow-x: hidden;
     }
 
-    .active .item-icon {
-        background: var(--accent-color);
-        color: white;
-    }
-
-    .completed-icon {
-        color: #48bb78;
-        font-size: 1.2rem;
-        margin-left: auto;
-    }
-
-    /* Main Content Styling */
-    .content-card {
-        background: var(--sidebar-bg);
-        border-radius: 16px;
-        padding: 0;
-        box-shadow: var(--card-shadow);
-        overflow: hidden;
-        border: 1px solid var(--border-color);
-    }
-
-    .video-wrapper {
-        aspect-ratio: 16/9;
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        height: 0;
         background: #000;
-        width: 100%;
-    }
-
-    .content-info {
-        padding: 24px;
-    }
-
-    .mark-read-btn {
-        background: var(--accent-color);
-        color: white;
-        border: none;
-        padding: 10px 24px;
-        border-radius: 10px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(112, 121, 231, 0.3);
-    }
-
-    .mark-read-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(112, 121, 231, 0.4);
-        background: #5d66d1;
-        color: white;
-    }
-
-    .mark-read-btn.completed {
-        background: #48bb78;
-        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
-    }
-
-    /* Note Cards */
-    .note-card {
-        background: var(--learning-bg);
-        padding: 16px;
         border-radius: 12px;
-        margin-bottom: 12px;
-        border: 1px solid var(--border-color);
-        transition: transform 0.2s ease;
+        overflow: hidden;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-
-    .note-card:hover {
-        transform: scale(1.02);
-    }
-
-    .note-time {
-        color: var(--accent-color);
-        font-weight: 700;
-        font-size: 0.75rem;
-        background: rgba(112, 121, 231, 0.1);
-        padding: 2px 8px;
-        border-radius: 4px;
-        display: inline-block;
-        margin-bottom: 8px;
-        cursor: pointer;
-    }
-
-    .note-input {
-        background: var(--learning-bg);
-        color: var(--text-main);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 15px;
+    
+    .video-container iframe, 
+    .video-container video {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        margin-bottom: 15px;
+        height: 100%;
     }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-    @media (max-width: 1200px) {
-        .learning-sidebar, .notes-sidebar { width: 260px; }
+    /* --- RESPONSIVE --- */
+    @media (max-width: 991px) {
+        .course-player-wrapper {
+            flex-direction: column;
+        }
+        
+        .course-sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            top: 0;
+            order: 2; /* Content first on mobile? Or Sidebar first? Usually Video first. */
+        }
+        
+        .course-content-area {
+            order: 1;
+            padding: 15px;
+        }
+    }
+    
+    /* Notes Section */
+    .notes-panel {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-top: 30px;
     }
 
-    @media (max-width: 992px) {
-        .learning-container { flex-direction: column; overflow-y: auto; height: auto; }
-        .learning-sidebar, .notes-sidebar { width: 100%; height: auto; border: none; }
-        .main-content { padding: 15px; }
-    }
+    /* Utility */
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
 </style>
 
 <div class="container-fluid p-0">
-    <div class="learning-container">
-        <!-- LEFT: Course Contents -->
-        <div class="learning-sidebar">
+    <div class="course-player-wrapper">
+        
+        <!-- SIDEBAR -->
+        <div class="course-sidebar scrollbar-thin">
             <div class="sidebar-header">
-                <h6 class="mb-2 font-weight-bold text-white text-truncate" title="{{ $course->course_name }}">{{ $course->course_name }}</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div class="flex-grow-1 mr-3">
-                        <div class="progress" style="height: 6px; border-radius: 10px; background: rgba(255,255,255,0.2);">
+                <h6 class="mb-2 fw-bold text-white text-truncate" title="{{ $course->course_name }}">{{ $course->course_name }}</h6>
+                
+                <div class="d-flex align-items-center justify-content-between text-white-50 small mt-3">
+                    <span class="d-flex align-items-center gap-2 w-100">
+                        <div class="progress flex-grow-1" style="width: 100px; height: 6px; background: rgba(255,255,255,0.2);">
                             <div class="progress-bar bg-white" role="progressbar" id="overall-progress-bar" style="width: 0%"></div>
                         </div>
-                    </div>
-                    <small class="text-white font-weight-bold"><span id="overall-progress-pct">0</span>%</small>
+                        <span class="fw-bold text-white"><span id="overall-progress-pct">0</span>%</span>
+                    </span>
+                </div>
+                <div class="mt-3">
+                    <a href="{{ route('user.dashboard') }}" class="btn btn-sm btn-outline-light w-100 rounded-pill"><i class="bi bi-arrow-left me-1"></i> Dashboard</a>
                 </div>
             </div>
-            
-            <div class="accordion overflow-y-auto flex-grow-1" id="courseAccordion">
+
+            <div class="accordion course-accordion" id="courseAccordion">
                 @foreach($course->sections as $index => $section)
                 <div class="accordion-item border-0 bg-transparent">
-                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#collapse{{ $section->id }}">
-                        <span>{{ $section->section_title }}</span>
-                        <i class="la la-angle-down fs-12"></i>
-                    </div>
-                    <div id="collapse{{ $section->id }}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" data-bs-parent="#courseAccordion">
-                        <div class="accordion-body p-0">
+                    <h2 class="accordion-header" id="heading{{ $section->id }}">
+                        <button class="accordion-button {{ $index != 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $section->id }}" aria-expanded="{{ $index == 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $section->id }}">
+                            {{ $section->section_title }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ $section->id }}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" aria-labelledby="heading{{ $section->id }}" data-bs-parent="#courseAccordion">
+                        <div class="accordion-body">
                             <!-- Lectures -->
                             @foreach($section->lectures as $lecture)
                                 @php
@@ -269,19 +189,21 @@
                                     $lockedClass = $isLocked ? 'locked' : '';
                                     $unlockDate = $lecture->unlock_date ?? '';
                                 @endphp
-                                <div class="content-item load-content {{ $lockedClass }} {{ (isset($currentContent) && $currentContent['type'] == 'lecture' && $currentContent['id'] == $lecture->id) ? 'active' : '' }}" 
+                                <div class="lesson-item load-content {{ $lockedClass }} {{ (isset($currentContent) && $currentContent['type'] == 'lecture' && $currentContent['id'] == $lecture->id) ? 'active' : '' }}" 
                                      data-type="lecture" 
                                      data-id="{{ $lecture->id }}"
                                      data-locked="{{ $isLocked ? 'true' : 'false' }}"
                                      @if($isLocked) onclick="Swal.fire('Locked', 'This content is locked until {{ $unlockDate }}', 'info'); return false;" @endif
                                      >
-                                    <div class="item-icon">
-                                        <i class="la {{ $isLocked ? 'la-lock' : 'la-play' }}"></i>
+                                    <div class="flex-shrink-0">
+                                        <i class="fs-5 bi {{ $isLocked ? 'bi-lock-fill' : 'bi-play-circle-fill' }}"></i>
                                     </div>
-                                    <span class="text-truncate fs-14">{{ $lecture->lecture_title }}</span>
-                                    <div class="completion-status ml-auto">
+                                    <span class="text-truncate flex-grow-1">{{ $lecture->lecture_title }}</span>
+                                    <div class="completion-status text-success">
                                         @if(isset($progress['lecture']) && $progress['lecture']->contains('content_id', $lecture->id))
-                                            <i class="la la-check-circle completed-icon"></i>
+                                            <i class="bi bi-check-circle-fill fs-5"></i>
+                                        @else
+                                            <i class="bi bi-circle fs-5 text-muted opacity-50"></i>
                                         @endif
                                     </div>
                                 </div>
@@ -289,12 +211,14 @@
 
                             <!-- Quizzes -->
                             @foreach($section->quizzes as $quiz)
-                            <div class="content-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false">
-                                <div class="item-icon"><i class="la la-question-circle"></i></div>
-                                <span class="text-truncate fs-14">{{ $quiz->quiz_title }}</span>
-                                <div class="completion-status ml-auto">
+                            <div class="lesson-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false">
+                                <div class="flex-shrink-0"><i class="bi bi-question-circle-fill fs-5"></i></div>
+                                <span class="text-truncate flex-grow-1">{{ $quiz->quiz_title }}</span>
+                                <div class="completion-status text-success">
                                     @if(isset($progress['quiz']) && $progress['quiz']->contains('content_id', $quiz->id))
-                                        <i class="la la-check-circle completed-icon"></i>
+                                        <i class="bi bi-check-circle-fill fs-5"></i>
+                                    @else
+                                        <i class="bi bi-circle fs-5 text-muted opacity-50"></i>
                                     @endif
                                 </div>
                             </div>
@@ -302,12 +226,14 @@
 
                             <!-- Materials -->
                             @foreach($section->materials as $material)
-                            <div class="content-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false">
-                                <div class="item-icon"><i class="la la-file"></i></div>
-                                <span class="text-truncate fs-14">{{ $material->material_title }}</span>
-                                <div class="completion-status ml-auto">
+                            <div class="lesson-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false">
+                                <div class="flex-shrink-0"><i class="bi bi-file-earmark-text-fill fs-5"></i></div>
+                                <span class="text-truncate flex-grow-1">{{ $material->material_title }}</span>
+                                <div class="completion-status text-success">
                                     @if(isset($progress['material']) && $progress['material']->contains('content_id', $material->id))
-                                        <i class="la la-check-circle completed-icon"></i>
+                                        <i class="bi bi-check-circle-fill fs-5"></i>
+                                    @else
+                                        <i class="bi bi-circle fs-5 text-muted opacity-50"></i>
                                     @endif
                                 </div>
                             </div>
@@ -317,60 +243,87 @@
                 </div>
                 @endforeach
             </div>
-            
-            <div class="p-3 border-top bg-light">
-                <a href="{{ route('user.dashboard') }}" class="btn btn-sm btn-outline-secondary w-100"><i class="la la-arrow-left"></i> Back to Dashboard</a>
-            </div>
         </div>
 
-        <!-- MIDDLE: Main Display Area -->
-        <div class="main-content">
-            <div id="content-loading" class="text-center mt-5" style="display:none;">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 font-weight-bold">Fetching your lesson...</p>
+        <!-- MAIN CONTENT -->
+        <div class="course-content-area custom-scrollbar-main">
+            {{-- Loading Spinner --}}
+            <div id="content-loading" class="text-center mt-5 py-5" style="display:none;">
+                <div class="spinner-border text-theme" role="status" style="width: 3rem; height: 3rem;"></div>
+                <p class="mt-3 fw-bold text-muted">Loading content...</p>
             </div>
             
-            <div id="content-display-area">
+            {{-- Display Area --}}
+            <div id="content-display-area" class="fade-in-up">
                 @if(!empty($initialHtml))
                     {!! $initialHtml !!}
                 @else
-                    <div class="text-center mt-5 p-5 content-card bg-white">
+                    <div class="text-center mt-5 p-5 card border-0 shadow-sm rounded-4">
                         <div class="mb-4">
-                            <i class="la la-graduation-cap text-primary" style="font-size: 100px;"></i>
+                            <i class="bi bi-mortarboard-fill text-theme display-1"></i>
                         </div>
-                        <h2 class="font-weight-bold">Ready to learn, {{ Auth::user()->name }}?</h2>
-                        <p class="text-muted fs-18">Select a lesson from the sidebar to begin your journey.</p>
+                        <h2 class="fw-bold text-dark">Welcome Back, {{ Auth::user()->name }}!</h2>
+                        <p class="text-muted fs-5">Select a lesson from the sidebar to continue your learning journey.</p>
                     </div>
                 @endif
             </div>
-        </div>
 
-        <!-- RIGHT: Notes Sidebar -->
-        <div class="notes-sidebar">
-            <div class="p-3 border-bottom d-flex align-items-center justify-content-between">
-                <h5 class="m-0 font-weight-bold">My Notes</h5>
-                <button class="btn btn-sm btn-light" id="toggle-notes"><i class="la la-times"></i></button>
-            </div>
-            
-            <div id="notes-placeholder" class="text-muted small text-center mt-5 p-4">
-                <i class="la la-sticky-note fs-45 mb-2 d-block opacity-4"></i>
-                Select a lecture to record your thoughts and timestamps.
-            </div>
-            
-            <div id="notes-container" class="p-3 flex-grow-1 overflow-y-auto" style="display:none;">
-                <div class="mb-4">
-                    <textarea id="note-text" class="note-input" rows="4" placeholder="Type something important..."></textarea>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="insertTimestamp()"><i class="la la-clock"></i> Timestamp</button>
-                        <button class="btn btn-sm btn-primary flex-grow-1" onclick="saveNote()"><i class="la la-save"></i> Save Note</button>
+            {{-- Tabbed Panel (Notes & Q&A) --}}
+            <div class="notes-panel" id="sidebar-content-area" style="display:none;">
+                <ul class="nav nav-pills mb-4 nav-justified bg-light rounded-pill p-1" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill fw-bold" id="pills-notes-tab" data-bs-toggle="pill" data-bs-target="#pills-notes" type="button" role="tab" aria-controls="pills-notes" aria-selected="true"><i class="bi bi-journal-text me-2"></i>My Notes</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold" id="pills-qa-tab" data-bs-toggle="pill" data-bs-target="#pills-qa" type="button" role="tab" aria-controls="pills-qa" aria-selected="false"><i class="bi bi-chat-dots-fill me-2"></i>Q&A</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="pills-tabContent">
+                    <!-- NOTES TAB -->
+                    <div class="tab-pane fade show active" id="pills-notes" role="tabpanel" aria-labelledby="pills-notes-tab">
+                        <div class="mb-4">
+                            <textarea id="note-text" class="form-control mb-2" rows="3" placeholder="Type a note... (Timestamps are automatically added)"></textarea>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-outline-secondary btn-sm" onclick="insertTimestamp()">
+                                    <i class="bi bi-clock"></i> Current Time
+                                </button>
+                                <button class="btn btn-theme btn-sm" onclick="saveNote()">
+                                    <i class="bi bi-save"></i> Save Note
+                                </button>
+                            </div>
+                        </div>
+                        <h6 class="text-muted fw-bold mb-3 small text-uppercase ls-1">Saved Notes</h6>
+                        <div id="saved-notes-list" class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+                            <!-- Notes loaded via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Q&A TAB -->
+                    <div class="tab-pane fade" id="pills-qa" role="tabpanel" aria-labelledby="pills-qa-tab">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small">ASK A NEW QUESTION</label>
+                            <textarea id="qa-text" class="form-control mb-2" rows="3" placeholder="What's on your mind?"></textarea>
+                            <button class="btn btn-theme btn-sm w-100 fw-bold" onclick="postQuestion()">
+                                <i class="bi bi-send-fill me-2"></i> Post Question
+                            </button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-muted fw-bold mb-0 small text-uppercase ls-1">Recent Questions</h6>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" onclick="loadQuestions(currentLectureId)"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                        </div>
+
+                        <div id="qa-list" class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+                            <div class="text-center text-muted py-5">
+                                <div class="spinner-border spinner-border-sm text-theme" role="status"></div>
+                                <p class="mb-0 mt-2 small">Loading discussions...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <h6 class="font-weight-bold mb-3 text-uppercase fs-12 letter-spacing-1">Previous Notes</h6>
-                <div id="saved-notes-list">
-                    <!-- Notes loaded via JS -->
-                </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -378,25 +331,25 @@
 <!-- Completion Modal -->
 <div class="modal fade" id="completionModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg p-4">
+        <div class="modal-content border-0 shadow-lg p-4 rounded-4">
             <div class="modal-body text-center">
                 <div class="mb-4">
-                    <div class="icon-box bg-success text-white mx-auto shadow-sm" style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items:center; justify-content:center;">
-                        <i class="la la-trophy fs-45"></i>
+                    <div class="bg-success text-white mx-auto shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="bi bi-trophy-fill fs-1"></i>
                     </div>
                 </div>
-                <h2 class="font-weight-bold">Congratulations!</h2>
-                <p class="text-muted fs-16 mt-2">You have successfully mastered <strong>{{ $course->course_name }}</strong>.</p>
+                <h2 class="fw-bold text-dark">Congratulations!</h2>
+                <p class="text-muted mt-2">You have successfully mastered <strong>{{ $course->course_name }}</strong>.</p>
                 
-                <div class="bg-light p-3 rounded mb-4 mt-4 border">
-                    <p class="mb-0 fs-14">Your hard work has paid off. Your certificate is ready for download.</p>
+                <div class="bg-light p-3 rounded-3 mb-4 mt-4 border border-dashed">
+                    <p class="mb-0 small fw-bold text-secondary">Your certificate is ready for download.</p>
                 </div>
 
                 <div class="d-grid gap-2">
-                    <a href="{{ route('user.course.certificate', $course->id) }}" class="btn theme-btn py-3 shadow">
-                        <i class="la la-certificate fs-18"></i> Download My Certificate
+                    <a href="{{ route('user.course.certificate', $course->id) }}" class="btn btn-theme py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-file-earmark-check-fill me-2"></i> Download Certificate
                     </a>
-                    <button type="button" class="btn btn-link text-muted" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-link text-muted text-decoration-none" data-bs-dismiss="modal">Keep Learning</button>
                 </div>
             </div>
         </div>
@@ -413,55 +366,57 @@
     let quizTimerInterval = null;
 
     $(document).ready(function() {
+
+
         updateOverallProgress();
 
+        // Load content on click
         $(document).on('click', '.load-content', function() {
             if($(this).data('locked') === true) return;
             loadContent($(this).data('type'), $(this).data('id'));
         });
 
         // Initialize first content / Auto-resume
-        const initialActive = $('.content-item.active');
+        const initialActive = $('.lesson-item.active');
         if (initialActive.length && initialActive.data('locked') !== true) {
-            // Content is already pre-rendered by Laravel, so just setup tracking
             const type = initialActive.data('type');
             const id = initialActive.data('id');
             
             if (type === 'lecture') {
                 currentLectureId = id;
-                $('#notes-placeholder').hide();
-                $('#notes-container').show();
+                $('#sidebar-content-area').show();
                 renderNotes(id);
-                setupVideoEndTracking(id);
+                loadQuestions(id);
+                // setupVideoEndTracking(id); // Already handled in blade/iframe usually? Or need to re-attach
+                setTimeout(() => setupVideoEndTracking(id), 1000); 
+            } else {
+                $('#sidebar-content-area').hide();
             }
             
-            // Scroll to active item
+            // Scroll to active
             initialActive[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Open the accordion parent if closed
-            initialActive.closest('.collapse').addClass('show');
         }
 
-        // Toggle notes
-        $('#toggle-notes').click(function() {
-            $('.notes-sidebar').toggleClass('d-none');
-        });
-
-        // Handle Mark as Completed Button
+        // Handle Mark as Completed Button (Delegated)
         $(document).on('click', '#mark-completed-btn', function() {
             const btn = $(this);
             const type = btn.data('type');
             const id = btn.data('id');
             
-            btn.prop('disabled', true).html('<i class="la la-spinner la-spin"></i> Saving...');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
             
             saveProgress(type, id, function(res) {
-                btn.addClass('completed').html('<i class="la la-check-circle"></i> Completed');
+                btn.removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
+                
+                // Update sidebar icon
+                const item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
+                item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
+                
                 Swal.fire({
                     toast: true,
                     position: 'top-end',
                     icon: 'success',
-                    title: 'Marked as completed!',
+                    title: 'Lesson Completed!',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -470,8 +425,8 @@
     });
 
     function loadContent(type, id) {
-        $('.content-item').removeClass('active');
-        const activeItem = $(`.content-item[data-type="${type}"][data-id="${id}"]`);
+        $('.lesson-item').removeClass('active');
+        const activeItem = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
         activeItem.addClass('active');
         
         $('#content-loading').show();
@@ -481,26 +436,26 @@
 
         if (type === 'lecture') {
             currentLectureId = id;
-            $('#notes-placeholder').hide();
-            $('#notes-container').show();
+            $('#sidebar-content-area').fadeIn();
             renderNotes(id);
+            loadQuestions(id); // Load Q&A
         } else {
             currentLectureId = null;
-            $('#notes-placeholder').show();
-            $('#notes-container').hide();
+            $('#sidebar-content-area').hide();
         }
 
         $.get(`/user/course-content/${courseId}/${type}/${id}`, function(data) {
             $('#content-loading').hide();
             $('#content-display-area').html(data.html).fadeIn();
             
-            // Check if already completed and update button
-            if (activeItem.find('.completed-icon').length > 0) {
-                $('#mark-completed-btn').addClass('completed').html('<i class="la la-check-circle"></i> Completed');
+            // Re-check completion status for button state
+            if (activeItem.find('.la-check-circle').length > 0) {
+                 // It's completed
+                 $('#mark-completed-btn').removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
             }
 
             if (type === 'lecture') {
-                setupVideoEndTracking(id);
+                setTimeout(() => setupVideoEndTracking(id), 1000);
             }
         });
     }
@@ -513,9 +468,14 @@
             userNotes[lectureId].forEach(note => {
                 const timeDisplay = note.timestamp_seconds ? formatTime(note.timestamp_seconds) : '';
                 list.append(`
-                    <div class="note-card shadow-sm">
-                        ${note.timestamp_seconds ? `<span class="note-time" onclick="seekVideo(${note.timestamp_seconds})"><i class="la la-clock"></i> ${timeDisplay}</span>` : ''}
-                        <p class="m-0 fs-13 lh-20">${note.note}</p>
+                    <div class="card border-0 bg-light p-3 rounded-3 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                             ${note.timestamp_seconds ? 
+                                `<span class="badge bg-theme cursor-pointer" onclick="seekVideo(${note.timestamp_seconds})"><i class="la la-play"></i> ${timeDisplay}</span>` 
+                                : '<span class="badge bg-secondary">Note</span>'}
+                             <small class="text-muted">Just now</small>
+                        </div>
+                        <p class="mb-0 text-dark small">${note.note}</p>
                     </div>
                 `);
             });
@@ -550,8 +510,9 @@
         const video = document.getElementById('courseVideo');
         if (video) {
             const t = Math.floor(video.currentTime);
-            $('#note-text').val($('#note-text').val() + ` [${formatTime(t)}] `);
-            $('#note-text').focus();
+            // Append nice formatting to textarea
+            const text = $('#note-text').val();
+            $('#note-text').val(text + (text.length > 0 ? ' ' : '') + `[${formatTime(t)}] `).focus();
         }
     }
 
@@ -586,11 +547,11 @@
             content_id: id
         }, function(data) {
             if (data.success) {
-                const item = $(`.content-item[data-type="${type}"][data-id="${id}"]`);
-                if (item.find('.completed-icon').length === 0) {
-                    item.find('.completion-status').html('<i class="la la-check-circle completed-icon"></i>');
-                    updateOverallProgress();
-                }
+                const item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
+                // Update Checkmark
+                item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
+                updateOverallProgress();
+                
                 if (data.course_finished) {
                     $('#completionModal').modal('show');
                 }
@@ -600,19 +561,128 @@
     }
 
     function updateOverallProgress() {
-        const total = $('.content-item').length;
-        const completed = $('.completed-icon').length;
+        const total = $('.lesson-item').length;
+        const completed = $('.la-check-circle').length; 
         const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
         
         $('#overall-progress-bar').css('width', pct + '%');
         $('#overall-progress-pct').text(pct);
     }
 
-    // Quiz Handlers
+    // --- Q&A Logic ---
+    function loadQuestions(lectureId) {
+        if (!lectureId) return;
+        const list = $('#qa-list');
+        list.html('<div class="text-center py-4"><div class="spinner-border spinner-border-sm text-theme"></div></div>');
+        
+        $.get(`/user/course-questions/${lectureId}`, function(res) {
+            list.empty();
+            if (res.questions.length === 0) {
+                list.html('<p class="text-center text-muted py-3 small">No questions yet. Be the first to ask!</p>');
+                return;
+            }
+            
+            res.questions.forEach(q => {
+                let repliesHtml = '';
+                q.replies.forEach(r => {
+                    const isInstructor = r.is_instructor_reply ? '<span class="badge bg-theme ms-2">Instructor</span>' : '';
+                    repliesHtml += `
+                        <div class="d-flex gap-3 mt-3 ps-3 border-start border-3">
+                            <img src="${r.user.image}" class="rounded-circle object-fit-cover" width="30" height="30">
+                            <div class="flex-grow-1 bg-white p-2 rounded-3 shadow-sm border">
+                                <div class="d-flex justify-content-between">
+                                    <strong class="fs-13 text-dark">${r.user.name} ${isInstructor}</strong>
+                                    <small class="text-muted fs-11">${formatDate(r.created_at)}</small>
+                                </div>
+                                <p class="mb-0 small text-secondary">${r.question}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                list.append(`
+                    <div class="qa-item mb-2">
+                        <div class="d-flex gap-3">
+                            <img src="${q.user.image}" class="rounded-circle object-fit-cover" width="35" height="35">
+                            <div class="flex-grow-1">
+                                <div class="bg-white p-3 rounded-3 shadow-sm border">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <strong class="fs-14 text-dark">${q.user.name}</strong>
+                                        <small class="text-muted fs-11">${formatDate(q.created_at)}</small>
+                                    </div>
+                                    <p class="mb-2 text-dark fs-14">${q.question}</p>
+                                    <button class="btn btn-link btn-sm p-0 fs-12 text-decoration-none fw-bold text-theme" onclick="toggleReplyForm(${q.id})">Reply</button>
+                                </div>
+                                
+                                <div id="replies-${q.id}">
+                                    ${repliesHtml}
+                                </div>
+
+                                <div id="reply-form-${q.id}" class="mt-2" style="display:none;">
+                                    <div class="d-flex gap-2">
+                                        <input type="text" class="form-control form-control-sm" id="reply-input-${q.id}" placeholder="Write a reply...">
+                                        <button class="btn btn-theme btn-sm" onclick="postReply(${q.id})"><i class="bi bi-send-fill"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        });
+    }
+
+    // Removed getUserPhoto as image is now robustly handled by backend asset() helper
+
+    function postQuestion() {
+        if (!currentLectureId) return;
+        const text = $('#qa-text').val().trim();
+        if (!text) return;
+        
+        $.post("{{ route('user.course.question.store') }}", {
+            _token: "{{ csrf_token() }}",
+            course_id: courseId,
+            lecture_id: currentLectureId,
+            question: text
+        }, function(res) {
+            if (res.success) {
+                $('#qa-text').val('');
+                loadQuestions(currentLectureId);
+            }
+        });
+    }
+
+    function toggleReplyForm(id) {
+        $(`#reply-form-${id}`).toggle();
+    }
+
+    function postReply(parentId) {
+        const text = $(`#reply-input-${parentId}`).val().trim();
+        if(!text) return;
+
+        $.post("{{ route('user.course.question.reply') }}", {
+            _token: "{{ csrf_token() }}",
+            course_id: courseId,
+            lecture_id: currentLectureId,
+            parent_id: parentId,
+            question: text
+        }, function(res) {
+             if (res.success) {
+                 loadQuestions(currentLectureId);
+             }
+        });
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    // Quiz Handlers (Same logic, modernized text)
     $(document).on('submit', '#quiz-form', function(e) {
         e.preventDefault();
         const formData = $(this).serialize();
-        $('#submit-quiz-btn').prop('disabled', true).html('<i class="la la-spinner la-spin"></i> Submitting...');
+        $('#submit-quiz-btn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
         if (quizTimerInterval) clearInterval(quizTimerInterval);
 
         $.post("{{ route('user.course.quiz.submit') }}", formData, function(data) {
@@ -644,29 +714,38 @@
     
     function showQuizResults(data) {
         let html = `
-            <div class="content-info text-center py-5">
+            <div class="text-center py-5">
                 <div class="mb-4">
-                    <i class="la ${data.is_pass ? 'la-trophy text-success' : 'la-times-circle text-danger'}" style="font-size: 80px;"></i>
+                    <i class="bi ${data.is_pass ? 'bi-trophy-fill text-success' : 'bi-x-circle-fill text-danger'}" style="font-size: 80px;"></i>
                 </div>
-                <h3 class="font-weight-bold ${data.is_pass ? 'text-success' : 'text-danger'}">${data.is_pass ? 'Congratulations, You Passed!' : 'Better Luck Next Time!'}</h3>
-                <div class="display-3 font-weight-bold my-4">${data.score}%</div>
+                <h3 class="fw-bold ${data.is_pass ? 'text-success' : 'text-danger'}">${data.is_pass ? 'Congratulations! You Passed!' : 'Don\'t give up! Try again.'}</h3>
+                <div class="display-3 fw-bold my-4 text-dark">${data.score}%</div>
                 
                 <div class="d-flex justify-content-center gap-3 mb-5">
-                    <button class="btn theme-btn" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')">Review Answers</button>
-                    ${!data.is_pass ? `<button class="btn btn-outline-primary" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')">Try Again</button>` : ''}
+                    <button class="btn btn-theme shadow-sm" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')"><i class="bi bi-eye"></i> Review Answers</button>
+                    ${!data.is_pass ? `<button class="btn btn-outline-danger" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')"><i class="bi bi-arrow-repeat"></i> Retry Quiz</button>` : ''}
                 </div>
             </div>
         `;
          
         $('#content-display-area').html(html);
         if (data.is_pass) {
-            const item = $(`.content-item.active[data-type="quiz"]`);
-            if (item.find('.completed-icon').length === 0) {
-                item.find('.completion-status').html('<i class="la la-check-circle completed-icon"></i>');
-                updateOverallProgress();
-            }
+            const item = $(`.lesson-item.active[data-type="quiz"]`);
+            // Mark complete
+            item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
+            updateOverallProgress();
         }
         if (data.course_finished) $('#completionModal').modal('show');
     }
 </script>
+<style>
+    /* Slight fade up animation for content */
+    .fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 @endpush

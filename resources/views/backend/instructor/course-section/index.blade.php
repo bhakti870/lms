@@ -64,7 +64,7 @@
                                     </div>
                                 </div>
                                 <!-- Button -->
-                                <div style="display: flex; alin-items: center; gap: 10">
+                                <div style="display: flex; align-items: center; gap: 10px">
                                     <button class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#course-{{ $data->id }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
@@ -276,6 +276,70 @@
 
     </div>
 @endsection
+
+@push('styles')
+<style>
+    /* Modal improvements */
+    .modal-dialog-scrollable .modal-body {
+        max-height: calc(90vh - 200px);
+        overflow-y: auto;
+    }
+    
+    .modal-content {
+        border-radius: 10px;
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+    
+    .modal-footer {
+        background-color: #f8f9fa;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    
+    /* Form improvements */
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    /* Button spacing fix */
+    .btn + .btn {
+        margin-left: 0.5rem;
+    }
+    
+    /* Iframe responsive */
+    iframe {
+        border-radius: 8px;
+    }
+    
+    /* Card improvements */
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+</style>
+@endpush
 
 @push('scripts')
     <script src="{{ asset('customjs/instructor/lecture.js') }}"></script>

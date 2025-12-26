@@ -12,7 +12,7 @@
     <!-- ================================
                    START CONTACT AREA
             ================================= -->
-    <form id="payment-form" method="post" action="{{ route('order') }}">
+    <form id="payment-form" method="post" action="{{ route('order') }}" data-turbo="false">
         @csrf
 
         <section class="cart-area section--padding">

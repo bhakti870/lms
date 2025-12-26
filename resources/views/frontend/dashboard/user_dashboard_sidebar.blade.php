@@ -50,12 +50,43 @@
     </div>
 </div>
 
+</style>
+
 <style>
-.dashboard-sidebar .list-group-item.active {
-    box-shadow: 0 4px 15px rgba(91, 80, 214, 0.2);
-}
-.dashboard-sidebar .list-group-item:not(.active):hover {
-    background-color: rgba(91, 80, 214, 0.05);
-    color: var(--theme-color) !important;
+/* --- Dashboard Sidebar Responsiveness --- */
+@media (max-width: 991.98px) {
+    .dashboard-sidebar .list-group {
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+        padding-bottom: 5px;
+        border-top: 1px solid #eee;
+    }
+    
+    .dashboard-sidebar .list-group-item {
+        border-bottom: 0 !important;
+        padding: 12px 20px !important;
+        margin: 0 !important;
+        flex: 0 0 auto;
+        border-right: 1px solid #eee !important;
+        border-radius: 0 !important;
+    }
+
+    .dashboard-sidebar .list-group-item.active {
+        background-color: transparent !important;
+        color: var(--theme-color) !important;
+        font-weight: 800 !important;
+        box-shadow: none !important;
+        border-bottom: 3px solid var(--theme-color) !important;
+    }
+
+    .dashboard-sidebar .card-body div:first-child {
+        display: none; /* Hide header on mobile for space */
+    }
+    
+    .dashboard-sidebar hr {
+        display: none;
+    }
 }
 </style>

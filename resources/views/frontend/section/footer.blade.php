@@ -1,121 +1,114 @@
-<section class="footer-area pt-100px">
+
+<section class="footer-area bg-white pt-100px border-top">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-3 responsive-column-half">
-                <div class="footer-item">
-                    <a href="index.html">
-                        <img src="/frontend/images/logo.png" alt="footer logo" class="footer__logo">
+        <div class="row g-4 justify-content-between">
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                <div class="footer-item pe-lg-5">
+                    <a href="{{ route('frontend.home') }}" class="d-flex align-items-center mb-4 text-decoration-none">
+                        <i class="bi bi-mortarboard-fill text-theme fs-1 me-2"></i>
+                        <span class="fw-bold fs-3 text-dark">skillpoint</span>
                     </a>
-                    <ul class="generic-list-item pt-4">
-                        <li><a href="tel:+1631237884">+163 123 7884</a></li>
-                        <li><a href="mailto:support@wbsite.com">support@website.com</a></li>
-                        <li>Melbourne, Australia, 105 South Park Avenue</li>
-                    </ul>
-                    <h3 class="fs-20 font-weight-semi-bold pt-4 pb-2">We are on</h3>
-                    <ul class="social-icons social-icons-styled">
-                        <li class="mr-1"><a href="#" class="facebook-bg"><i
-                                    class="la la-facebook"></i></a></li>
-                        <li class="mr-1"><a href="#" class="twitter-bg"><i
-                                    class="la la-twitter"></i></a></li>
-                        <li class="mr-1"><a href="#" class="instagram-bg"><i
-                                    class="la la-instagram"></i></a></li>
-                        <li class="mr-1"><a href="#" class="linkedin-bg"><i
-                                    class="la la-linkedin"></i></a></li>
-                    </ul>
-                </div><!-- end footer-item -->
-            </div><!-- end col-lg-3 -->
-            <div class="col-lg-3 responsive-column-half">
-                <div class="footer-item">
-                    <h3 class="fs-20 font-weight-semi-bold">Company</h3>
-                    <span class="section-divider section--divider"></span>
-                    <ul class="generic-list-item">
-                        <li><a href="#">About us</a></li>
-                        <li><a href="#">Contact us</a></li>
-                        <li><a href="{{ route('instructor.register') }}">Become a Teacher</a></li>
-                        <li><a href="#">Support</a></li>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Blog</a></li>
-                    </ul>
-                </div><!-- end footer-item -->
-            </div><!-- end col-lg-3 -->
-            <div class="col-lg-3 responsive-column-half">
-                <div class="footer-item">
-                    <h3 class="fs-20 font-weight-semi-bold">Courses</h3>
-                    <span class="section-divider section--divider"></span>
-                    <ul class="generic-list-item">
-                        <li><a href="#">Web Development</a></li>
-                        <li><a href="#">Hacking</a></li>
-                        <li><a href="#">PHP Learning</a></li>
-                        <li><a href="#">Spoken English</a></li>
-                        <li><a href="#">Self-Driving Car</a></li>
-                        <li><a href="#">Garbage Collectors</a></li>
-                </div><!-- end footer-item -->
-            </div><!-- end col-lg-3 -->
-           <div class="col-lg-3 responsive-column-half">
-    <div class="footer-item instructor-cta">
-        <h3 class="fs-20 font-weight-semi-bold">Become an Instructor</h3>
-        <span class="section-divider section--divider"></span>
-
-        <p class="fs-14 lh-24 mb-3">
-            Share your knowledge, create courses, and earn income by teaching students worldwide.
-        </p>
-
-        <a href="{{ route('instructor.login') }}" class="btn btn-primary btn-sm w-100">
-            <i class="la la-chalkboard-teacher mr-1"></i> Instructor Login
-        </a>
-
-        <p class="fs-13 text-muted text-center mt-2">
-            New here? Login & apply as instructor
-        </p>
-    </div>
-</div>
-
-                <!-- end footer-item -->
-            </div>
-            <!-- end col-lg-3 -->
-        </div>
-        <!-- end row -->
-    </div>
-    <!-- end container -->
-    <div class="section-block"></div>
-    <div class="copyright-content py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <p class="copy-desc">&copy; 2021 SkillPoint. All Rights Reserved. by <a
-                            href="https://techydevs.com/">TechyDevs</a></p>
-                </div><!-- end col-lg-6 -->
-                <div class="col-lg-6">
-                    <div class="d-flex flex-wrap align-items-center justify-content-end">
-                        <ul class="generic-list-item d-flex flex-wrap align-items-center fs-14">
-                            <li class="mr-3"><a href="terms-and-conditions.html">Terms & Conditions</a></li>
-                            <li class="mr-3"><a href="privacy-policy.html">Privacy Policy</a></li>
-                        </ul>
-                        <div class="select-container select-container-sm">
-                            <select class="select-container-select">
-                                <option value="1">English</option>
-                                <option value="2">Deutsch</option>
-                                <option value="3">Español</option>
-                                <option value="4">Français</option>
-                                <option value="5">Bahasa Indonesia</option>
-                                <option value="6">Bangla</option>
-                                <option value="7">日本語</option>
-                                <option value="8">한국어</option>
-                                <option value="9">Nederlands</option>
-                                <option value="10">Polski</option>
-                                <option value="11">Português</option>
-                                <option value="12">Română</option>
-                                <option value="13">Русский</option>
-                                <option value="14">ภาษาไทย</option>
-                                <option value="15">Türkçe</option>
-                                <option value="16">中文(简体)</option>
-                                <option value="17">中文(繁體)</option>
-                                <option value="17">Hindi</option>
-                            </select>
-                        </div>
+                    <p class="text-muted mb-4 fs-15 lh-lg">
+                        Empowering learners worldwide with accessible, high-quality online education. Join our community of experts and students today.
+                    </p>
+                    <div class="social-links-premium d-flex gap-2">
+                        <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-btn"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-btn"><i class="bi bi-linkedin"></i></a>
                     </div>
-                </div><!-- end col-lg-6 -->
-            </div><!-- end row -->
-        </div><!-- end container -->
-    </div><!-- end copyright-content -->
-</section><!-- end footer-area -->
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <div class="footer-item">
+                    <h5 class="fw-bold mb-4 text-dark">Company</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Our Courses</a></li>
+                        <li class="mb-2"><a href="{{ route('instructor.register') }}" class="text-muted text-decoration-none">Become an Instructor</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Success Stories</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <div class="footer-item">
+                    <h5 class="fw-bold mb-4 text-dark">Support</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Help Center</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Terms of Service</a></li>
+                        <li class="mb-2"><a href="#" class="text-muted text-decoration-none">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-item instructor-panel-cta p-4 rounded-4 bg-light border border-dashed">
+                    <h6 class="fw-bold mb-2">Teaching Dashboard</h6>
+                    <p class="small text-muted mb-3">Login to manage your students and courses.</p>
+                    <a href="{{ route('instructor.login') }}" class="btn btn-theme w-100 py-2 rounded-3 text-white">
+                        Instructor Login <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container mt-5">
+        <div class="border-top py-4 text-center">
+            <p class="mb-0 text-muted small">
+                &copy; {{ date('Y') }} SkillPoint Learning. Designed for Modern Education.
+            </p>
+        </div>
+    </div>
+</section>
+
+<style>
+.footer-links a:hover {
+    color: var(--theme-color) !important;
+    padding-left: 5px;
+    transition: all 0.3s ease;
+}
+
+.social-btn {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border-radius: 10px;
+    color: #444;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.social-btn:hover {
+    background: #2D58FF;
+    color: #fff;
+    transform: translateY(-3px);
+    border-color: #2D58FF;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+}
+
+@media (max-width: 991px) {
+    .footer-area {
+        padding-top: 60px;
+        text-align: center;
+    }
+    .social-links-premium {
+        justify-content: center;
+    }
+    .instructor-panel-cta {
+        margin-top: 20px;
+    }
+}
+</style>

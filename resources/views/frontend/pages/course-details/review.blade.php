@@ -1,37 +1,47 @@
-<div class="course-overview-card pt-4">
-    <h3 class="fs-24 font-weight-semi-bold pb-4">Reviews</h3>
+<div class="course-overview-card pt-5">
+    <h3 class="fs-24 fw-bold pb-4 text-dark">Reviews</h3>
     <div class="review-wrap">
         @php
             $reviews = $course->reviews;
         @endphp
 
         @forelse($reviews as $review)
-        <div class="media media-card border-bottom border-bottom-gray pb-4 mb-4">
-            <div class="media-img mr-4 rounded-full">
-                <img class="rounded-full lazy" src="{{ $review->user->photo ? asset('uploads/user_images/'.$review->user->photo) : asset('uploads/no_image.jpg') }}" alt="User image">
-            </div>
-            <div class="media-body">
-                <div class="d-flex flex-wrap align-items-center justify-content-between pb-1">
-                    <h5>{{ $review->user->name }}</h5>
-                    <div class="review-stars">
-                        @for($i = 1; $i <= 5; $i++)
-                            @if($i <= $review->rating)
-                                <span class="la la-star"></span>
-                            @else
-                                <span class="la la-star-o"></span>
-                            @endif
-                        @endfor
-                    </div>
+        <div class="card border-0 shadow-sm rounded-4 mb-4 p-4">
+            <div class="d-flex align-items-start gap-4">
+                <div class="flex-shrink-0">
+                    <img class="rounded-circle object-fit-cover shadow-sm" 
+                         src="{{ $review->user->photo ? asset('uploads/user_images/'.$review->user->photo) : asset('uploads/no_image.jpg') }}" 
+                         alt="{{ $review->user->name }}" width="60" height="60">
                 </div>
-                <span class="d-block lh-18 pb-2">{{ $review->created_at->diffForHumans() }}</span>
-                <p class="pb-2">{{ $review->comment }}</p>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <h5 class="fw-bold mb-1">{{ $review->user->name }}</h5>
+                            <span class="text-muted small">{{ $review->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div class="text-warning">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= $review->rating)
+                                    <i class="bi bi-star-fill"></i>
+                                @else
+                                    <i class="bi bi-star"></i>
+                                @endif
+                            @endfor
+                        </div>
+                    </div>
+                    
+                    <p class="text-secondary lh-lg mb-0">{{ $review->comment }}</p>
+                </div>
             </div>
-        </div><!-- end media -->
+        </div>
         @empty
-            <p>No reviews yet for this course.</p>
+            <div class="text-center py-5 bg-light rounded-4">
+                <i class="bi bi-chat-square-text text-muted fs-1 mb-3"></i>
+                <p class="text-muted">No reviews yet. Be the first to share your thoughts!</p>
+            </div>
         @endforelse
-    </div><!-- end review-wrap -->
-</div><!-- end course-overview-card -->
+    </div>
+</div>
 
 @auth
     @php
@@ -39,41 +49,46 @@
     @endphp
 
     @if($isEnrolled)
-    <div class="course-overview-card pt-4">
-        <h3 class="fs-24 font-weight-semi-bold pb-4">Add a Review</h3>
-        <form action="{{ route('store.review') }}" method="post" class="row">
-            @csrf
-            <input type="hidden" name="course_id" value="{{ $course->id }}">
-            
-            <div class="leave-rating-wrap pb-4 col-lg-12">
-                <div class="leave-rating leave--rating">
-                    <input type="radio" name='rating' id="star5" value="5" required />
-                    <label for="star5"></label>
-                    <input type="radio" name='rating' id="star4" value="4" />
-                    <label for="star4"></label>
-                    <input type="radio" name='rating' id="star3" value="3" />
-                    <label for="star3"></label>
-                    <input type="radio" name='rating' id="star2" value="2" />
-                    <label for="star2"></label>
-                    <input type="radio" name='rating' id="star1" value="1" />
-                    <label for="star1"></label>
-                </div><!-- end leave-rating -->
-            </div>
-
-            <div class="input-box col-lg-12">
-                <label class="label-text">Message</label>
-                <div class="form-group">
-                    <textarea class="form-control form--control pl-3" name="comment" placeholder="Write Message" rows="5" required></textarea>
+    <div class="course-overview-card pt-5">
+        <h3 class="fs-24 fw-bold pb-4 text-dark">Write a Review</h3>
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-light">
+            <form action="{{ route('store.review') }}" method="post">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Your Rating</label>
+                    <div class="leave-rating leave--rating d-flex gap-2">
+                        <input type="radio" name='rating' id="star5" value="5" required />
+                        <label for="star5" class="fs-4"></label>
+                        <input type="radio" name='rating' id="star4" value="4" />
+                        <label for="star4" class="fs-4"></label>
+                        <input type="radio" name='rating' id="star3" value="3" />
+                        <label for="star3" class="fs-4"></label>
+                        <input type="radio" name='rating' id="star2" value="2" />
+                        <label for="star2" class="fs-4"></label>
+                        <input type="radio" name='rating' id="star1" value="1" />
+                        <label for="star1" class="fs-4"></label>
+                    </div>
                 </div>
-            </div><!-- end input-box -->
-            <div class="btn-box col-lg-12">
-                <button class="btn theme-btn" type="submit">Submit Review</button>
-            </div><!-- end btn-box -->
-        </form>
-    </div><!-- end course-overview-card -->
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Your Review</label>
+                    <textarea class="form-control border-0 shadow-inner rounded-3 p-3" name="comment" placeholder="Share your experience..." rows="5" required style="resize: none;"></textarea>
+                </div>
+                
+                <button class="btn btn-theme rounded-pill px-5 fw-bold" type="submit">Submit Review</button>
+            </form>
+        </div>
+    </div>
     @endif
 @else
-    <div class="course-overview-card pt-4">
-        <p>Please <a href="{{ route('login') }}">login</a> to leave a review.</p>
+    <div class="course-overview-card pt-5">
+        <div class="alert alert-light border-0 shadow-sm rounded-4 d-flex align-items-center gap-3" role="alert">
+            <i class="bi bi-info-circle-fill text-theme fs-4"></i>
+            <div>
+                Please <a href="{{ route('login') }}" class="fw-bold text-theme text-decoration-none">login</a> to leave a review.
+            </div>
+        </div>
     </div>
 @endauth

@@ -1,5 +1,5 @@
 <div class="modal" id="course-{{ $data->id }}">
-    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" style="max-height: 90vh;">
         <div class="modal-content">
 
             <!-- Modal Header -->
@@ -10,7 +10,7 @@
 
             <!-- Modal body -->
             <div class="modal-body">
-                <form method="post" action="{{ route('instructor.lecture.store') }}" enctype="multipart/form-data">
+                <form id="lecture-form-{{ $data->id }}" method="post" action="{{ route('instructor.lecture.store') }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}" />
                     <input type="hidden" name="section_id" value="{{ $data->id }}" />
@@ -26,7 +26,7 @@
                         <label for="url" class="form-label">YouTube Video URL</label>
                         <input type="url" class="form-control" name="url" id="video_url"
                             placeholder="Enter the YouTube video URL" value="{{ old('url') }}">
-                        <iframe id="videoPreview" style="margin-top: 15px; display: none; width: 100%; height: 400px;"
+                        <iframe id="videoPreview" style="margin-top: 15px; display: none; width: 100%; height: 250px;"
                             frameborder="0" allowfullscreen></iframe>
                     </div>
 
@@ -75,10 +75,14 @@
                     </div>
 
 
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary w-100">Submit</button>
-                    </div>
+
                 </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" form="lecture-form-{{ $data->id }}" class="btn btn-primary">Submit</button>
             </div>
 
 

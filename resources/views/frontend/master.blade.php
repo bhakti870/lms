@@ -3,7 +3,7 @@
 
 <head>
 
-    <title>Aduca - Learning Management System</title>
+    <title>Skillpoint - Learning Management System</title>
 
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -13,23 +13,16 @@
     <!-- Favicon -->
     <link rel="icon" sizes="16x16" href="{{ asset('frontend/images/favicon.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    {{-- Hotwire Turbo for SPA feel --}}
+    <script src="https://unpkg.com/@hotwired/turbo@7.3.0/dist/turbo.es2017-umd.js" defer></script>
+    <meta name="turbo-cache-control" content="no-preview">
 
     <!-- inject:css -->
 
     @include('frontend.section.link')
 
     <!-- end inject -->
-
-    <script>
-        // Apply theme immediately before page renders
-        (function() {
-            const theme = localStorage.getItem('theme');
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
-                document.body.classList.add('dark-theme');
-            }
-        })();
-    </script>
 </head>
 
 <body>

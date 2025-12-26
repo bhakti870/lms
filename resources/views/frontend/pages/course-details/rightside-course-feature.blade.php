@@ -1,35 +1,53 @@
-<div class="card card-item">
-    <div class="card-body">
-        <h3 class="card-title fs-18 pb-2">Course Features</h3>
-        <div class="divider"><span></span></div>
+<div class="sidebar-widget mt-4">
+    <div class="card border-0 shadow-sm rounded-4 bg-white p-4">
+        <h5 class="fw-bold mb-4 d-flex align-items-center">
+            <i class="bi bi-grid-fill text-theme me-2"></i> Course Features
+        </h5>
 
-        <ul class="generic-list-item generic-list-item-flash">
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-clock mr-2 text-color"></i>Duration</span> {{$total_lecture_duration}} hours</li>
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-play-circle-o mr-2 text-color"></i>Lectures</span> {{$total_lecture}}
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-clock me-2"></i>Duration</span>
+                <span class="fw-bold text-dark">{{ $total_lecture_duration }} hours</span>
             </li>
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-question mr-2 text-color"></i>Quizzes</span> {{ $course->quizzes->count() }}
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-camera-video me-2"></i>Lectures</span>
+                <span class="fw-bold text-dark">{{ $total_lecture }}</span>
             </li>
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-file-text-o mr-2 text-color"></i>Resources</span> {{ $course->materials->count() }}</li>
-
-
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-language mr-2 text-color"></i>Language</span> English
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-patch-question me-2"></i>Quizzes</span>
+                <span class="fw-bold text-dark">{{ $course->quizzes->count() }}</span>
             </li>
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-lightbulb mr-2 text-color"></i>Skill level</span>
-                        <sapn style="text-transform: capitalize">{{$course->label}}</sapn></li>
-
-
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-users mr-2 text-color"></i>Students</span> {{ $course->enrollments->count() }}</li>
-            <li class="d-flex align-items-center justify-content-between"><span><i
-                        class="la la-certificate mr-2 text-color"></i>Certificate</span> {{$course->certificate == 'yes' ? 'Yes' : 'No'}}
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-folder2-open me-2"></i>Resources</span>
+                <span class="fw-bold text-dark">{{ $course->materials->count() }}</span>
+            </li>
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-globe me-2"></i>Language</span>
+                <span class="fw-bold text-dark">English</span>
+            </li>
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-bar-chart-fill me-2"></i>Skill Level</span>
+                <span class="badge bg-light text-dark border fw-bold text-uppercase">{{ $course->label }}</span>
+            </li>
+            
+            <li class="d-flex justify-content-between align-items-center pb-3 border-bottom border-light-subtle">
+                <span class="text-secondary"><i class="bi bi-people-fill me-2"></i>Students</span>
+                <span class="fw-bold text-dark">{{ $course->enrollments->count() }}</span>
+            </li>
+            
+            <li class="d-flex justify-content-between align-items-center">
+                <span class="text-secondary"><i class="bi bi-award-fill me-2"></i>Certificate</span>
+                @if($course->certificate == 'yes')
+                    <span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Yes</span>
+                @else
+                    <span class="text-muted fw-bold">No</span>
+                @endif
             </li>
         </ul>
-
     </div>
-</div><!-- end card -->
+</div>

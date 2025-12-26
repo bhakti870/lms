@@ -1,83 +1,108 @@
-<section class="breadcrumb-area pt-50px pb-50px bg-white pattern-bg">
-    <div class="container">
-        <div class="col-lg-8 mr-auto">
-            <div class="breadcrumb-content">
-                <ul class="generic-list-item generic-list-item-arrow d-flex flex-wrap align-items-center">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="#">{{ $course['category']['name'] }}</a></li>
-                    <li><a href="#">{{ $course['subcategory']['name'] }}</a></li>
-                </ul>
+<section class="breadcrumb-area pt-5 pb-5 bg-dark position-relative overflow-hidden">
+    {{-- Background Glow Effect --}}
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10" style="background: radial-gradient(circle at 10% 20%, #7079e7 0%, transparent 40%); pointer-events: none;"></div>
+    
+    <div class="container position-relative z-index-1">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="breadcrumb-content text-white">
+                    {{-- Breadcrumbs --}}
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-3">
+                            <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}" class="text-white opacity-75 text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('category.details', $course->category->slug) }}" class="text-white opacity-75 text-decoration-none">{{ $course['category']['name'] }}</a></li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">{{ $course['subcategory']['name'] }}</li>
+                        </ol>
+                    </nav>
 
-                <div class="section-heading">
-                    <h2 class="section__title">{{ $course['course_name'] }}</h2>
-                    <p class="section__desc pt-2 lh-30">{{ $course['course_title'] }}</p>
-                </div><!-- end section-heading -->
+                    {{-- Title --}}
+                    <h1 class="display-5 fw-bold mb-3 text-white">{{ $course['course_name'] }}</h1>
+                    
+                    {{-- Subtitle --}}
+                    <p class="lead text-white opacity-75 mb-4 fs-5">{{ $course['course_title'] }}</p>
 
-                <div class="d-flex flex-wrap align-items-center pt-3">
+                    {{-- Meta Badges & Ratings --}}
+                    <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                        @if($course['bestseller'] == 'yes')
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fw-bold">
+                                <i class="bi bi-award-fill me-1"></i> Bestseller
+                            </span>
+                        @endif
+                        
+                        @if($course['featured'] == 'yes')
+                            <span class="badge bg-info text-white rounded-pill px-3 py-2 fw-bold">
+                                <i class="bi bi-star-fill me-1"></i> Featured
+                            </span>
+                        @endif
+                        
+                        <span class="badge bg-theme text-white rounded-pill px-3 py-2 text-uppercase">
+                            {{ $course['label'] }}
+                        </span>
 
-                    <h6 class="ribbon ribbon-lg mr-2 bg-3 text-white" style="text-transform: capitalize">
-                        {{ $course['label'] }}</h6>
-
-                    <div class="rating-wrap d-flex flex-wrap align-items-center">
-                        @php
-                            $review_count = $course->reviews->count();
-                            $avg_rating = $course->reviews->avg('rating');
-                            $rounded_avg = round($avg_rating, 1);
-                        @endphp
-                        <div class="review-stars">
-                            <span class="rating-number">{{ $rounded_avg > 0 ? $rounded_avg : '0.0' }}</span>
-                            @for($i = 1; $i <= 5; $i++)
-                                @if($i <= $rounded_avg)
-                                    <span class="la la-star"></span>
-                                @elseif($i - 0.5 <= $rounded_avg)
-                                    <span class="la la-star-half-o"></span>
-                                @else
-                                    <span class="la la-star-o"></span>
-                                @endif
-                            @endfor
+                        <div class="d-flex align-items-center text-warning">
+                            <span class="fw-bold me-1 fs-5">{{ round($course->reviews->avg('rating'), 1) }}</span>
+                            <div class="d-flex small me-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= round($course->reviews->avg('rating')))
+                                        <i class="bi bi-star-fill"></i>
+                                    @else
+                                        <i class="bi bi-star"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                            <span class="text-white opacity-75 small">({{ $course->reviews->count() }} ratings)</span>
                         </div>
-                        <span class="rating-total pl-1">({{ $review_count }} ratings)</span>
-                        <span class="student-total pl-2">{{ $course->enrollments->count() }} students</span>
+                        
+                        <div class="text-white opacity-75 small border-start border-secondary ps-3">
+                            <i class="bi bi-people-fill me-1"></i> {{ $course->enrollments->count() }} students enrolled
+                        </div>
                     </div>
-                </div><!-- end d-flex -->
 
-                <p class="pt-2 pb-1">Created by <a href="teacher-detail.html"
-                    class="text-color hover-underline">{{ $course['user']['name'] }}</a></p>
+                    {{-- Author & Last Updated --}}
+                    <div class="d-flex flex-wrap align-items-center gap-4 text-white opacity-90 mb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <img src="{{ $course->user->photo ? asset($course->user->photo) : asset('frontend/images/small-avatar-1.jpg') }}" 
+                                     alt="{{ $course->user->name }}" 
+                                     class="rounded-circle border border-2 border-white"
+                                     width="40" height="40">
+                            </div>
+                            <div>
+                                <span class="d-block small opacity-75 lh-1">Created by</span>
+                                <a href="{{ route('instructor.details', $course->user->id) }}" class="text-white text-decoration-none fw-bold">{{ $course['user']['name'] }}</a>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center small">
+                            <i class="bi bi-exclamation-circle me-2 fs-5"></i>
+                            <span>Last updated {{ \Carbon\Carbon::parse($course->updated_at)->format('M Y') }}</span>
+                        </div>
+                        
+                        <div class="d-flex align-items-center small">
+                            <i class="bi bi-globe me-2 fs-5"></i>
+                            <span>English</span>
+                        </div>
+                    </div>
 
-                <div class="d-flex flex-wrap align-items-center">
-                    <p class="pr-3 d-flex align-items-center">
-                        <svg class="svg-icon-color-gray mr-1" width="16px" viewBox="0 0 24 24">
-                            <path
-                                d="M23 12l-2.44-2.78.34-3.68-3.61-.82-1.89-3.18L12 3 8.6 1.54 6.71 4.72l-3.61.81.34 3.68L1 12l2.44 2.78-.34 3.69 3.61.82 1.89 3.18L12 21l3.4 1.46 1.89-3.18 3.61-.82-.34-3.68L23 12zm-10 5h-2v-2h2v2zm0-4h-2V7h2v6z">
-                            </path>
-                        </svg>
-                        Last updated {{ \Carbon\Carbon::parse($course->updated_at)->format('d F Y') }}
-                    </p>
-                    <p class="pr-3 d-flex align-items-center">
-                        <svg class="svg-icon-color-gray mr-1" width="16px" viewBox="0 0 24 24">
-                            <path
-                                d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 00-1.38-3.56A8.03 8.03 0 0118.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.987 7.987 0 015.08 16zm2.95-8H5.08a7.987 7.987 0 014.33-3.56A15.65 15.65 0 008.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 01-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z">
-                            </path>
-                        </svg>
-                        English
-                    </p>
-                </div><!-- end d-flex -->
-                <div class="bread-btn-box pt-3">
-                    <button class="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2 wishlist-icon" data-course-id="{{ $course->id }}">
-                        <i class="la {{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'la-heart' : 'la-heart-o' }} mr-1"></i>
-                        <span class="swapping-btn" data-text-swap="Wishlisted"
-                            data-text-original="Wishlist">Wishlist</span>
-                    </button>
-                    <button class="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mr-2 mb-2"
-                        data-toggle="modal" data-target="#shareModal">
-                        <i class="la la-share mr-1"></i>Share
-                    </button>
-                    <button class="btn theme-btn theme-btn-sm theme-btn-transparent lh-28 mb-2"
-                        data-toggle="modal" data-target="#reportModal">
-                        <i class="la la-flag mr-1"></i>Report abuse
-                    </button>
+                    {{-- Action Buttons --}}
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-light rounded-pill px-4 btn-sm wishlist-icon" data-course-id="{{ $course->id }}">
+                            <i class="bi {{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'bi-heart-fill text-danger' : 'bi-heart' }} me-2"></i>
+                            <span>{{ \App\Models\Wishlist::where('user_id', auth()->id())->where('course_id', $course->id)->exists() ? 'Wishlisted' : 'Wishlist' }}</span>
+                        </button>
+                        <button class="btn btn-outline-light rounded-pill px-4 btn-sm" data-bs-toggle="modal" data-bs-target="#shareModal">
+                            <i class="bi bi-share me-2"></i> Share
+                        </button>
+                    </div>
                 </div>
-            </div><!-- end breadcrumb-content -->
-        </div><!-- end col-lg-8 -->
-    </div><!-- end container -->
-</section><!-- end breadcrumb-area -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Custom override for breadcrumb separator color in dark mode */
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255,255,255, 0.5);
+    }
+</style>

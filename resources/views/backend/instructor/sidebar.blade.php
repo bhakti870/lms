@@ -60,6 +60,14 @@
             </a>
         </li>
 
+         <li class="{{ setSidebar(['instructor.question*']) }}">
+            <a href="{{ route('instructor.question.index') }}">
+                <div class="parent-icon"><i class='bx bx-chat'></i>
+                </div>
+                <div class="menu-title">Course Q&A</div>
+            </a>
+        </li>
+
         <li class="{{ setSidebar(['instructor.all.review*']) }}">
             <a href="{{ route('instructor.all.review') }}">
                 <div class="parent-icon"><i class='bx bx-star'></i>

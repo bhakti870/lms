@@ -174,6 +174,11 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')
     // Instructor Order History
     Route::get('/orders', [InstructorOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/view/{id}', [InstructorOrderController::class, 'show'])->name('orders.show');
+
+    // Instructor Course Q&A
+    Route::get('/questions', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'index'])->name('question.index');
+    Route::get('/questions/{id}', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'show'])->name('question.show');
+    Route::post('/questions/{id}/reply', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'reply'])->name('question.reply');
 });
 
 
@@ -205,6 +210,11 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::post('/course/progress', [CourseDeliveryController::class, 'saveProgress'])->name('course.progress');
     Route::post('/course-quiz-submit', [CourseDeliveryController::class, 'submitQuiz'])->name('course.quiz.submit');
     Route::get('/course-certificate/{course_id}', [CourseDeliveryController::class, 'downloadCertificate'])->name('course.certificate');
+
+    /* Course Q&A */
+    Route::get('/course-questions/{lecture_id}', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'fetchQuestions']);
+    Route::post('/course/question/store', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'store'])->name('course.question.store');
+    Route::post('/course/question/reply', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'reply'])->name('course.question.reply');
 
     /* Purchase History */
     Route::get('/purchase-history', [UserController::class, 'purchaseHistory'])->name('purchase.history');

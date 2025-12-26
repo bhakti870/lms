@@ -1,20 +1,20 @@
-<div class="content-card">
+<div class="content-card bg-transparent shadow-none border-0">
 @if($type === 'lecture')
     @if($content->is_live)
-        <div class="live-class-ui-wrapper mb-4 overflow-hidden rounded-20 shadow-lg" style="background: #0f172a; position: relative;">
+        <div class="live-class-ui-wrapper mb-4 overflow-hidden rounded-4 shadow-lg position-relative bg-dark text-white">
             <!-- Background Decoration -->
-            <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(99, 102, 241, 0.2); border-radius: 50%; filter: blur(60px); z-index: 1;"></div>
-            <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(236, 72, 153, 0.2); border-radius: 50%; filter: blur(50px); z-index: 1;"></div>
+            <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(99, 102, 241, 0.3); border-radius: 50%; filter: blur(60px); z-index: 1;"></div>
+            <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(236, 72, 153, 0.3); border-radius: 50%; filter: blur(50px); z-index: 1;"></div>
             
             <div class="p-5 text-center position-relative" style="z-index: 2;">
                 <div class="mb-4 d-inline-block">
-                    <div class="live-indicator p-1 px-3 rounded-pill bg-danger shadow-sm d-flex align-items-center gap-2" style="animation: pulse-red 2s infinite;">
-                        <span style="width: 8px; height: 8px; background: white; border-radius: 50%;"></span>
-                        <span class="text-white fw-bold fs-12 letter-spacing-1">LIVE SESSION</span>
+                    <div class="live-indicator p-2 px-3 rounded-pill bg-danger shadow-sm d-flex align-items-center gap-2" style="animation: pulse-red 2s infinite;">
+                        <span class="bg-white rounded-circle" style="width: 8px; height: 8px;"></span>
+                        <span class="text-white fw-bold small text-uppercase ls-1">Live Session</span>
                     </div>
                 </div>
 
-                <h2 class="text-white fw-800 mb-3 fs-32">Interactive Live Learning</h2>
+                <h2 class="fw-bold mb-3 display-6">Interactive Live Learning</h2>
                 
                 @if($content->live_date && $content->live_time)
                     @php
@@ -24,69 +24,69 @@
 
                     @if($isFuture)
                         <div id="countdown-wrapper" class="mb-5">
-                            <p class="text-blue-200 fs-14 mb-3 opacity-80">Starts in:</p>
+                            <p class="text-light opacity-75 mb-3 small text-uppercase ls-1">Starts in:</p>
                             <div class="d-flex justify-content-center gap-3">
-                                <div class="countdown-item bg-glass p-3 rounded-lg text-white" style="min-width: 70px;">
-                                    <span id="days" class="d-block fs-24 fw-bold">00</span>
-                                    <small class="fs-10 opacity-70">DAYS</small>
+                                <div class="bg-white bg-opacity-10 p-3 rounded-3" style="min-width: 80px;">
+                                    <span id="days" class="d-block h3 fw-bold mb-0">00</span>
+                                    <small class="small text-white-50">DAYS</small>
                                 </div>
-                                <div class="countdown-item bg-glass p-3 rounded-lg text-white" style="min-width: 70px;">
-                                    <span id="hours" class="d-block fs-24 fw-bold">00</span>
-                                    <small class="fs-10 opacity-70">HOURS</small>
+                                <div class="bg-white bg-opacity-10 p-3 rounded-3" style="min-width: 80px;">
+                                    <span id="hours" class="d-block h3 fw-bold mb-0">00</span>
+                                    <small class="small text-white-50">HOURS</small>
                                 </div>
-                                <div class="countdown-item bg-glass p-3 rounded-lg text-white" style="min-width: 70px;">
-                                    <span id="minutes" class="d-block fs-24 fw-bold">00</span>
-                                    <small class="fs-10 opacity-70">MINS</small>
+                                <div class="bg-white bg-opacity-10 p-3 rounded-3" style="min-width: 80px;">
+                                    <span id="minutes" class="d-block h3 fw-bold mb-0">00</span>
+                                    <small class="small text-white-50">MINS</small>
                                 </div>
-                                <div class="countdown-item bg-glass p-3 rounded-lg text-white" style="min-width: 70px;">
-                                    <span id="seconds" class="d-block fs-24 fw-bold">00</span>
-                                    <small class="fs-10 opacity-70">SECS</small>
+                                <div class="bg-white bg-opacity-10 p-3 rounded-3" style="min-width: 80px;">
+                                    <span id="seconds" class="d-block h3 fw-bold mb-0">00</span>
+                                    <small class="small text-white-50">SECS</small>
                                 </div>
                             </div>
                         </div>
                     @endif
                 @endif
 
-                <p class="text-blue-200 fs-16 mb-5 opacity-80 mx-auto" style="max-width: 500px;">Join our expert-led session to engage, ask questions, and master your skills in real-time.</p>
+                <p class="text-light opacity-75 mb-5 mx-auto lead" style="max-width: 600px;">Join our expert-led session to engage, ask questions, and master your skills in real-time.</p>
                 
-                <div class="meeting-card bg-glass mb-5 p-4 rounded-xl border border-white-10 mx-auto" style="max-width: 450px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
+                <div class="bg-white bg-opacity-10 mb-5 p-4 rounded-4 border border-light border-opacity-10 mx-auto nav-glass" style="max-width: 500px;">
                     <div class="row align-items-center">
                         @if($content->live_id)
-                        <div class="col-6 border-end border-white-10">
-                            <small class="text-white-50 d-block fs-11 text-uppercase mb-1">Meeting ID</small>
-                            <span class="text-white fw-bold fs-18 letter-spacing-1">{{ $content->live_id }}</span>
+                        <div class="col-6 border-end border-light border-opacity-25">
+                            <small class="text-white-50 d-block small text-uppercase mb-1">Meeting ID</small>
+                            <span class="fw-bold fs-5 ls-1">{{ $content->live_id }}</span>
                         </div>
                         @endif
                         @if($content->live_password)
                         <div class="col-6">
-                            <small class="text-white-50 d-block fs-11 text-uppercase mb-1">Password</small>
-                            <span class="text-white fw-bold fs-18 letter-spacing-1">{{ $content->live_password }}</span>
+                            <small class="text-white-50 d-block small text-uppercase mb-1">Password</small>
+                            <span class="fw-bold fs-5 ls-1">{{ $content->live_password }}</span>
                         </div>
                         @endif
                     </div>
                 </div>
 
-                <div class="action-btn-wrapper d-flex flex-wrap justify-content-center gap-3">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
                     @if(isset($scheduledAt) && $scheduledAt->isFuture())
-                        <button class="btn btn-premium-gradient btn-lg px-5 py-3 rounded-pill fw-bold shadow-xl opacity-50" disabled>
-                            <i class="la la-clock me-2 fs-20"></i> Waiting for Start Time
+                        <button class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow-lg opacity-50" disabled>
+                            <i class="bi bi-clock me-2"></i> Waiting for Start Time
                         </button>
                     @else
-                        <a href="{{ $content->live_link }}" target="_blank" class="btn btn-premium-gradient btn-lg px-5 py-3 rounded-pill fw-bold shadow-xl hover-translate-y">
-                            <i class="la la-external-link-alt me-2 fs-20"></i> Launch Meeting Room
+                        <a href="{{ $content->live_link }}" target="_blank" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow-lg hover-scale">
+                            <i class="bi bi-camera-video-fill me-2"></i> Launch Meeting
                         </a>
                     @endif
-
+                    
                     @if(isset($scheduledAt))
-                        @php
+                         @php
                             $start = $scheduledAt->format('Ymd\THis');
                             $end = $scheduledAt->addHour()->format('Ymd\THis');
                             $calText = urlencode($course->course_name . ' - ' . $content->lecture_title . ' (Live Class)');
                             $calDetails = urlencode('Join the live class session for ' . $content->lecture_title . '. Meeting ID: ' . $content->live_id);
                             $googleCalUrl = "https://www.google.com/calendar/render?action=TEMPLATE&text={$calText}&dates={$start}/{$end}&details={$calDetails}&location=" . urlencode($content->live_link);
                         @endphp
-                        <a href="{{ $googleCalUrl }}" target="_blank" class="btn btn-premium-calendar btn-lg px-4 py-3 rounded-pill fw-bold shadow-xl hover-translate-y">
-                            <i class="la la-calendar-plus me-2 fs-20"></i> Add to Calendar
+                        <a href="{{ $googleCalUrl }}" target="_blank" class="btn btn-outline-light btn-lg px-5 rounded-pill fw-bold hover-scale">
+                            <i class="bi bi-calendar-plus-fill me-2"></i> Add to Calendar
                         </a>
                     @endif
                 </div>
@@ -95,33 +95,21 @@
                 <script>
                     (function() {
                         const targetDate = new Date("{{ $scheduledAt->toIso8601String() }}").getTime();
-                        
                         function updateCountdown() {
                             const now = new Date().getTime();
                             const distance = targetDate - now;
-
-                            if (distance < 0) {
-                                // Reload to show Join button when time is up
-                                location.reload();
-                                return;
-                            }
-
+                            if (distance < 0) { location.reload(); return; }
                             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                            const dEl = document.getElementById("days");
-                            const hEl = document.getElementById("hours");
-                            const mEl = document.getElementById("minutes");
-                            const sEl = document.getElementById("seconds");
-
-                            if(dEl) dEl.innerText = days.toString().padStart(2, '0');
-                            if(hEl) hEl.innerText = hours.toString().padStart(2, '0');
-                            if(mEl) mEl.innerText = minutes.toString().padStart(2, '0');
-                            if(sEl) sEl.innerText = seconds.toString().padStart(2, '0');
+                            
+                            ['days','hours','minutes','seconds'].forEach((id, idx) => {
+                                const val = [days, hours, minutes, seconds][idx];
+                                const el = document.getElementById(id);
+                                if(el) el.innerText = val.toString().padStart(2, '0');
+                            });
                         }
-
                         if(document.getElementById("countdown-wrapper")) {
                             setInterval(updateCountdown, 1000);
                             updateCountdown();
@@ -131,60 +119,23 @@
                 @endif
                 
                 <div class="mt-4">
-                    <span class="text-white-50 fs-12"><i class="la la-info-circle me-1"></i> Supports Zoom, Google Meet & Microsoft Teams</span>
+                    <span class="text-white-50 small"><i class="bi bi-info-circle me-1"></i> Supports Zoom, Google Meet & Microsoft Teams</span>
                 </div>
             </div>
         </div>
-
+        
         <style>
-            .shadow-xs { box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        </style>
-
-        <style>
-            .rounded-20 { border-radius: 20px; }
-            .rounded-xl { border-radius: 12px; }
-            .letter-spacing-1 { letter-spacing: 1px; }
-            .fw-800 { font-weight: 800; }
-            .bg-glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-            .border-white-10 { border-color: rgba(255, 255, 255, 0.1) !important; }
-            .text-blue-200 { color: #bfdbfe; }
-            .btn-premium-gradient {
-                background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-                color: white !important;
-                border: none;
-                transition: all 0.3s ease;
-            }
-            .btn-premium-gradient:hover {
-                background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
-                transform: translateY(-3px);
-                box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
-            }
-            .hover-translate-y:hover { transform: translateY(-3px); }
-            
-            .btn-premium-calendar {
-                background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
-                color: white !important;
-                border: none;
-                transition: all 0.3s ease;
-            }
-            .btn-premium-calendar:hover {
-                background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
-                transform: translateY(-3px);
-                box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
-            }
-            .transition-300 { transition: all 0.3s ease; }
-            [aria-expanded="true"] .la-angle-down { transform: rotate(180deg); }
-            
-            @keyframes pulse-red {
+             @keyframes pulse-red {
                 0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
                 70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
                 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
             }
+            .hover-scale:hover { transform: scale(1.05); transition: transform 0.2s; }
+            .nav-glass { backdrop-filter: blur(10px); }
         </style>
     @endif
 
-    <div class="video-wrapper">
+    <div class="video-container shadow-lg rounded-4 overflow-hidden mb-4">
         @if($content->url)
             @php
                 $videoId = null;
@@ -193,21 +144,20 @@
                 }
             @endphp
             @if($videoId)
-                <iframe width="100%" height="100%" 
-                    src="https://www.youtube.com/embed/{{ $videoId }}" 
+                <iframe src="https://www.youtube.com/embed/{{ $videoId }}" 
                     title="YouTube video player" frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                     allowfullscreen></iframe>
             @else
                 <div class="d-flex align-items-center justify-content-center h-100 bg-dark text-white">
                     <div class="text-center">
-                        <i class="la la-video-slash fs-45 mb-2"></i>
+                        <i class="bi bi-camera-video-off display-1 mb-3"></i>
                         <p>Invalid Video URL structure.</p>
                     </div>
                 </div>
             @endif
         @elseif($content->video_url)
-             <video width="100%" height="auto" controls controlsList="nodownload" id="courseVideo">
+             <video width="100%" height="auto" controls controlsList="nodownload" id="courseVideo" class="w-100 h-100 object-fit-cover">
                   <source src="{{ asset($content->video_url) }}" type="video/mp4">
                   Your browser does not support the video tag.
             </video>
@@ -215,92 +165,86 @@
             @if(!$content->is_live)
             <div class="d-flex align-items-center justify-content-center h-100 bg-dark text-white">
                 <div class="text-center">
-                    <i class="la la-video-slash fs-45 mb-2"></i>
+                    <i class="bi bi-camera-video-off display-1 mb-3"></i>
                     <p>No video available for this lecture.</p>
                 </div>
             </div>
-            @else
-                <div class="d-flex align-items-center justify-content-center h-100 bg-soft-dark text-white">
-                    <div class="text-center">
-                        <i class="la la-broadcast-tower fs-45 mb-2"></i>
-                        <p>Join the Live Class above to participate.</p>
-                    </div>
-                </div>
             @endif
         @endif
     </div>
 
     <div class="content-info">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fs-24 font-weight-bold m-0">{{ $content->lecture_title }}</h2>
-            <button class="mark-read-btn" id="mark-completed-btn" data-type="lecture" data-id="{{ $content->id }}">
-                <i class="la la-check-circle fs-20"></i> Mark as Completed
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <h2 class="fw-bold m-0 text-dark">{{ $content->lecture_title }}</h2>
+            <button class="btn btn-theme shadow-sm btn-sm fw-bold px-3 py-2 rounded-pill" id="mark-completed-btn" data-type="lecture" data-id="{{ $content->id }}">
+                <i class="bi bi-check-circle me-2"></i> Mark as Completed
             </button>
         </div>
         
-        <div class="divider mb-4"><span></span></div>
+        <hr class="border-light-subtle my-4">
         
-        <h5 class="font-weight-bold mb-3">About this lecture</h5>
-        <div class="text-muted lh-26">
-            {!! $content->description ?? 'No description provided.' !!}
+        <h5 class="fw-bold mb-3 text-dark">About this lecture</h5>
+        <div class="text-secondary lh-lg">
+            {!! $content->description ?? '<p class="text-muted fst-italic">No description provided.</p>' !!}
         </div>
         
         @if($content->resources)
-           <div class="mt-4 p-3 bg-light rounded border">
-               <h6 class="font-weight-bold"><i class="la la-file-alt mr-1"></i> Lecture Resources</h6>
-               <!-- Add resource links here -->
+           <div class="mt-4 p-4 bg-light rounded-4 border border-light-subtle">
+               <h6 class="fw-bold mb-3"><i class="bi bi-folder2-open me-2 text-primary"></i> Lecture Resources</h6>
+               <!-- Resources Logic Here if applicable -->
            </div>
         @endif
     </div>
 
 @elseif($type === 'quiz')
     <div class="content-info">
-        <div class="text-center my-4" id="quiz-intro">
+        <div class="text-center my-4 fade-in-up" id="quiz-intro">
             <div class="mb-4">
-                <i class="la la-question-circle text-primary" style="font-size: 80px;"></i>
+                <i class="bi bi-patch-question-fill text-theme display-1"></i>
             </div>
-            <h2 class="fs-28 font-weight-bold">{{ $content->quiz_title }}</h2>
-            <p class="text-muted mb-4 px-lg-5">{{ $content->description }}</p>
+            <h2 class="fw-bold text-dark">{{ $content->quiz_title }}</h2>
+            <p class="text-secondary mb-5 px-lg-5 col-lg-8 mx-auto">{{ $content->description }}</p>
             
-            <div class="row justify-content-center mb-5">
+            <div class="row justify-content-center g-3 mb-5">
                  <div class="col-4 col-md-3">
-                     <div class="p-3 border rounded bg-white shadow-sm">
-                        <span class="d-block text-muted fs-13 text-uppercase">Questions</span>
-                        <strong class="fs-18">{{ $content->questions->count() }}</strong>
+                     <div class="p-3 border rounded-3 bg-white shadow-sm h-100">
+                        <span class="d-block text-muted small text-uppercase fw-bold mb-1">Questions</span>
+                        <strong class="fs-4 text-dark">{{ $content->questions->count() }}</strong>
                      </div>
                  </div>
                  <div class="col-4 col-md-3">
-                     <div class="p-3 border rounded bg-white shadow-sm">
-                        <span class="d-block text-muted fs-13 text-uppercase">Time Limit</span>
-                        <strong class="fs-18">{{ $content->duration_minutes > 0 ? $content->duration_minutes . 'm' : 'None' }}</strong>
+                     <div class="p-3 border rounded-3 bg-white shadow-sm h-100">
+                        <span class="d-block text-muted small text-uppercase fw-bold mb-1">Time Limit</span>
+                        <strong class="fs-4 text-dark">{{ $content->duration_minutes > 0 ? $content->duration_minutes . 'm' : '∞' }}</strong>
                      </div>
                  </div>
                  <div class="col-4 col-md-3">
-                     <div class="p-3 border rounded bg-white shadow-sm">
-                        <span class="d-block text-muted fs-13 text-uppercase">Pass Mark</span>
-                        <strong class="fs-18">{{ $content->pass_mark }}%</strong>
+                     <div class="p-3 border rounded-3 bg-white shadow-sm h-100">
+                        <span class="d-block text-muted small text-uppercase fw-bold mb-1">Pass Mark</span>
+                        <strong class="fs-4 text-dark">{{ $content->pass_mark }}%</strong>
                      </div>
                  </div>
             </div>
             
             @if(isset($content->previous_result))
-                <div class="alert {{ $content->previous_result->is_pass ? 'alert-success' : 'alert-warning' }} mb-4">
-                    <i class="la {{ $content->previous_result->is_pass ? 'la-check-circle' : 'la-exclamation-circle' }} mr-1"></i>
+                <div class="alert {{ $content->previous_result->is_pass ? 'alert-success' : 'alert-warning' }} mb-4 d-inline-block px-4 rounded-pill">
+                    <i class="bi {{ $content->previous_result->is_pass ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill' }} me-2"></i>
                     Last Attempt: <strong>{{ $content->previous_result->score }}%</strong> on {{ \Carbon\Carbon::parse($content->previous_result->created_at)->format('d M') }}
                 </div>
+                <div class="w-100"></div>
             @endif
             
-            <button class="btn theme-btn btn-lg px-5 shadow-sm" id="start-quiz-btn" data-duration="{{ $content->duration_minutes }}">
-                {{ isset($content->previous_result) ? 'Retake Quiz' : 'Start Quiz' }}
+            <button class="btn btn-theme btn-lg px-5 rounded-pill shadow fw-bold hover-scale" id="start-quiz-btn" data-duration="{{ $content->duration_minutes }}">
+                <i class="bi bi-play-circle-fill me-2"></i> {{ isset($content->previous_result) ? 'Retake Quiz' : 'Start Quiz' }}
             </button>
         </div>
 
         <div id="quiz-questions-area" style="display:none;">
-            <div class="d-flex justify-content-between align-items-center mb-4 py-3 border-bottom sticky-top bg-white">
-                <h4 class="m-0 font-weight-bold">Quiz in Progress</h4>
+            <div class="d-flex justify-content-between align-items-center mb-4 py-3 border-bottom sticky-top bg-white z-index-10">
+                <h4 class="m-0 fw-bold text-dark">Quiz in Progress</h4>
                 @if($content->duration_minutes > 0)
-                    <div class="badge badge-danger p-3 fs-18 shadow-sm">
-                        <i class="la la-clock mr-1"></i> <span id="timer-clock">00:00</span>
+                    <div class="badge bg-danger p-2 px-3 fs-6 rounded-pill shadow-sm">
+                        <i class="bi bi-stopwatch me-1"></i> <span id="timer-clock">00:00</span>
                     </div>
                 @endif
             </div>
@@ -311,57 +255,76 @@
                 <input type="hidden" name="course_id" value="{{ $content->course_id }}">
                 
                 @foreach($content->questions as $index => $q)
-                <div class="card mb-4 border-radius-10 shadow-sm">
-                     <div class="card-header bg-light py-3">
-                         <h6 class="m-0 font-weight-bold">Question {{ $index + 1 }}</h6>
-                         <p class="mt-2 mb-0 fs-16 text-black lh-22">{{ $q->question_text }}</p>
-                     </div>
-                     <div class="card-body p-4">
-                         @foreach(['a','b','c','d'] as $opt)
-                         <div class="custom-control custom-radio mb-3">
-                             <input type="radio" id="q{{$q->id}}{{$opt}}" name="answers[{{ $q->id }}]" value="{{$opt}}" class="custom-control-input">
-                             <label class="custom-control-label fs-15 w-100 p-2 border rounded hover-bg-light" for="q{{$q->id}}{{$opt}}">
-                                 <span class="font-weight-bold mr-2">{{ strtoupper($opt) }}.</span> {{ $q->{'option_'.$opt} }}
-                             </label>
+                <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+                     <div class="card-header bg-light py-3 border-bottom border-light-subtle">
+                         <div class="d-flex align-items-center gap-2">
+                             <span class="badge bg-theme rounded-pill">Q{{ $index + 1 }}</span>
+                             <span class="fw-bold text-dark">Select the best answer</span>
                          </div>
-                         @endforeach
+                         <p class="mt-3 mb-1 fs-5 text-dark fw-medium lh-base">{{ $q->question_text }}</p>
+                     </div>
+                     <div class="card-body p-4 bg-white">
+                         <div class="d-flex flex-column gap-3">
+                             @foreach(['a','b','c','d'] as $opt)
+                             <div class="form-check custom-option">
+                                 <input type="radio" id="q{{$q->id}}{{$opt}}" name="answers[{{ $q->id }}]" value="{{$opt}}" class="form-check-input hidden-radio">
+                                 <label class="form-check-label w-100 p-3 border rounded-3 cursor-pointer d-flex align-items-center transition-all" for="q{{$q->id}}{{$opt}}">
+                                     <span class="fw-bold me-3 text-secondary text-uppercase">{{ $opt }}.</span> 
+                                     <span class="text-dark">{{ $q->{'option_'.$opt} }}</span>
+                                 </label>
+                             </div>
+                             @endforeach
+                         </div>
                      </div>
                 </div>
                 @endforeach
                 
-                <div class="text-center mt-5 mb-3">
-                    <button type="submit" class="btn theme-btn btn-lg px-5 shadow" id="submit-quiz-btn">Submit My Answers</button>
+                <div class="text-center mt-5 mb-5">
+                    <button type="submit" class="btn btn-theme btn-lg px-5 rounded-pill shadow fw-bold hover-scale" id="submit-quiz-btn">
+                        <i class="bi bi-send-fill me-2"></i> Submit My Answers
+                    </button>
                 </div>
             </form>
+            
+            <style>
+                .hidden-radio { position: absolute; opacity: 0; }
+                .custom-option label:hover { background-color: #f8f9fa; border-color: var(--theme-color, #5b50d6) !important; }
+                .custom-option input:checked + label {
+                    background-color: rgba(91, 80, 214, 0.05);
+                    border-color: var(--theme-color, #5b50d6) !important;
+                    box-shadow: 0 0 0 4px rgba(91, 80, 214, 0.1);
+                }
+                .custom-option input:checked + label .fw-bold { color: var(--theme-color, #5b50d6) !important; }
+            </style>
         </div>
     </div>
 
 @elseif($type === 'material')
-    <div class="content-info text-center py-5">
+    <div class="content-info text-center py-5 fade-in-up">
          <div class="mb-4">
-             <div class="icon-box mx-auto bg-primary text-white scale-up" style="width: 100px; height:100px; border-radius: 50%; display:flex; align-items:center; justify-content:center;">
-                 <i class="la la-file-download fs-45"></i>
+             <div class="mx-auto bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height:120px;">
+                 <i class="bi bi-cloud-arrow-down-fill display-3"></i>
              </div>
          </div>
-         <h2 class="fs-28 font-weight-bold mb-2">{{ $content->material_title }}</h2>
-         <p class="text-muted mb-4">Course Resource Attachment</p>
+         <h2 class="fw-bold mb-2 text-dark">{{ $content->material_title }}</h2>
+         <p class="text-muted mb-5">Course Resource Attachment</p>
          
-         <div class="p-4 bg-light rounded border mb-4">
+         <div class="p-5 bg-white rounded-4 shadow-sm border border-light-subtle mb-5 mx-auto" style="max-width: 600px;">
              @if($content->type == 'pdf' || $content->type == 'file')
-                <h5 class="mb-3">Downloadable Document</h5>
-                <a href="{{ asset($content->file_path) }}" class="btn theme-btn btn-lg" download>
-                    <i class="la la-download mr-1"></i> Download Now
+                <h5 class="fw-bold mb-4 text-dark">Downloadable Document</h5>
+                <a href="{{ asset($content->file_path) }}" class="btn btn-theme btn-lg rounded-pill px-5 shadow-sm hover-scale" download>
+                    <i class="bi bi-file-earmark-arrow-down-fill me-2"></i> Download Now
                 </a>
              @elseif($content->type == 'link')
-                  <h5 class="mb-3">External Reference Link</h5>
-                  <a href="{{ $content->external_url }}" target="_blank" class="btn theme-btn btn-lg">
-                      <i class="la la-external-link mr-1"></i> Open Resource
+                  <h5 class="fw-bold mb-4 text-dark">External Reference Link</h5>
+                  <a href="{{ $content->external_url }}" target="_blank" class="btn btn-theme btn-lg rounded-pill px-5 shadow-sm hover-scale">
+                      <i class="bi bi-box-arrow-up-right me-2"></i> Open Resource
                   </a>
              @endif
          </div>
 
-         <button class="mark-read-btn mx-auto" id="mark-completed-btn" data-type="material" data-id="{{ $content->id }}">
-            <i class="la la-check-circle fs-20"></i> Mark as Completed
+         <button class="btn btn-outline-success rounded-pill px-4 fw-bold" id="mark-completed-btn" data-type="material" data-id="{{ $content->id }}">
+            <i class="bi bi-check-circle me-2"></i> Mark as Completed
         </button>
     </div>
 @endif
