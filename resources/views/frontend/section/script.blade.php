@@ -64,6 +64,50 @@
         });
     @endif
 
+    @if (session('registration_success'))
+        Swal.fire({
+            icon: 'success',
+            title: '<h3 class="mt-2 text-theme">Welcome to SkillPoint! 👋</h3>',
+            html: `
+                <div class="mb-4 text-center">
+                    <p class="fs-18 fw-bold">Your account has been created successfully!</p>
+                    <p class="text-muted mt-2">Welcome to our learning community. We're excited to help you achieve your goals.</p>
+                </div>
+                <div class="card bg-light border-0 rounded-4 p-3 mb-3 text-start">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="rounded-circle bg-white shadow-sm p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                            <i class="bi bi-rocket-takeoff text-theme fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Let's Get Started</h6>
+                            <p class="small text-muted mb-0">Browse our courses and start your journey.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: 'Browse Courses',
+            confirmButtonColor: '#7079e7',
+            timer: 10000,
+            timerProgressBar: true,
+        });
+    @endif
+
+    @if (session('login_success'))
+        Swal.fire({
+            toast: true,
+            icon: 'success',
+            title: '{{ session('login_success') }}',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            background: '#7079e7',
+            color: '#ffffff',
+            iconColor: '#ffffff',
+        });
+    @endif
+
     @if (session('purchase_success'))
         Swal.fire({
             icon: 'success',

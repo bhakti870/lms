@@ -36,12 +36,24 @@ class CourseQuestionController extends Controller
             'question' => 'required',
         ]);
 
-        CourseQuestion::create([
+        $questionRecord = CourseQuestion::create([
             'course_id' => $request->course_id,
             'lecture_id' => $request->lecture_id,
             'user_id' => Auth::id(),
             'question' => $request->question,
         ]);
+
+        // Load relationships for notification
+        $questionRecord->load(['user', 'course']);
+
+        // Send notification to instructor
+        $course = $questionRecord->course;
+        if ($course && $course->instructor_id) {
+            $instructor = \App\Models\User::find($course->instructor_id);
+            if ($instructor) {
+                $instructor->notify(new \App\Notifications\QuestionNotification($questionRecord));
+            }
+        }
 
         return response()->json(['success' => true]);
     }
@@ -63,7 +75,7 @@ class CourseQuestionController extends Controller
              $isInstructor = true;
         }
 
-        CourseQuestion::create([
+        $replyRecord = CourseQuestion::create([
             'course_id' => $request->course_id,
             'lecture_id' => $request->lecture_id,
             'user_id' => Auth::id(),
@@ -71,6 +83,15 @@ class CourseQuestionController extends Controller
             'question' => $request->question,
             'is_instructor_reply' => $isInstructor,
         ]);
+
+        // If it's a student reply, notify instructor
+        if (!$isInstructor && $course && $course->instructor_id) {
+            $replyRecord->load(['user', 'course']);
+            $instructor = \App\Models\User::find($course->instructor_id);
+            if ($instructor) {
+                $instructor->notify(new \App\Notifications\QuestionNotification($replyRecord));
+            }
+        }
 
         return response()->json(['success' => true]);
     }

@@ -1,0 +1,3 @@
+daily reminder: php artisan lms:send-reminders
+
+skillpoint LMS smtp app password : nply qovj jofm byjk

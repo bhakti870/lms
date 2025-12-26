@@ -17,11 +17,45 @@ class UserController extends Controller
 {
     public function dashboard(){
         $id = Auth::user()->id;
+        $user = Auth::user();
         $enrolledCourses = Enrollment::where('user_id', $id)->count();
         $wishlistCount = Wishlist::where('user_id', $id)->count();
         $totalPurchase = Order::where('user_id', $id)->sum('price');
         
-        return view('frontend.dashboard.index', compact('enrolledCourses', 'wishlistCount', 'totalPurchase'));
+        $recentNotifications = $user->notifications()->take(5)->get();
+        
+        return view('frontend.dashboard.index', compact('enrolledCourses', 'wishlistCount', 'totalPurchase', 'recentNotifications'));
+    }
+
+    public function notifications() {
+        $notifications = Auth::user()->notifications()->paginate(10);
+        return view('frontend.dashboard.notifications', compact('notifications'));
+    }
+
+    public function markNotificationAsRead($id) {
+        $notification = Auth::user()->notifications()->where('id', $id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return redirect()->back()->with('success', 'Notification marked as read');
+    }
+
+    public function markAllNotificationsAsRead() {
+        Auth::user()->unreadNotifications->markAsRead();
+        return redirect()->back()->with('success', 'All notifications marked as read');
+    }
+
+    public function deleteNotification($id) {
+        $notification = Auth::user()->notifications()->where('id', $id)->first();
+        if ($notification) {
+            $notification->delete();
+        }
+        return redirect()->back()->with('success', 'Notification deleted successfully');
+    }
+
+    public function deleteAllNotifications() {
+        Auth::user()->notifications()->delete();
+        return redirect()->back()->with('success', 'All notifications cleared');
     }
 
     public function purchaseHistory(){

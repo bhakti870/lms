@@ -46,10 +46,13 @@ class RegisteredUserController extends Controller
         $admins = User::where('role', 'admin')->get();
         \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\InstructorRegistrationNotification($user));
 
+        // Notify User
+        $user->notify(new \App\Notifications\WelcomeNotification($user));
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('user.dashboard', absolute: false));
+        return redirect('/')->with('registration_success', true);
     }
 }

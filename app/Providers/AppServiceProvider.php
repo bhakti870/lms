@@ -19,6 +19,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Dynamic SMTP Settings from Database
+        if (\Illuminate\Support\Facades\Schema::hasTable('smtps')) {
+            $smtps = \App\Models\Smtp::first();
+            if ($smtps) {
+                $config = [
+                    'driver'     => $smtps->mailer,
+                    'host'       => $smtps->host,
+                    'port'       => $smtps->port,
+                    'username'   => $smtps->username,
+                    'password'   => $smtps->password,
+                    'encryption' => $smtps->encryption,
+                    'from'       => [
+                        'address' => $smtps->from_address,
+                        'name'    => 'SkillPoint LMS',
+                    ],
+                ];
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp', array_merge(\Illuminate\Support\Facades\Config::get('mail.mailers.smtp', []), $config));
+                \Illuminate\Support\Facades\Config::set('mail.from', $config['from']);
+                \Illuminate\Support\Facades\Config::set('mail.default', $smtps->mailer ?? 'smtp');
+            }
+        }
+
         // Blade directive for checking if user has a permission
         \Blade::if('hasPermission', function ($permission) {
             return auth()->check() && auth()->user()->hasPermission($permission);

@@ -61,6 +61,42 @@
                 </div>
 
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+                    <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+                        <h5 class="fw-bold mb-0">Recent Notifications</h5>
+                        <a href="{{ route('user.notifications.index') }}" class="btn btn-sm btn-link text-theme text-decoration-none fw-bold">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        @if ($recentNotifications->count() > 0)
+                            <div class="list-group list-group-flush">
+                                @foreach ($recentNotifications as $notification)
+                                    <div class="list-group-item p-4 border-0 border-bottom">
+                                        <div class="d-flex align-items-start">
+                                            <div class="rounded-circle bg-{{ $notification->data['color'] ?? 'primary' }}-subtle text-{{ $notification->data['color'] ?? 'primary' }} p-2 d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                                                <i class="bi {{ $notification->data['icon'] ?? 'bi-bell' }} fs-5"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between">
+                                                    <h6 class="fw-bold mb-1">{{ $notification->data['title'] }}</h6>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                                        <a href="{{ route('user.notifications.delete', $notification->id) }}" class="text-muted small" title="Delete"><i class="bi bi-x-circle"></i></a>
+                                                    </div>
+                                                </div>
+                                                <p class="text-muted small mb-0">{{ $notification->data['message'] }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <p class="text-muted mb-0">No new notifications</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
                     <div class="card-body p-5 text-center">
                         <div class="mb-4">
                             <i class="bi bi-rocket-takeoff text-theme opacity-25" style="font-size: 5rem;"></i>

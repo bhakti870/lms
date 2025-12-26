@@ -68,3 +68,13 @@ AJAX Driven Actions: Cart management and coupon applications happen without page
 Security: Global CSRF token management for all AJAX requests.
 Social Login: Support for Google Authentication.
 Notifications: Real-time notifications for instructors when a student purchases a course.
+
+student notifications:
+1. Course Purchase: 
+2. low score in quiz
+3. Scheduled Reminders 
+4. Course Completion
+
+r
+
+

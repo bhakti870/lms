@@ -221,6 +221,13 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::get('/invoice/{id}', [UserController::class, 'downloadInvoice'])->name('invoice');
     Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('leaderboard');
     Route::delete('/course-remove/{id}', [UserController::class, 'removeCourse'])->name('course.remove');
+
+    /* Notifications */
+    Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications.index');
+    Route::get('/notifications/mark-as-read/{id}', [UserController::class, 'markNotificationAsRead'])->name('notifications.markRead');
+    Route::get('/notifications/mark-all-as-read', [UserController::class, 'markAllNotificationsAsRead'])->name('notifications.markAllRead');
+    Route::get('/notifications/delete/{id}', [UserController::class, 'deleteNotification'])->name('notifications.delete');
+    Route::get('/notifications/delete-all', [UserController::class, 'deleteAllNotifications'])->name('notifications.deleteAll');
 });
 
 

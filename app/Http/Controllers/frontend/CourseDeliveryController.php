@@ -222,6 +222,16 @@ class CourseDeliveryController extends Controller
 
         if ($isPass) {
             $this->markAsCompleted($user_id, $quiz->course_id, 'quiz', $quiz->id);
+        } else {
+            // Notify Low Score
+            Auth::user()->notify(new \App\Notifications\UserNotification([
+                'title' => 'Low Quiz Score',
+                'message' => 'You scored ' . round($score, 2) . '% in ' . $quiz->quiz_title . '. Revise the lessons and try again!',
+                'link' => route('user.course.learn', $quiz->course_id),
+                'type' => 'quiz',
+                'icon' => 'bi-exclamation-triangle-fill',
+                'color' => 'warning',
+            ]));
         }
 
         return response()->json([
@@ -237,6 +247,13 @@ class CourseDeliveryController extends Controller
      */
     private function markAsCompleted($user_id, $course_id, $type, $id)
     {
+        $exists = CourseProgress::where([
+            'user_id' => $user_id,
+            'course_id' => $course_id,
+            'content_type' => $type,
+            'content_id' => $id
+        ])->exists();
+
         CourseProgress::updateOrCreate(
             [
                 'user_id' => $user_id,
@@ -249,6 +266,23 @@ class CourseDeliveryController extends Controller
                 'completed_at' => now()
             ]
         );
+
+        if (!$exists) {
+            $course = Course::find($course_id);
+            $title = '';
+            if ($type == 'lecture') $title = \App\Models\CourseLecture::find($id)->lecture_title;
+            if ($type == 'quiz') $title = \App\Models\Quiz::find($id)->quiz_title;
+            if ($type == 'material') $title = \App\Models\CourseMaterial::find($id)->material_title;
+
+            Auth::user()->notify(new \App\Notifications\UserNotification([
+                'title' => 'Lesson Completed! 🎉',
+                'message' => 'Great job! You completed: ' . $title,
+                'link' => route('user.course.learn', $course_id),
+                'type' => 'course',
+                'icon' => 'bi-check-circle-fill',
+                'color' => 'success',
+            ]));
+        }
     }
     
     private function checkCourseCompletion($course_id)
@@ -280,6 +314,16 @@ class CourseDeliveryController extends Controller
                 'certificate_number' => 'CERT-' . strtoupper(uniqid()),
                 'issued_at' => now(),
             ]);
+
+            $course = Course::find($course_id);
+            Auth::user()->notify(new \App\Notifications\UserNotification([
+                'title' => 'Course Completed! 🎓',
+                'message' => 'Congratulations! You have completed the full course: ' . $course->course_name . '. Your certificate is ready!',
+                'link' => route('user.dashboard'),
+                'type' => 'course',
+                'icon' => 'bi-trophy-fill',
+                'color' => 'success',
+            ]));
         }
     }
 

@@ -78,6 +78,52 @@ $categories = getCategories();
                         <div id="wishlist-course"></div>
                     </div>
 
+                    <!-- Notifications -->
+                    <div class="dropdown me-2">
+                        <a href="#" class="cart-wishlist-icon text-dark fs-4 d-inline-block no-caret" data-bs-toggle="dropdown">
+                            <i class="bi bi-bell"></i>
+                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                                <span class="badge badge-dot rounded-pill bg-danger" style="font-size: 0.5rem; padding: 0.35em 0.35em;">
+                                    {{ auth()->user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 rounded-4 p-0 overflow-hidden" style="min-width: 320px;">
+                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                <a href="{{ route('user.notifications.index') }}" class="small text-theme text-decoration-none">View All</a>
+                            </li>
+                            <div style="max-height: 350px; overflow-y: auto;">
+                                @if(auth()->check() && auth()->user()->notifications->count() > 0)
+                                    @foreach(auth()->user()->notifications->take(5) as $notification)
+                                        <li>
+                                            <a class="dropdown-item p-3 border-bottom d-flex align-items-start gap-3 {{ is_null($notification->read_at) ? 'bg-light' : '' }}" href="{{ $notification->data['link'] ?? '#' }}">
+                                                <div class="rounded-circle bg-{{ $notification->data['color'] ?? 'primary' }}-subtle text-{{ $notification->data['color'] ?? 'primary' }} p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                    <i class="bi {{ $notification->data['icon'] ?? 'bi-bell' }} fs-5"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-bold small text-dark text-wrap">{{ $notification->data['title'] ?? 'New Notification' }}</p>
+                                                    <p class="mb-1 small text-muted text-wrap opacity-75">{{ Str::limit($notification->data['message'] ?? '', 45) }}</p>
+                                                    <small class="text-xs text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <li class="p-5 text-center">
+                                        <i class="bi bi-bell-slash fs-1 text-muted opacity-25"></i>
+                                        <p class="text-muted small mt-2">No notifications yet</p>
+                                    </li>
+                                @endif
+                            </div>
+                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                            <li class="p-2 text-center bg-light">
+                                <a href="{{ route('user.notifications.markAllRead') }}" class="small text-theme text-decoration-none fw-bold">Mark all as read</a>
+                            </li>
+                            @endif
+                        </ul>
+                    </div>
+
                     <!-- Cart AJAX container -->
                     <div id="cart" class="position-relative"></div>
                 </div>

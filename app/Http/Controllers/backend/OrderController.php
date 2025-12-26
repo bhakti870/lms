@@ -132,6 +132,16 @@ class OrderController extends Controller
                  $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
              }
 
+             // Notify User
+             auth()->user()->notify(new \App\Notifications\UserNotification([
+                 'title' => 'Course Purchased Successfully',
+                 'message' => 'Congratulations! You have unlocked ' . $order->course_title . '. Happy learning!',
+                 'link' => route('user.course.learn', $order->course_id),
+                 'type' => 'payment',
+                 'icon' => 'bi-bag-check-fill',
+                 'color' => 'success',
+             ]));
+
              // Create Enrollment
              \App\Models\Enrollment::updateOrCreate(
                 [

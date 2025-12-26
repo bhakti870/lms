@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         } elseif ($user->isInstructor()) {
             return redirect('/instructor/dashboard');
         } else {
-            return redirect('/user/dashboard');
+            return redirect('/')->with('login_success', 'Welcome back! You have successfully logged in.');
         }
 
 
