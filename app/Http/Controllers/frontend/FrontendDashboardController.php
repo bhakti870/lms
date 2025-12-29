@@ -40,6 +40,25 @@ class FrontendDashboardController extends Controller
             
         $instructors_count = User::where('role', 'instructor')->where('status', '1')->count();
 
+        // Testimonials from Reviews
+        $reviews = \App\Models\Review::where('status', 1)
+                    ->where('rating', '>=', 4)
+                    ->with('user')
+                    ->latest()
+                    ->limit(5)
+                    ->get();
+
+        $courses_count = Course::where('status', '1')->count();
+        $countries_count = User::distinct('country')->whereNotNull('country')->where('role', 'user')->count('country');
+        $average_rating = \App\Models\Review::where('status', 1)->avg('rating');
+
+        // Featured Courses (for "Students are viewing" section)
+        $featured_courses = Course::where('status', '1')
+            ->with(['user', 'category', 'reviews'])
+            ->inRandomOrder()
+            ->limit(6)
+            ->get();
+
         return view('frontend.index', compact(
             'all_sliders', 
             'all_info', 
@@ -49,7 +68,12 @@ class FrontendDashboardController extends Controller
             'top_instructors',
             'active_learners_count',
             'learner_avatars',
-            'instructors_count'
+            'instructors_count',
+            'reviews',
+            'courses_count',
+            'countries_count',
+            'average_rating',
+            'featured_courses'
         ));
     }
 
@@ -97,10 +121,31 @@ class FrontendDashboardController extends Controller
         return view('frontend.pages.course-details.index', compact('course', 'total_lecture', 'course_content', 'similarCourses', 'all_category', 'more_course_instructor', 'total_minutes', 'total_lecture_duration', 'is_enrolled'));
     }
 
-    public function allCourses()
+    public function allCourses(Request $request)
     {
-        $courses = Course::with('user', 'category')->paginate(12);
-        return view('frontend.course.index', compact('courses'));
+        $query = Course::where('status', 1)->with('user', 'category');
+
+        if ($request->filled('categories')) {
+            $query->whereIn('category_id', $request->categories);
+        }
+
+        if ($request->filled('instructors')) {
+            $query->whereIn('instructor_id', $request->instructors);
+        }
+
+        if ($request->filled('price')) {
+            if ($request->price == 'free') {
+                $query->where('selling_price', 0);
+            } elseif ($request->price == 'paid') {
+                $query->where('selling_price', '>', 0);
+            }
+        }
+        
+        $courses = $query->paginate(12);
+        $categories = Category::withCount('course')->get();
+        $instructors = User::where('role', 'instructor')->withCount('courses')->get();
+
+        return view('frontend.course.index', compact('courses', 'categories', 'instructors'));
     }
 
     public function categoryDetails($slug)
@@ -110,7 +155,10 @@ class FrontendDashboardController extends Controller
             ->where('status', 1)
             ->with(['user', 'category'])
             ->paginate(12);
-        return view('frontend.course.index', compact('courses', 'category'));
+        $categories = Category::withCount('course')->get();
+        $instructors = User::where('role', 'instructor')->withCount('courses')->get();
+
+        return view('frontend.course.index', compact('courses', 'category', 'categories', 'instructors'));
     }
 
     public function subcategoryDetails($slug)
@@ -120,6 +168,9 @@ class FrontendDashboardController extends Controller
             ->where('status', 1)
             ->with(['user', 'category'])
             ->paginate(12);
-        return view('frontend.course.index', compact('courses', 'subcategory'));
+        $categories = Category::withCount('course')->get();
+        $instructors = User::where('role', 'instructor')->withCount('courses')->get();
+
+        return view('frontend.course.index', compact('courses', 'subcategory', 'categories', 'instructors'));
     }
 }

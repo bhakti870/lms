@@ -14,25 +14,26 @@ class InstructorController extends Controller
     {
         $query = User::where('role', 'instructor')->where('status', '1');
 
-        // Filtering by Category
-        if ($request->has('category') && $request->category != '') {
+        // Filtering by Category (supports multiple)
+        if ($request->filled('categories')) {
             $query->whereHas('courses', function($q) use ($request) {
-                $q->where('category_id', $request->category);
+                $q->whereIn('category_id', $request->categories);
             });
         }
 
         // Filtering by Experience
-        if ($request->has('experience') && $request->experience != '') {
+        if ($request->filled('experience')) {
             $query->where('experience', 'LIKE', '%' . $request->experience . '%');
         }
 
         // Filtering by Rating (Average course rating)
-        if ($request->has('rating') && $request->rating != '') {
-            $query->whereHas('courses', function($q) use ($request) {
+        if ($request->filled('rating')) {
+            $rating = $request->rating;
+            $query->whereHas('courses', function($q) use ($rating) {
                 $q->join('reviews', 'courses.id', '=', 'reviews.course_id')
                   ->where('reviews.status', 1)
                   ->groupBy('courses.instructor_id')
-                  ->havingRaw('AVG(reviews.rating) >= ?', [$request->rating]);
+                  ->havingRaw('AVG(reviews.rating) >= ?', [$rating]);
             });
         }
 
@@ -45,8 +46,19 @@ class InstructorController extends Controller
                         ->where('status', 1)
                         ->avg('rating');
             $instructor->avg_rating = round($avgRating ?? 0, 1);
+            
+            // Calculate review count
+            $instructor->review_count = \App\Models\Review::whereIn('course_id', $courseIds)
+                        ->where('status', 1)
+                        ->count();
         }
-        $categories = Category::latest()->get();
+        
+        // Get categories with instructor count (approximation: categories that have courses by active instructors)
+        // A more accurate way might be complex, so we'll fetch all categories and manually count or simply list them.
+        // For sidebar, standard practice is Category::withCount('courses'). 
+        // But for instructors, it's "Instructors in Category". 
+        // We'll stick to listing categories. 
+        $categories = Category::orderBy('name', 'asc')->get();
 
         return view('frontend.instructor.index', compact('instructors', 'categories'));
     }

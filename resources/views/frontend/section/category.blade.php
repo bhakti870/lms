@@ -9,11 +9,13 @@
             @foreach($all_categories as $item)
                 <div class="marquee_card">
                     <div class="card-icon-top">
-                        <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                        <a href="{{ route('all.courses', ['categories[]' => $item->id]) }}">
+                            <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                        </a>
                     </div>
                     <div class="pixel-card-inner">
                         <h4 class="course-title">
-                            <a href="{{ route('category.details', $item->slug) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
+                            <a href="{{ route('all.courses', ['categories[]' => $item->id]) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
                         </h4>
                         <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 
@@ -43,11 +45,13 @@
             @foreach($all_categories as $item)
                 <div class="marquee_card">
                     <div class="card-icon-top">
-                        <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                        <a href="{{ route('all.courses', ['categories[]' => $item->id]) }}">
+                            <img src="{{ $item->image ? asset($item->image) : 'https://placehold.co/80x80/5b50d6/ffffff?text=' . urlencode($item->name) }}" alt="{{ $item->name }}">
+                        </a>
                     </div>
                     <div class="pixel-card-inner">
                         <h4 class="course-title">
-                            <a href="{{ route('category.details', $item->slug) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
+                            <a href="{{ route('all.courses', ['categories[]' => $item->id]) }}" class="text-reset text-decoration-none">{{ $item->name }}</a>
                         </h4>
                         <p class="instructor-text">Explore <span class="text-theme">Premium Courses</span></p>
 

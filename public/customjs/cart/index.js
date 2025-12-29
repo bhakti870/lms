@@ -50,10 +50,25 @@ $(document).on('click', '.add-to-cart-btn', function () {
             }
         },
         error: function (xhr, status, error) {
+            var errorMessage = 'Something went wrong!';
+
+            // Try to get the error message from the server response
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch (e) {
+                    // If parsing fails, use the default message
+                }
+            }
+
             Swal.fire({
                 icon: 'error',
-                title: 'Something went wrong!',
-                text: xhr.responseJSON?.message || error,
+                title: errorMessage,
                 toast: true,
                 position: 'top-end',
                 timer: 3000,
@@ -90,10 +105,25 @@ $(document).on('click', '.buy-now-btn', function () {
             }
         },
         error: function (xhr, status, error) {
+            var errorMessage = 'Something went wrong!';
+
+            // Try to get the error message from the server response
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
+            } else if (xhr.responseText) {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch (e) {
+                    // If parsing fails, use the default message
+                }
+            }
+
             Swal.fire({
                 icon: 'error',
-                title: 'Something went wrong!',
-                text: xhr.responseJSON?.message || error,
+                title: errorMessage,
                 toast: true,
                 position: 'top-end',
                 timer: 3000,
@@ -105,7 +135,7 @@ $(document).on('click', '.buy-now-btn', function () {
 
 //getwishlist
 
-function getCart(){
+function getCart() {
 
     var url = '/cart/all';
 
@@ -120,7 +150,7 @@ function getCart(){
         },
         success: function (response) {
 
-             if (response.status === 'success') {
+            if (response.status === 'success') {
                 // #wishlist-course ডিভে HTML আপডেট করা
                 $('#cart').html(response.html);
             }
@@ -183,7 +213,7 @@ $(document).ready(function () {
 
     }
 
-    $(document).on('click', '.remove-course-btn', function() {
+    $(document).on('click', '.remove-course-btn', function () {
 
         var id = $(this).data('id');
         var url = '/remove/cart'; // Define the remove route
@@ -197,7 +227,7 @@ $(document).ready(function () {
                 id: id
             },
 
-            success: function(response) {
+            success: function (response) {
                 if (response.status === 'success') {
 
                     Swal.fire({
@@ -214,7 +244,7 @@ $(document).ready(function () {
 
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 let message = 'Something went wrong!';
                 if (xhr.responseJSON && xhr.responseJSON.message) {
                     message = xhr.responseJSON.message;

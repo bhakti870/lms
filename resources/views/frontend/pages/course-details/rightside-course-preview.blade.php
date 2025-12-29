@@ -40,10 +40,21 @@
                 @php
                     $in_cart = false;
                     $in_wishlist = false;
+                    
+                    // Check cart using guest_token (same logic as CartRepository)
+                    $guestToken = request()->cookie('guest_token');
+                    if ($guestToken) {
+                        $in_cart = \App\Models\Cart::where('guest_token', $guestToken)
+                            ->where('course_id', $course->id)
+                            ->exists();
+                    }
+                    
+                    // Check wishlist for authenticated users
                     if (Auth::check()) {
                         $user_id = Auth::id();
-                        $in_cart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
-                        $in_wishlist = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                        $in_wishlist = \App\Models\Wishlist::where('user_id', $user_id)
+                            ->where('course_id', $course->id)
+                            ->exists();
                     }
                 @endphp
 

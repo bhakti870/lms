@@ -12,7 +12,7 @@
                         <div class="icon-wrapper mb-2">
                             <i class="bi bi-people text-theme fs-4"></i>
                         </div>
-                        <h4 class="fw-bold mb-0">60K+</h4>
+                        <h4 class="fw-bold mb-0">{{ $active_learners_count }}+</h4>
                         <span class="text-muted small">Active Learners</span>
                     </div>
 
@@ -20,7 +20,7 @@
                         <div class="icon-wrapper mb-2">
                             <i class="bi bi-person-video3 text-white fs-4"></i>
                         </div>
-                        <h4 class="fw-bold mb-0 text-white">4500+</h4>
+                        <h4 class="fw-bold mb-0 text-white">{{ $instructors_count }}+</h4>
                         <span class="text-white small opacity-75">Expert Instructors</span>
                     </div>
                 </div>

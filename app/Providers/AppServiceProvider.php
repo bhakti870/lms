@@ -64,9 +64,24 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('hasRole', fn ($role) =>
             auth()->check() && auth()->user()->hasRole($role)
         );
-
+        
         Blade::if('hasAnyRole', fn ($roles) =>
             auth()->check() && auth()->user()->hasAnyRole($roles)
         );
+
+        // View Composer for Header Categories & User Data
+        \Illuminate\Support\Facades\View::composer('frontend.section.header', function ($view) {
+            $view->with('header_categories', \App\Models\Category::with('subcategory')->withCount('course')->orderBy('name')->get());
+
+            if (auth()->check()) {
+                $view->with('header_cart_items', \App\Models\Cart::where('user_id', auth()->id())->with('course')->latest()->get());
+                $view->with('header_wishlist_items', \App\Models\Wishlist::where('user_id', auth()->id())->with('course')->latest()->get());
+                $view->with('header_notifications', auth()->user()->notifications()->limit(5)->get());
+            } else {
+                $view->with('header_cart_items', collect([]));
+                $view->with('header_wishlist_items', collect([]));
+                $view->with('header_notifications', collect([]));
+            }
+        });
     }
 }

@@ -18,6 +18,10 @@
 <link rel="stylesheet" href="{{ asset('frontend/new_design/style.css') }}">
 
 <!-- Keep some essential LMS styles if needed, but the new design should take precedence -->
+<!-- <link rel="stylesheet" href="{{ asset('frontend/css/owl.carousel.min.css') }}"> -->
+<!-- <link rel="stylesheet" href="{{ asset('frontend/css/owl.theme.default.min.css') }}"> -->
 <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}"> 
+
+<!-- @stack('css') -->
 <!-- end inject -->
 

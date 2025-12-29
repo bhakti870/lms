@@ -53,11 +53,23 @@ $course_category = getCourseCategories();
                                 $inCart = false;
                                 $inWishlist = false;
 
+                                // Check cart using guest_token (same logic as CartRepository)
+                                $guestToken = request()->cookie('guest_token');
+                                if ($guestToken) {
+                                    $inCart = \App\Models\Cart::where('guest_token', $guestToken)
+                                        ->where('course_id', $course->id)
+                                        ->exists();
+                                }
+
+                                // Check enrollment and wishlist for authenticated users
                                 if (Auth::check()) {
                                     $user_id = Auth::id();
-                                    $isEnrolled = \App\Models\Enrollment::where('user_id', $user_id)->where('course_id', $course->id)->exists();
-                                    $inCart = \App\Models\Cart::where('user_id', $user_id)->where('course_id', $course->id)->exists();
-                                    $inWishlist = \App\Models\Wishlist::where('user_id', $user_id)->where('course_id', $course->id)->exists();
+                                    $isEnrolled = \App\Models\Enrollment::where('user_id', $user_id)
+                                        ->where('course_id', $course->id)
+                                        ->exists();
+                                    $inWishlist = \App\Models\Wishlist::where('user_id', $user_id)
+                                        ->where('course_id', $course->id)
+                                        ->exists();
                                 }
                             @endphp
 

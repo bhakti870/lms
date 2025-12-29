@@ -120,7 +120,7 @@
                                             @endif
                                         </div>
                                         <div class="learner-stats-sm">
-                                            <strong>{{ isset($active_learners_count) ? number_format($active_learners_count/1000, 1) . 'k+' : '6.8k+' }}</strong>
+                                            <strong>{{ isset($active_learners_count) ? $active_learners_count . '+' : '6k+' }}</strong>
                                             <span>Active Learners</span>
                                         </div>
                                     </div>

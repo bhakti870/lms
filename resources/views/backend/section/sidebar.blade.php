@@ -1,7 +1,8 @@
 <div class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
         <div>
-            <img src="{{asset('backend/assets/images/book-graduation-cap-logo.avif')}}" class="logo-icon" alt="logo icon">
+            <img src="{{asset('backend/assets/images/book-graduation-cap-logo.avif')}}" class="logo-icon"
+                alt="logo icon">
         </div>
         <div>
             <h4 class="logo-text">Admin</h4>
@@ -28,17 +29,17 @@
                 <div class="menu-title">Manage Category</div>
             </a>
             <ul>
-                <li  class="{{ setSidebar(['admin.category*']) }}">
-                     <a href="{{route('admin.category.index')}}"><i class='bx bx-radio-circle'></i>All Category</a>
+                <li class="{{ setSidebar(['admin.category*']) }}">
+                    <a href="{{route('admin.category.index')}}"><i class='bx bx-radio-circle'></i>All Category</a>
                 </li>
-                <li class="{{ setSidebar(['admin.subcategory*']) }}" >
+                <li class="{{ setSidebar(['admin.subcategory*']) }}">
                     <a href="{{route('admin.subcategory.index')}}"><i class='bx bx-radio-circle'></i>All SubCategory</a>
                 </li>
 
             </ul>
         </li>
 
-        <li  class="{{ setSidebar(['admin.instructor.index', 'admin.instructor.active']) }}">
+        <li class="{{ setSidebar(['admin.instructor.index', 'admin.instructor.active']) }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-user-voice "></i>
                 </div>
@@ -49,14 +50,15 @@
                     <a href="{{route('admin.instructor.index')}}"><i class='bx bx-radio-circle'></i>All Instructor</a>
                 </li>
                 <li class="{{ setSidebar(['admin.instructor.active']) }}">
-                    <a href="{{route('admin.instructor.active')}}"><i class='bx bx-radio-circle'></i>Active Instructor</a>
+                    <a href="{{route('admin.instructor.active')}}"><i class='bx bx-radio-circle'></i>Active
+                        Instructor</a>
                 </li>
 
             </ul>
         </li>
 
 
-        <li  class="{{ setSidebar(['admin.all.user']) }}">
+        <li class="{{ setSidebar(['admin.all.user']) }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-group"></i>
                 </div>
@@ -85,7 +87,7 @@
             </ul>
         </li>
 
-         <li class="{{ setSidebar(['admin.order*']) }}">
+        <li class="{{ setSidebar(['admin.order*']) }}">
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-cart"></i>
                 </div>
@@ -102,7 +104,8 @@
 
 
 
-        <li class="{{ setSidebar(['admin.slider*', 'admin.info*', 'admin.partner*', 'admin.subscriber*', 'admin.site-setting*', 'admin.page-setting*']) }}">
+        <li
+            class="{{ setSidebar(['admin.slider*', 'admin.info*', 'admin.partner*', 'admin.subscriber*', 'admin.site-setting*', 'admin.page-setting*']) }}">
             <a href="javascript:;" class="has-arrow">
 
                 <div class="parent-icon"><i class="bx bx-cog"></i>
@@ -115,15 +118,15 @@
                     <a href="{{route('admin.slider.index')}}"><i class='bx bx-radio-circle'></i>Manage Slider</a>
                 </li>
 
-                <li class="{{ setSidebar(['admin.info*']) }}">
+                {{-- <li class="{{ setSidebar(['admin.info*']) }}">
                     <a href="{{route('admin.info.index')}}"><i class='bx bx-radio-circle'></i>Manage Info</a>
-                </li>
+                </li> --}}
 
-                 <li class="{{ setSidebar(['admin.partner*']) }}">
+                {{-- <li class="{{ setSidebar(['admin.partner*']) }}">
                     <a href="{{route('admin.partner.index')}}"><i class='bx bx-radio-circle'></i>Manage Partner</a>
-                </li>
+                </li> --}}
 
-                 <li class="{{ setSidebar(['admin.site-setting*']) }}">
+                <li class="{{ setSidebar(['admin.site-setting*']) }}">
                     <a href="{{route('admin.site-setting.index')}}"><i class='bx bx-radio-circle'></i>Site Settings</a>
                 </li>
 
@@ -143,14 +146,15 @@
                     <a href="{{route('admin.role.index')}}"><i class='bx bx-radio-circle'></i>Manage Roles</a>
                 </li>
                 <li class="{{ setSidebar(['admin.permission*']) }}">
-                    <a href="{{route('admin.permission.index')}}"><i class='bx bx-radio-circle'></i>Manage Permissions</a>
+                    <a href="{{route('admin.permission.index')}}"><i class='bx bx-radio-circle'></i>Manage
+                        Permissions</a>
                 </li>
             </ul>
         </li>
 
 
 
-         <li>
+        <li>
             <a href="javascript:;" class="has-arrow">
                 <div class="parent-icon"><i class="bx bx-category"></i>
                 </div>
@@ -160,14 +164,14 @@
 
                 <li> <a href="{{route('admin.mailSetting')}}"><i class='bx bx-radio-circle'></i>Mail Setting</a>
                 </li>
-
+                {{--
                 <li>
                     <a href="{{route('admin.stripeSetting')}}"><i class='bx bx-radio-circle'></i>Stripe Setting</a>
-                </li>
+                </li> --}}
 
-                <li>
+                {{-- <li>
                     <a href="{{route('admin.googleSetting ')}}"><i class='bx bx-radio-circle'></i>Google Setting</a>
-                </li>
+                </li> --}}
 
 
             </ul>

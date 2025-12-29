@@ -50,3 +50,35 @@ const observer = new IntersectionObserver((entries) => {
 if (statsSection) {
     observer.observe(statsSection);
 }
+
+// Select the button and icon
+const toggleBtn = document.getElementById('theme-toggle');
+const themeIcon = toggleBtn.querySelector('i');
+const body = document.body;
+
+// Check for saved user preference
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    body.setAttribute('data-theme', 'dark');
+    themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+    toggleBtn.classList.replace('btn-light', 'btn-dark'); // Optional button styling
+}
+
+// Toggle Event
+toggleBtn.addEventListener('click', () => {
+    const isDark = body.getAttribute('data-theme') === 'dark';
+
+    if (isDark) {
+        // Switch to Light
+        body.removeAttribute('data-theme');
+        themeIcon.classList.replace('bi-sun-fill', 'bi-moon-fill');
+        toggleBtn.classList.replace('btn-dark', 'btn-light');
+        localStorage.setItem('theme', 'light');
+    } else {
+        // Switch to Dark
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.classList.replace('bi-moon-fill', 'bi-sun-fill');
+        toggleBtn.classList.replace('btn-light', 'btn-dark');
+        localStorage.setItem('theme', 'dark');
+    }
+});

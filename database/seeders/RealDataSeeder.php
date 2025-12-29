@@ -329,6 +329,77 @@ class RealDataSeeder extends Seeder
                         }
                     }
                 }
+
+                // Add Course Questions and Answers (3-4 questions per course)
+                $questions_already_created = CourseQuestion::where('course_id', $course->id)->whereNull('parent_id')->count();
+                
+                if ($questions_already_created == 0) {
+                    $question_templates = [
+                        [
+                            'q' => 'I\'m having trouble understanding the core concepts of ' . $subcategory->name . '. Can you please explain the fundamentals in simpler terms?',
+                            'a' => 'Great question! The fundamentals of ' . $subcategory->name . ' are actually quite straightforward once you break them down. I recommend reviewing the first lecture again and practicing with the provided examples. The key is to understand the basics before moving to advanced topics. Let me know if you need clarification on any specific part!'
+                        ],
+                        [
+                            'q' => 'What are the best practices for implementing ' . $subcategory->name . ' in real-world projects?',
+                            'a' => 'Excellent question! When implementing ' . $subcategory->name . ' in production, always follow these best practices: 1) Start with a solid foundation, 2) Keep your code clean and maintainable, 3) Test thoroughly before deployment, and 4) Stay updated with the latest industry standards. I\'ve covered detailed examples in the advanced section of this course.'
+                        ],
+                        [
+                            'q' => 'Are there any prerequisites I should know before diving deep into ' . $subcategory->name . '?',
+                            'a' => 'Good thinking ahead! While the course is designed for beginners, having basic knowledge of ' . $subcategory->category->name . ' will definitely help you grasp the concepts faster. I\'ve included a prerequisites checklist in the course materials. Don\'t worry if you\'re completely new - just follow the lectures in order and you\'ll be fine!'
+                        ],
+                        [
+                            'q' => 'How long will it take to master ' . $subcategory->name . ' with this course?',
+                            'a' => 'That\'s a common question! The time varies based on your background and dedication. Most students complete this course in 4-6 weeks with consistent practice. However, true mastery comes with hands-on project experience. I recommend spending at least 2-3 hours daily on the course content and practice exercises. Keep building projects and you\'ll see steady progress!'
+                        ],
+                        [
+                            'q' => 'Can you recommend any additional resources or projects to practice ' . $subcategory->name . '?',
+                            'a' => 'Absolutely! Besides this course, I recommend working on real-world projects. Start with small projects and gradually increase complexity. Check out the course materials section where I\'ve shared some excellent resources and project ideas. Also, joining online communities related to ' . $subcategory->name . ' can be very beneficial for learning and networking.'
+                        ]
+                    ];
+
+                    // Create 3-4 random questions for this course
+                    $num_questions = rand(3, 4);
+                    $selected_questions = array_rand($question_templates, $num_questions);
+                    
+                    // Ensure it's always an array (array_rand returns int if count is 1)
+                    if (!is_array($selected_questions)) {
+                        $selected_questions = [$selected_questions];
+                    }
+
+                    foreach ($selected_questions as $q_index) {
+                        $q_data = $question_templates[$q_index];
+                        
+                        // Pick a random student to ask the question
+                        $random_student = $students[array_rand($students)];
+                        
+                        // Get a random lecture from this course for context
+                        $random_lecture = CourseLecture::where('course_id', $course->id)->inRandomOrder()->first();
+                        
+                        // Create the question
+                        $question = CourseQuestion::create([
+                            'course_id' => $course->id,
+                            'user_id' => $random_student->id,
+                            'lecture_id' => $random_lecture ? $random_lecture->id : null,
+                            'parent_id' => null,
+                            'question' => $q_data['q'],
+                            'is_instructor_reply' => false,
+                            'created_at' => now()->subDays(rand(1, 15)),
+                            'updated_at' => now()->subDays(rand(1, 15)),
+                        ]);
+
+                        // Create instructor's answer
+                        CourseQuestion::create([
+                            'course_id' => $course->id,
+                            'user_id' => $instructor->id,
+                            'lecture_id' => $random_lecture ? $random_lecture->id : null,
+                            'parent_id' => $question->id,
+                            'question' => $q_data['a'],
+                            'is_instructor_reply' => true,
+                            'created_at' => now()->subDays(rand(0, 14)),
+                            'updated_at' => now()->subDays(rand(0, 14)),
+                        ]);
+                    }
+                }
             }
         }
 

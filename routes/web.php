@@ -211,6 +211,13 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::post('/course-quiz-submit', [CourseDeliveryController::class, 'submitQuiz'])->name('course.quiz.submit');
     Route::get('/course-certificate/{course_id}', [CourseDeliveryController::class, 'downloadCertificate'])->name('course.certificate');
 
+    Route::middleware('auth')->group(function () {
+    Route::get('/navbar/cart-count', [App\Http\Controllers\NavbarController::class, 'cartCount']);
+    Route::get('/navbar/wishlist-count', [App\Http\Controllers\NavbarController::class, 'wishlistCount']);
+    Route::get('/navbar/notification-count', [App\Http\Controllers\NavbarController::class, 'notificationCount']);
+});
+
+
     /* Course Q&A */
     Route::get('/course-questions/{lecture_id}', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'fetchQuestions']);
     Route::post('/course/question/store', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'store'])->name('course.question.store');
@@ -279,10 +286,42 @@ Route::middleware('auth')->group(function () {
 });
 
 
-
-
-
-
+// TEST ROUTE - Preview Q&A Data (Remove in production)
+Route::get('/test-qa-data', function () {
+    $questions = \App\Models\CourseQuestion::with(['user', 'course', 'replies.user'])
+        ->whereNull('parent_id')
+        ->take(5)
+        ->get();
+    
+    $output = "<h1 style='font-family: Arial; color: #333;'>Course Q&A Test Data Preview</h1>";
+    $output .= "<p><strong>Total Questions:</strong> " . \App\Models\CourseQuestion::whereNull('parent_id')->count() . "</p>";
+    $output .= "<p><strong>Total Answers:</strong> " . \App\Models\CourseQuestion::whereNotNull('parent_id')->count() . "</p>";
+    $output .= "<p style='background: #fff3cd; padding: 10px; border-left: 4px solid #ffc107;'><strong>📖 How to Test:</strong> Login as instructor at <a href='/instructor/login'>/instructor/login</a> with email: <code>instructor1@example.com</code> password: <code>password</code></p>";
+    $output .= "<hr>";
+    
+    foreach ($questions as $q) {
+        $output .= "<div style='margin: 20px 0; padding: 20px; border: 2px solid #ddd; border-radius: 10px; font-family: Arial;'>";
+        $output .= "<h3 style='color: #007bff;'>📚 " . htmlspecialchars($q->course->course_name) . "</h3>";
+        $output .= "<p><strong>Student:</strong> " . htmlspecialchars($q->user->name) . " (" . htmlspecialchars($q->user->email) . ")</p>";
+        $output .= "<p><strong>Asked:</strong> " . $q->created_at->format('M d, Y h:i A') . "</p>";
+        $output .= "<div style='background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 10px 0;'>";
+        $output .= "<strong>❓ Question:</strong><br>" . nl2br(htmlspecialchars($q->question));
+        $output .= "</div>";
+        
+        if ($q->replies->count() > 0) {
+            $reply = $q->replies->first();
+            $output .= "<div style='background: #e7f3ff; padding: 15px; border-left: 4px solid #28a745; margin: 10px 0;'>";
+            $output .= "<strong>✅ Instructor Answer (by " . htmlspecialchars($reply->user->name) . "):</strong><br>";
+            $output .= nl2br(htmlspecialchars($reply->question));
+            $output .= "<br><small style='color: #666;'>Answered: " . $reply->created_at->format('M d, Y h:i A') . "</small>";
+            $output .= "</div>";
+        }
+        
+        $output .= "</div>";
+    }
+    
+    return $output;
+});
 
 
 require __DIR__ . '/auth.php';

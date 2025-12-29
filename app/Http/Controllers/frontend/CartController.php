@@ -35,7 +35,7 @@ class CartController extends Controller
 
         $cartItems = Cart::with('course')->where('guest_token', $guestToken)->get();
 
-        // Total Amount (discounted বা selling price) হিসাব করা
+        // Total Amount
         $subTotal = $cartItems->sum(function ($cartItem) {
             $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
             return $cartItem->quantity * ($price ?? 0);

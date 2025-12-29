@@ -164,3 +164,26 @@
 
 
 @stack('scripts')
+
+<script>
+    $(document).ready(function() {
+        @auth
+        // Fetch Notification Count
+        $.ajax({
+            type: "GET",
+            url: "/navbar/notification-count",
+            dataType: "json",
+            success: function(response) {
+                if (response.count > 0) {
+                    $('#notification-count').text(response.count).show();
+                } else {
+                    $('#notification-count').text('0').show(); // or hide
+                }
+            },
+            error: function() {
+                console.log('Error fetching notifications');
+            }
+        });
+        @endauth
+    });
+</script>

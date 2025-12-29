@@ -1,171 +1,199 @@
-
-<?php
-$categories = getCategories();
-?>
-
-<nav class="navbar navbar-expand-xl bg-white shadow-sm sticky-top py-3">
-    <div class="container-fluid px-lg-5">
-        <a class="navbar-brand fw-bold fs-3 d-flex align-items-center me-4" href="{{ route('frontend.home') }}">
-            <i class="bi bi-mortarboard-fill text-theme me-2"></i>
-            <span>skillpoint</span>
-        </a>
-
-        <!-- Mobile Icons (Show before burger on small screens) -->
-        <div class="d-flex align-items-center gap-2 ms-auto d-xl-none me-2">
-            @auth
-            <a href="{{ route('user.wishlist.index') }}" class="cart-wishlist-icon text-dark fs-5">
-                <i class="bi bi-heart"></i>
+ <nav class="navbar navbar-expand-xl bg-white shadow-sm sticky-top py-3">
+        <div class="container-fluid px-lg-5"> <a class="navbar-brand fw-bold fs-3 d-flex align-items-center me-4"
+                href="#">
+                <i class="bi bi-mortarboard-fill text-theme me-2"></i>
+                <span>skillpoint</span>
             </a>
-            <a href="{{ route('cart') }}" class="cart-wishlist-icon text-dark fs-5">
-                <i class="bi bi-cart"></i>
-            </a>
-            @endauth
-        </div>
 
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                            class="bi bi-list-ul" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd"
-                                d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2m0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
-                        </svg>
-                        Categories
-                    </a>
-                    <ul class="dropdown-menu shadow-lg">
-                        @foreach($categories as $item)
-                        <li class="dropend">
-                            <a class="dropdown-item dropdown-toggle" href="{{ route('category.details', $item->slug) }}">
-                                {{$item->name}}
-                            </a>
-                            <ul class="dropdown-menu shadow-lg">
-                                @foreach ($item['subcategory'] as $data)
-                                <li><a class="dropdown-item" href="{{ route('subcategory.details', $data->slug) }}">{{$data->name}}</a></li>
-                                @endforeach
-                            </ul>
-                        </li>
-                        @endforeach
-                    </ul>
-                </li>
-
-                <li class="nav-item"><a class="nav-link" href="{{ route('frontend.home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('all.courses') }}">Courses</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('all.instructors') }}">Instructors</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-            </ul>
-
-            <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0 ms-auto">
-                <div class="d-flex align-items-center gap-2 d-none d-xl-flex">
-                    <!-- Wishlist -->
-                    <div class="position-relative" id='wishlist-menu'>
-                        <a href="{{ route('user.wishlist.index') }}" class="cart-wishlist-icon text-dark fs-4 d-inline-block">
-                            <i class="bi bi-heart"></i>
-                            <span class="badge badge-dot rounded-pill bg-theme" id="wishlist-count">
-                                @auth
-                                    {{ \App\Models\Wishlist::where('user_id', auth()->id())->count() }}
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-grid-3x3-gap me-1"></i> Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach($header_categories as $cat)
+                                @if($cat->subcategory->count() > 0)
+                                    <li class="dropend">
+                                        <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                            {{ $cat->name }}
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @foreach($cat->subcategory as $sub)
+                                                <li><a class="dropdown-item" href="{{ route('subcategory.details', $sub->slug) }}">{{ $sub->name }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
                                 @else
-                                    0
-                                @endauth
+                                    <li><a class="dropdown-item" href="{{ route('category.details', $cat->slug) }}">{{ $cat->name }}</a></li>
+                                @endif
+                            @endforeach
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('all.courses') }}">All Courses</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="{{ route('frontend.home') }}">Home</a></li>
+                    
+                    <li class="nav-item"><a class="nav-link" href="{{ route('all.instructors') }}">Instructors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('all.courses') }}">Courses</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0">
+                    <button id="theme-toggle" class="btn btn-light rounded-circle border-0 shadow-sm"
+                        style="width: 40px; height: 40px;">
+                        <i class="bi bi-moon-fill"></i>
+                    </button>
+                    
+                    @auth
+                    <!-- Cart Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                            <i class="bi bi-cart"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="font-size: 10px;">
+                                {{ $header_cart_items->count() }}
                             </span>
                         </a>
-                        <div id="wishlist-course"></div>
-                    </div>
-
-                    <!-- Notifications -->
-                    <div class="dropdown me-2">
-                        <a href="#" class="cart-wishlist-icon text-dark fs-4 d-inline-block no-caret" data-bs-toggle="dropdown">
-                            <i class="bi bi-bell"></i>
-                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                                <span class="badge badge-dot rounded-pill bg-danger" style="font-size: 0.5rem; padding: 0.35em 0.35em;">
-                                    {{ auth()->user()->unreadNotifications->count() }}
-                                </span>
-                            @endif
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 rounded-4 p-0 overflow-hidden" style="min-width: 320px;">
-                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold">Notifications</h6>
-                                <a href="{{ route('user.notifications.index') }}" class="small text-theme text-decoration-none">View All</a>
+                        <ul class="dropdown-menu dropdown-menu-end p-3 shadow" style="min-width: 300px;">
+                            <li class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0">My Cart</h6>
+                                <a href="{{ route('cart') }}" class="small text-decoration-none">View All</a>
                             </li>
-                            <div style="max-height: 350px; overflow-y: auto;">
-                                @if(auth()->check() && auth()->user()->notifications->count() > 0)
-                                    @foreach(auth()->user()->notifications->take(5) as $notification)
-                                        <li>
-                                            <a class="dropdown-item p-3 border-bottom d-flex align-items-start gap-3 {{ is_null($notification->read_at) ? 'bg-light' : '' }}" href="{{ $notification->data['link'] ?? '#' }}">
-                                                <div class="rounded-circle bg-{{ $notification->data['color'] ?? 'primary' }}-subtle text-{{ $notification->data['color'] ?? 'primary' }} p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                    <i class="bi {{ $notification->data['icon'] ?? 'bi-bell' }} fs-5"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <p class="mb-0 fw-bold small text-dark text-wrap">{{ $notification->data['title'] ?? 'New Notification' }}</p>
-                                                    <p class="mb-1 small text-muted text-wrap opacity-75">{{ Str::limit($notification->data['message'] ?? '', 45) }}</p>
-                                                    <small class="text-xs text-muted">{{ $notification->created_at->diffForHumans() }}</small>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                @else
-                                    <li class="p-5 text-center">
-                                        <i class="bi bi-bell-slash fs-1 text-muted opacity-25"></i>
-                                        <p class="text-muted small mt-2">No notifications yet</p>
+                            <li><hr class="dropdown-divider"></li>
+                            <div class="cart-items" style="max-height: 250px; overflow-y: auto;">
+                                @forelse($header_cart_items as $item)
+                                    <li class="d-flex align-items-center mb-3">
+                                        <img src="{{ asset($item->course->course_image) }}" alt="img" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div class="flex-grow-1">
+                                            <a href="{{ route('course-details', $item->course->course_name_slug) }}" class="text-reset text-decoration-none d-block small fw-bold text-truncate" style="max-width: 180px;">{{ $item->course->course_name }}</a>
+                                            <small class="text-muted fw-bold">${{ $item->course->selling_price }}</small>
+                                        </div>
                                     </li>
-                                @endif
+                                @empty
+                                    <li class="text-center py-3">
+                                        <i class="bi bi-cart-x text-muted fs-1"></i>
+                                        <p class="text-muted small mt-2 mb-0">Your cart is empty</p>
+                                    </li>
+                                @endforelse
                             </div>
-                            @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
-                            <li class="p-2 text-center bg-light">
-                                <a href="{{ route('user.notifications.markAllRead') }}" class="small text-theme text-decoration-none fw-bold">Mark all as read</a>
-                            </li>
+                            @if($header_cart_items->count() > 0)
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-center btn btn-theme text-white rounded-pill" href="{{ route('checkout.index') }}">Checkout</a></li>
                             @endif
                         </ul>
                     </div>
 
-                    <!-- Cart AJAX container -->
-                    <div id="cart" class="position-relative"></div>
+                    <!-- Wishlist Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                            <i class="bi bi-heart"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="wishlist-count" style="font-size: 10px;">
+                                {{ $header_wishlist_items->count() }}
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-3 shadow" style="min-width: 300px;">
+                            <li class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0">My Wishlist</h6>
+                                <a href="{{ route('user.wishlist.index') }}" class="small text-decoration-none">View All</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <div class="wishlist-items" style="max-height: 250px; overflow-y: auto;">
+                                @forelse($header_wishlist_items as $item)
+                                    <li class="d-flex align-items-center mb-3">
+                                        <img src="{{ asset($item->course->course_image) }}" alt="img" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div class="flex-grow-1">
+                                            <a href="{{ route('course-details', $item->course->course_name_slug) }}" class="text-reset text-decoration-none d-block small fw-bold text-truncate" style="max-width: 180px;">{{ $item->course->course_name }}</a>
+                                            <small class="text-muted fw-bold">${{ $item->course->selling_price }}</small>
+                                        </div>
+                                    </li>
+                                @empty
+                                    <li class="text-center py-3">
+                                        <i class="bi bi-heart text-muted fs-1"></i>
+                                        <p class="text-muted small mt-2 mb-0">No items in wishlist</p>
+                                    </li>
+                                @endforelse
+                            </div>
+                        </ul>
+                    </div>
+
+                    <!-- Notification Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count" style="font-size: 10px;">
+                                {{ $header_notifications->count() }}
+                            </span>
+                        </a>
+                         <ul class="dropdown-menu dropdown-menu-end p-0 shadow" style="min-width: 320px;">
+                            <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold mb-0">Notifications</h6>
+                                <a href="{{ route('user.notifications.index') }}" class="small text-decoration-none">View All</a>
+                            </li>
+                            <div class="notification-items" style="max-height: 300px; overflow-y: auto;">
+                                @forelse($header_notifications as $notification)
+                                    <li>
+                                        <a href="{{ route('user.notifications.index') }}" class="dropdown-item p-3 border-bottom">
+                                            <p class="small text-muted mb-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                            <p class="mb-0 text-wrap small" style="line-height: 1.4;">
+                                                {{ $notification->data['message'] ?? 'New notification' }}
+                                            </p>
+                                        </a>
+                                    </li>
+                                @empty
+                                    <li class="text-center py-4">
+                                        <i class="bi bi-bell-slash text-muted fs-1"></i>
+                                        <p class="text-muted small mt-2 mb-0">No new notifications</p>
+                                    </li>
+                                @endforelse
+                            </div>
+                        </ul>
+                    </div>
+
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle no-arrow" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://placehold.co/40x40' }}" alt="mdo" width="40" height="40" class="rounded-circle border object-fit-cover">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1" style="min-width: 200px;">
+                             <li class="px-3 py-2 border-bottom">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://placehold.co/40x40' }}" alt="" width="32" height="32" class="rounded-circle me-2 object-fit-cover">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate" style="max-width: 150px;">{{ Auth::user()->name }}</h6>
+                                        <small class="text-muted text-truncate d-block" style="max-width: 150px;">{{ Auth::user()->email }}</small>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                            @if(Auth::user()->role === 'admin')
+                                <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                            @elseif(Auth::user()->role === 'instructor')
+                                <li><a class="dropdown-item py-2" href="{{ route('instructor.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                            @else
+                                <li><a class="dropdown-item py-2" href="{{ route('user.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                            @endif
+                            
+                            <li><a class="dropdown-item py-2" href="{{ route('user.profile') }}"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item py-2 text-danger"><i class="bi bi-box-arrow-right me-2"></i> Sign out</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    @else
+                    <a href="{{ route('login') }}" class="btn btn-theme">Login/Signup &rarr;</a>
+                    @endauth
                 </div>
 
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-theme btn-theme-sm ms-2">Login/Signup &rarr;</a>
-                @endguest
 
-                @auth
-                <div class="dropdown ms-2">
-                    <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle dashboard-toggle" data-bs-toggle="dropdown">
-                        <img src="{{ auth()->user()->photo ? asset(auth()->user()->photo) : asset('frontend/images/small-avatar-1.jpg')}}" alt="user" width="35" height="35" class="rounded-circle me-2 border shadow-sm">
-                        <span class="d-none d-md-inline fw-semibold small">{{ auth()->user()->name }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-3 rounded-4 p-2" style="min-width: 240px;">
-                        <li class="p-3 border-bottom mb-2 bg-light rounded-4">
-                            <p class="mb-0 fw-bold text-dark">{{ auth()->user()->name }}</p>
-                            <p class="mb-0 small text-muted opacity-75">{{ auth()->user()->email }}</p>
-                        </li>
-                        @if(auth()->user()->role == 'user')
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.profile') }}"><i class="bi bi-person me-2"></i> Profile Settings</a></li>
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.purchase.history') }}"><i class="bi bi-collection-play me-2"></i> My Library</a></li>
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('user.wishlist.index') }}"><i class="bi bi-heart-fill me-2 text-danger"></i> Saved Items</a></li>
-                        @elseif(auth()->user()->role == 'admin')
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('admin.dashboard') }}"><i class="bi bi-shield-lock me-2"></i> Administration</a></li>
-                        @elseif(auth()->user()->role == 'instructor')
-                            <li><a class="dropdown-item py-2 px-3 rounded-3" href="{{ route('instructor.dashboard') }}"><i class="bi bi-briefcase me-2"></i> Instructor Panel</a></li>
-                        @endif
-                        <li><hr class="dropdown-divider opacity-10"></li>
-                        <li>
-                            <a class="dropdown-item text-danger py-2 px-3 rounded-3" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-header').submit();">
-                                <i class="bi bi-box-arrow-right me-2"></i> Sign Out
-                            </a>
-                            <form id="logout-form-header" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                @endauth
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
