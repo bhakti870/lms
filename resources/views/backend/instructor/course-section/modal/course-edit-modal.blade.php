@@ -94,65 +94,6 @@
 </div>
 
 
-@push('scripts')
-<script>
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    let videoInputs = document.querySelectorAll(".video_url"); 
-
-    videoInputs.forEach(videoInput => {
-        let videoPreview = videoInput.closest('.col-md-12').querySelector(".videoPreview"); 
-
-      
-        function extractYouTubeVideoID(url) {
-            let regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            let match = url.match(regex);
-            return match ? match[1] : null;
-        }
-
-    
-        function updateVideoPreview() {
-            let url = videoInput.value;
-            let videoId = extractYouTubeVideoID(url);
-
-            if (videoId) {
-                videoPreview.src = `https://www.youtube.com/embed/${videoId}`;
-                videoPreview.style.display = "block";
-            } else {
-                videoPreview.src = "";
-                videoPreview.style.display = "none";
-            }
-        }
-
-      
-        videoInput.addEventListener("input", updateVideoPreview);
-
-        // Live Class Toggle Logic for Edit
-        let modal = videoInput.closest('.modal');
-        let liveToggle = modal.querySelector(".live-class-toggle-edit");
-        let liveFields = modal.querySelector(".live-class-fields-edit");
-
-        if (liveToggle) {
-            liveToggle.addEventListener("change", function () {
-                if (this.checked) {
-                    liveFields.style.display = "block";
-                } else {
-                    liveFields.style.display = "none";
-                }
-            });
-        }
-
-        // প্রথমবার যদি ভিডিও ইউআরএল থাকে, তাহলে প্রিভিউ দেখাও
-        if (videoInput.value.trim() !== "") {
-            updateVideoPreview();
-        }
-    });
-});
-
-
-
-</script>
-@endpush
 
 

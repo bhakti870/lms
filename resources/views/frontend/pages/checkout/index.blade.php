@@ -2,6 +2,13 @@
 
 @section('content')
 
+@php
+    // Force page reload if cart was just updated
+    if (session()->has('cart_updated')) {
+        session()->forget('cart_updated');
+    }
+@endphp
+
 
 
     @include('frontend.section.breadcrumb', ['title' => 'Checkout'])
@@ -246,6 +253,11 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
+            // Update header cart on page load
+            if (typeof getCart === 'function') {
+                getCart();
+            }
+
             $('#applyCouponBtnCheckout').click(function () {
                 let coupon = $('#couponInput').val();
                 let courseIds = $('.coupon-course-id').map(function () { return $(this).val(); }).get();

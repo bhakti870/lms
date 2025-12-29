@@ -31,12 +31,8 @@ class CartController extends Controller
         // Handle the AJAX request to get the cart data
         $cart = $this->cartService->viewCart($request);
 
-        $guestToken = $request->cookie('guest_token') ?? Str::uuid();
-
-        $cartItems = Cart::with('course')->where('guest_token', $guestToken)->get();
-
         // Total Amount
-        $subTotal = $cartItems->sum(function ($cartItem) {
+        $subTotal = $cart->sum(function ($cartItem) {
             $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
             return $cartItem->quantity * ($price ?? 0);
         });
@@ -69,17 +65,18 @@ class CartController extends Controller
 
         $cart =  $this->cartService->viewCart($request);
 
-        // Total Amount (discounted বা selling price) হিসাব করা
+        // Total Amount
         $subTotal = $cart->sum(function ($cartItem) {
             $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
             return $cartItem->quantity * ($price ?? 0);
         });
 
-        $html = view('frontend.pages.home.partials.cart', compact('cart', 'subTotal'))->render();
+        $html = view('frontend.pages.home.partials.cart-dropdown', compact('cart', 'subTotal'))->render();
 
         return response()->json([
             'status' => 'success',
             'html' => $html,
+            'count' => $cart->count()
         ]);
     }
 
@@ -92,7 +89,21 @@ class CartController extends Controller
 
         $cartItem->delete(); // Remove the course from the cart
 
-        return response()->json(['status' => 'success', 'message' => 'Course removed from cart']);
+        $cartCount = 0;
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $cartCount = Cart::where('user_id', \Illuminate\Support\Facades\Auth::id())->count();
+        } else {
+             $guestToken = $request->cookie('guest_token');
+             if($guestToken) {
+                 $cartCount = Cart::where('guest_token', $guestToken)->count();
+             }
+        }
+
+        return response()->json([
+            'status' => 'success', 
+            'message' => 'Course removed from cart',
+            'cart_count' => $cartCount
+        ]);
     }
 
     

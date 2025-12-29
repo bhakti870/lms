@@ -31,7 +31,7 @@ class CartRepository
                     return response()->json([
                         'status' => 'error',
                         'message' => 'This course is already in your cart.'
-                    ], 400);
+                    ]);
                 }
 
                 // Add course to the cart for the authenticated user
@@ -57,7 +57,7 @@ class CartRepository
                     return response()->json([
                         'status' => 'error',
                         'message' => 'This course is already in your cart.'
-                    ], 400);
+                    ]);
                 }
 
                 // Add course to the cart
@@ -67,9 +67,14 @@ class CartRepository
                 ]);
             }
 
+            $cartCount = Auth::check() 
+                ? Cart::where('user_id', Auth::id())->count() 
+                : Cart::where('guest_token', $guestToken)->count();
+
             return response()->json([
                 'status' => 'success',
-                'message' => 'Course added to cart successfully!'
+                'message' => 'Course added to cart successfully!',
+                'cart_count' => $cartCount
             ]);
         } catch (\Exception $error) {
             return response()->json([
@@ -83,9 +88,13 @@ class CartRepository
 
         try{
 
-             // Retrieve or generate guest_token
-             $guestToken = $request->cookie('guest_token') ?? Str::uuid();
-             $cart = Cart::where('guest_token', $guestToken)->with('course', 'course.user')->get();
+             if (Auth::check()) {
+                 $cart = Cart::where('user_id', Auth::id())->with('course', 'course.user')->get();
+             } else {
+                 // Retrieve or generate guest_token
+                 $guestToken = $request->cookie('guest_token') ?? Str::uuid();
+                 $cart = Cart::where('guest_token', $guestToken)->with('course', 'course.user')->get();
+             }
 
              return $cart;
 

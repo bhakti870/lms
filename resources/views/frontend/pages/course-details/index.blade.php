@@ -19,6 +19,8 @@
 
                         @include('frontend.pages.course-details.course-content')
 
+                        @include('frontend.pages.course-details.review-form')
+
                     </div><!-- end course-details-content-wrap -->
                 </div><!-- end col-lg-8 -->
 

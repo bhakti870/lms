@@ -59,8 +59,11 @@
                                     </svg>
                                     <!-- Title -->
                                     <div class="ms-3">
-                                        <h6 class="mt-0 mb-0">{{ $data->section_title }}</h6>
-
+                                        <h6 class="mt-0 mb-0">{{ $data->section_title }} 
+                                            <a href="javascript:void(0)" class="text-primary ms-2" data-bs-toggle="modal" data-bs-target="#editSectionModal{{ $data->id }}">
+                                                <i class='bx bx-edit-alt fs-6'></i>
+                                            </a>
+                                        </h6>
                                     </div>
                                 </div>
                                 <!-- Button -->
@@ -269,6 +272,7 @@
 
         <!-- course section Modal -->
         @include('backend.instructor.course-section.modal.create-section-modal')
+        @include('backend.instructor.course-section.modal.edit-section-modal')
 
 
 
@@ -365,52 +369,81 @@
                 }
             });
         });
-    </script>
 
-<script>
-    $(document).on('click', '.delete-section', function(e) {
-        e.preventDefault();
+        $(document).on('click', '.delete-section', function(e) {
+            e.preventDefault();
 
-        let Id = $(this).data('id');
-        let deleteUrl = "{{ route('instructor.course-section.destroy', ':id') }}".replace(':id', Id);
+            let Id = $(this).data('id');
+            let deleteUrl = "{{ route('instructor.course-section.destroy', ':id') }}".replace(':id', Id);
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#delete-form').attr('action', deleteUrl).submit();
-            }
-        });
-    });
-</script>
-
-
-    <script>
-        $(document).on('change', '.material-type-select', function() {
-            let modal = $(this).closest('.modal');
-            if ($(this).val() === 'link') {
-                modal.find('.file-input-group').hide();
-                modal.find('.link-input-group').show();
-            } else {
-                modal.find('.file-input-group').show();
-                modal.find('.link-input-group').hide();
-            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#delete-form').attr('action', deleteUrl).submit();
+                }
+            });
         });
 
-        $(document).on('change', '.material-type-select-edit', function() {
+        // Unified script for Lecture Modals (Create & Edit)
+        function extractYouTubeVideoID(url) {
+            if (!url) return null;
+            let regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            let match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function updateVideoPreview(input) {
+            let $input = $(input);
+            let $modal = $input.closest('.modal');
+            let $preview = $modal.find('.videoPreview, #videoPreview');
+            let url = $input.val();
+            let videoId = extractYouTubeVideoID(url);
+
+            if (videoId) {
+                $preview.attr('src', `https://www.youtube.com/embed/${videoId}`).show();
+            } else {
+                $preview.attr('src', '').hide();
+            }
+        }
+
+        // Use delegation to handle all modals
+        $(document).on('input', 'input[name="url"]', function() {
+            updateVideoPreview(this);
+        });
+
+        $(document).on('change', '.live-class-toggle, .live-class-toggle-edit', function() {
+            let $modal = $(this).closest('.modal');
+            let $liveFields = $modal.find('.live-class-fields, .live-class-fields-edit');
+            if (this.checked) {
+                $liveFields.slideDown();
+            } else {
+                $liveFields.slideUp();
+            }
+        });
+
+        // Initialize previews when modal opens
+        $(document).on('shown.bs.modal', '.modal', function() {
+            let $urlInput = $(this).find('input[name="url"]');
+            if ($urlInput.length && $urlInput.val()) {
+                updateVideoPreview($urlInput[0]);
+            }
+        });
+
+        $(document).on('change', '.material-type-select, .material-type-select-edit', function() {
             let modal = $(this).closest('.modal');
             if ($(this).val() === 'link') {
-                modal.find('.file-input-group-edit').hide();
-                modal.find('.link-input-group-edit').show();
+                modal.find('.file-input-group, .file-input-group-edit').hide();
+                modal.find('.link-input-group, .link-input-group-edit').show();
             } else {
-                modal.find('.file-input-group-edit').show();
-                modal.find('.link-input-group-edit').hide();
+                modal.find('.file-input-group, .file-input-group-edit').show();
+                modal.find('.link-input-group, .link-input-group-edit').hide();
             }
         });
 

@@ -11,7 +11,7 @@
                 <div class="card card-item card-preview" data-tooltip-content="#tooltip_content_{{ $course->id }}">
                     <div class="card-image">
                         <a href="{{ route('course-details', $course->course_name_slug) }}" class="d-block">
-                            <img class="card-img-top" src="{{ asset($course->course_image) }}" alt="{{ $course->course_name }}" style="height: 240px; object-fit: cover;">
+                             <img class="card-img-top" src="{{ $course->course_image ? asset($course->course_image) : 'https://placehold.co/240x160/5b50d6/ffffff?text='.urlencode($course->course_name) }}" alt="{{ $course->course_name }}" style="height: 240px; object-fit: cover;">
                         </a>
                         <div class="course-badge-labels">
                             @if($course->bestseller == 'yes')
@@ -64,14 +64,23 @@
                                 <p class="card-price text-black font-weight-bold">Free</p>
                             @endif
                             
-                            <div class="icon-element icon-element-sm shadow-sm cursor-pointer" title="Add to Wishlist" id="{{ $course->id }}" onclick="addToWishList(this.id)">
-                                <i class="la la-heart-o"></i>
+                            <div class="d-flex gap-2">
+                                <div class="icon-element icon-element-sm shadow-sm cursor-pointer wishlist-icon" title="Add to Wishlist" data-course-id="{{ $course->id }}">
+                                    <i class="la la-heart-o"></i>
+                                </div>
+                                <div class="icon-element icon-element-sm shadow-sm cursor-pointer add-to-cart-btn" title="Add to Cart" data-course-id="{{ $course->id }}">
+                                    <i class="la la-shopping-cart"></i>
+                                </div>
                             </div>
                         </div>
                     </div><!-- end card-body -->
                 </div><!-- end card -->
                 @endforeach
-            </div><!-- end tab-content -->
+            </div><!-- end course-carousel -->
+            
+            <div class="text-center mt-5">
+                <a href="{{ route('all.courses') }}" class="btn btn-theme">Browse All Courses</a>
+            </div>
         </div><!-- end container -->
     </div><!-- end course-wrapper -->
 </section><!-- end courses-area -->

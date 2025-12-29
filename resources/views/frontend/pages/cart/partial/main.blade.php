@@ -19,15 +19,15 @@
                             <tr>
                                 <th scope="row">
                                     <div class="media media-card">
-                                        <a href="course-details.html" class="media-img mr-0">
+                                        <a href="{{ route('course-details', $item->course->course_name_slug) }}" class="media-img mr-0">
                                             <img src="{{ asset($item->course->course_image) }}" alt="Cart image">
                                         </a>
                                     </div>
                                 </th>
                                 <td>
-                                    <a href="course-details.html"
+                                    <a href="{{ route('course-details', $item->course->course_name_slug) }}"
                                         class="text-black font-weight-semi-bold">{{ $item->course->course_name }}</a>
-                                    <p class="fs-14 text-gray lh-20">By <a href="teacher-detail.html"
+                                    <p class="fs-14 text-gray lh-20">By <a href="{{ route('instructor.details', $item->course->user->id) }}"
                                             class="text-color hover-underline">{{ $item->course->user->name }}</a>,{{ $item->course->course_title }}
                                         &amp; More!</p>
                                 </td>

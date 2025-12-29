@@ -93,50 +93,5 @@
 
 
 
-@push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let modal = document.getElementById("course-{{ $data->id }}");
-        let videoInput = modal.querySelector("#video_url");
-        let videoPreview = modal.querySelector("#videoPreview");
 
-        modal.addEventListener("shown.bs.modal", function () {
-            let liveToggle = modal.querySelector(".live-class-toggle");
-            let liveFields = modal.querySelector(".live-class-fields");
-
-            liveToggle.addEventListener("change", function () {
-                if (this.checked) {
-                    liveFields.style.display = "block";
-                } else {
-                    liveFields.style.display = "none";
-                }
-            });
-
-            videoInput.addEventListener("input", function () {
-                let url = videoInput.value;
-                let videoId = extractYouTubeVideoID(url);
-
-                if (videoId) {
-                    videoPreview.src = `https://www.youtube.com/embed/${videoId}`;
-                    videoPreview.style.display = "block";
-                } else {
-                    videoPreview.src = "";
-                    videoPreview.style.display = "none";
-                }
-            });
-        });
-
-        modal.addEventListener("hidden.bs.modal", function () {
-            videoPreview.src = ""; // Reset video when modal closes
-            videoPreview.style.display = "none";
-        });
-
-        function extractYouTubeVideoID(url) {
-            let regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            let match = url.match(regex);
-            return match ? match[1] : null;
-        }
-    });
-</script>
-@endpush
 

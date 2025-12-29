@@ -1,5 +1,5 @@
 <div class="sidebar-widget p-0 border-0 bg-transparent">
-    <div class="card border-0 shadow-lg rounded-4 overflow-hidden sticky-top" style="top: 100px; z-index: 1020;">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden sticky-top" style="top: 100px; z-index: 900;">
         {{-- Video Preview --}}
         <div class="position-relative">
             <a href="javascript:void(0)" data-toggle="modal" data-target="#previewModal" class="d-block position-relative group-hover">

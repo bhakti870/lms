@@ -72,7 +72,16 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'section_title' => 'required|string|max:255',
+        ]);
+
+        $section = CourseSection::findOrFail($id);
+        $section->update([
+            'section_title' => $request->section_title,
+        ]);
+
+        return redirect()->back()->with('success', 'Section updated successfully');
     }
 
     /**

@@ -37,12 +37,24 @@ class LectureController extends Controller
     public function store(LectureRequest $request)
     {
         $validatedData = $request->validated();
-        $validatedData['is_live'] = $request->has('is_live') ? 1 : 0;
+        $isLive = $request->has('is_live') ? 1 : 0;
+        $validatedData['is_live'] = $isLive;
+
+        // Clean up data based on is_live status
+        if ($isLive == 0) {
+            $validatedData['live_link'] = null;
+            $validatedData['live_id'] = null;
+            $validatedData['live_password'] = null;
+            $validatedData['live_date'] = null;
+            $validatedData['live_time'] = null;
+        } else {
+            $validatedData['url'] = null;
+            $validatedData['video_duration'] = null;
+        }
 
         $this->lectureService->createLecture($validatedData);
 
-
-        return back()->with('success', 'Course created successfully!');
+        return back()->with('success', 'Lecture created successfully!');
     }
 
     /**
@@ -67,12 +79,24 @@ class LectureController extends Controller
     public function update(LectureRequest $request, string $id)
     {
         $validatedData = $request->validated();
-        $validatedData['is_live'] = $request->has('is_live') ? 1 : 0;
+        $isLive = $request->has('is_live') ? 1 : 0;
+        $validatedData['is_live'] = $isLive;
+
+        // Clean up data based on is_live status
+        if ($isLive == 0) {
+            $validatedData['live_link'] = null;
+            $validatedData['live_id'] = null;
+            $validatedData['live_password'] = null;
+            $validatedData['live_date'] = null;
+            $validatedData['live_time'] = null;
+        } else {
+            $validatedData['url'] = null;
+            $validatedData['video_duration'] = null;
+        }
 
         $this->lectureService->updateLecture($validatedData, $id);
 
-
-        return back()->with('success', 'Course updated successfully!');
+        return back()->with('success', 'Lecture updated successfully!');
     }
 
     /**

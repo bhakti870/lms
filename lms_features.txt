@@ -75,6 +75,6 @@ student notifications:
 3. Scheduled Reminders 
 4. Course Completion
 
-r
+
 
 

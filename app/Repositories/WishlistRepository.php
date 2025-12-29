@@ -48,7 +48,7 @@ class WishlistRepository
             return response()->json([
                 'status' => 'error',
                 'message' => 'This item is already in your wishlist'
-            ], 409);
+            ]);
         } catch (\Exception $error) {
             return response()->json([
                 'status' => 'error',
