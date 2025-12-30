@@ -21,13 +21,13 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapFive();
 
         /**
-         * ✅ Dynamic SMTP Settings (SAFE)
-         * - Will NOT run during migration
-         * - Will NOT crash if table missing
+         * ✅ Dynamic SMTP Settings (CACHED)
          */
         try {
             if (Schema::hasTable('smtps')) {
-                $smtps = Smtp::query()->first();
+                $smtps = \Illuminate\Support\Facades\Cache::remember('smtp_settings', 3600, function () {
+                    return Smtp::query()->first();
+                });
 
                 if ($smtps) {
                     Config::set('mail.mailers.smtp.host', $smtps->host);
@@ -69,9 +69,16 @@ class AppServiceProvider extends ServiceProvider
             auth()->check() && auth()->user()->hasAnyRole($roles)
         );
 
-        // View Composer for Header Categories & User Data
+        // View Composer for Header Categories & User Data (CACHED)
         \Illuminate\Support\Facades\View::composer('frontend.section.header', function ($view) {
-            $view->with('header_categories', \App\Models\Category::with('subcategory')->withCount('course')->orderBy('name')->get());
+            $categories = \Illuminate\Support\Facades\Cache::remember('header_categories', 3600, function () {
+                return \App\Models\Category::with('subcategory')
+                    ->withCount('course')
+                    ->orderBy('name')
+                    ->get();
+            });
+            
+            $view->with('header_categories', $categories);
 
             if (auth()->check()) {
                 $view->with('header_cart_items', \App\Models\Cart::where('user_id', auth()->id())->with('course')->latest()->get());

@@ -13,14 +13,14 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-display="static" aria-expanded="false">
                             <i class="bi bi-grid-3x3-gap me-1"></i> Categories
                         </a>
                         <ul class="dropdown-menu">
                             @foreach($header_categories as $cat)
                                 @if($cat->subcategory->count() > 0)
                                     <li class="dropend">
-                                        <a class="dropdown-item dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                        <a class="dropdown-item dropdown-toggle" href="#" data-bs-display="static">
                                             {{ $cat->name }}
                                         </a>
                                         <ul class="dropdown-menu">
@@ -46,15 +46,15 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0">
-                    <button id="theme-toggle" class="btn btn-light rounded-circle border-0 shadow-sm"
+                    <!-- <button id="theme-toggle" class="btn btn-light rounded-circle border-0 shadow-sm"
                         style="width: 40px; height: 40px;">
                         <i class="bi bi-moon-fill"></i>
-                    </button>
+                    </button> -->
                     
                     @auth
                     <!-- Cart Dropdown -->
                     <div class="dropdown">
-                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-display="static" style="width: 40px; height: 40px;">
                             <i class="bi bi-cart"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-count" style="font-size: 10px;">
                                 {{ $header_cart_items->count() }}
@@ -96,7 +96,7 @@
 
                     <!-- Wishlist Dropdown -->
                     <div class="dropdown">
-                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-display="static" style="width: 40px; height: 40px;">
                             <i class="bi bi-heart"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="wishlist-count" style="font-size: 10px;">
                                 {{ $header_wishlist_items->count() }}
@@ -129,7 +129,7 @@
 
                     <!-- Notification Dropdown -->
                     <div class="dropdown">
-                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-toggle="dropdown" style="width: 40px; height: 40px;">
+                        <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-display="static" style="width: 40px; height: 40px;">
                             <i class="bi bi-bell"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count" style="font-size: 10px;">
                                 {{ $header_notifications->count() }}
@@ -162,7 +162,7 @@
 
                     <!-- Profile Dropdown -->
                     <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle no-arrow" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle no-arrow" id="dropdownUser1" data-bs-display="static" aria-expanded="false">
                             <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://placehold.co/40x40' }}" alt="mdo" width="40" height="40" class="rounded-circle border object-fit-cover">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1" style="min-width: 200px;">
