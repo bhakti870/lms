@@ -32,6 +32,11 @@
                 <span class="fw-semibold">Leaderboard</span>
             </a>
 
+            <a href="{{ route('user.certificates.index') }}" class="list-group-item list-group-item-action border-0 px-4 py-3 d-flex align-items-center {{ $route == 'user.certificates.index' ? 'active bg-theme text-white rounded-3 mx-3 mb-1' : 'bg-transparent text-muted' }}">
+                <i class="bi bi-patch-check me-3 fs-5"></i>
+                <span class="fw-semibold">My Certificates</span>
+            </a>
+
             <a href="{{ route('user.notifications.index') }}" class="list-group-item list-group-item-action border-0 px-4 py-3 d-flex align-items-center {{ $route == 'user.notifications.index' ? 'active bg-theme text-white rounded-3 mx-3 mb-1' : 'bg-transparent text-muted' }}">
                 <i class="bi bi-bell me-3 fs-5"></i>
                 <span class="fw-semibold">Notifications</span>

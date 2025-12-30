@@ -111,14 +111,37 @@ class FrontendDashboardController extends Controller
         $total_lecture_duration = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
 
         $is_enrolled = false;
+        $is_completed = false;
         if (Auth::check()) {
             $is_enrolled = \App\Models\Enrollment::where('user_id', Auth::id())
                 ->where('course_id', $course->id)
                 ->where('status', 'active')
                 ->exists();
+            
+            if ($is_enrolled) {
+                // Check if user has certificate or all lessons completed
+                $is_completed = \App\Models\Certificate::where('user_id', Auth::id())
+                                ->where('course_id', $course->id)
+                                ->exists();
+                
+                if (!$is_completed) {
+                    $totalLessons = CourseLecture::where('course_id', $course->id)->count() + 
+                                   \App\Models\Quiz::where('course_id', $course->id)->count() + 
+                                   \App\Models\CourseMaterial::where('course_id', $course->id)->count();
+                    
+                    $completedLessons = \App\Models\CourseProgress::where('user_id', Auth::id())
+                                       ->where('course_id', $course->id)
+                                       ->where('is_completed', true)
+                                       ->count();
+                    
+                    if ($totalLessons > 0 && $completedLessons >= $totalLessons) {
+                        $is_completed = true;
+                    }
+                }
+            }
         }
 
-        return view('frontend.pages.course-details.index', compact('course', 'total_lecture', 'course_content', 'similarCourses', 'all_category', 'more_course_instructor', 'total_minutes', 'total_lecture_duration', 'is_enrolled'));
+        return view('frontend.pages.course-details.index', compact('course', 'total_lecture', 'course_content', 'similarCourses', 'all_category', 'more_course_instructor', 'total_minutes', 'total_lecture_duration', 'is_enrolled', 'is_completed'));
     }
 
     public function allCourses(Request $request)

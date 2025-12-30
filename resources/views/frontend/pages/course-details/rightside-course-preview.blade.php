@@ -59,9 +59,24 @@
                 @endphp
 
                 @if($is_enrolled)
-                    <a href="{{ route('user.course.learn', $course->id) }}" class="btn btn-dark btn-lg rounded-pill fw-bold">
-                        Go to Course
-                    </a>
+                    <div class="d-grid gap-2">
+                        @if($is_completed)
+                            <div class="alert alert-success d-flex align-items-center mb-0 rounded-pill px-4">
+                                <i class="bi bi-patch-check-fill me-2 fs-4"></i>
+                                <span class="fw-bold">You completed this course!</span>
+                            </div>
+                            <a href="{{ route('user.course.learn', $course->id) }}" class="btn btn-outline-dark btn-lg rounded-pill fw-bold">
+                                Go to Course
+                            </a>
+                            <a href="{{ route('user.course.certificate', $course->id) }}" class="btn btn-theme btn-lg rounded-pill fw-bold">
+                                <i class="bi bi-award me-1"></i> Download Certificate
+                            </a>
+                        @else
+                            <a href="{{ route('user.course.learn', $course->id) }}" class="btn btn-dark btn-lg rounded-pill fw-bold">
+                                Go to Course
+                            </a>
+                        @endif
+                    </div>
                 @elseif($in_cart)
                     <a href="{{ route('cart') }}" class="btn btn-dark btn-lg rounded-pill fw-bold">
                         Go to Cart
@@ -70,9 +85,9 @@
                     <button type="button" class="btn btn-theme btn-lg rounded-pill fw-bold add-to-cart-btn shadow-theme" data-course-id="{{ $course->id }}">
                         Add to Cart
                     </button>
-                    <button type="button" class="btn btn-outline-dark btn-lg rounded-pill fw-bold buy-now-btn" data-course-id="{{ $course->id }}">
+                    <!-- <button type="button" class="btn btn-outline-dark btn-lg rounded-pill fw-bold buy-now-btn" data-course-id="{{ $course->id }}">
                         Buy Now
-                    </button>
+                    </button> -->
                 @endif
             </div>
 

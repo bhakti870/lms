@@ -92,8 +92,10 @@
     /* --- MAIN CONTENT --- */
     .course-content-area {
         flex: 1;
-        padding: 30px;
-        overflow-x: hidden;
+        padding: 40px;
+        overflow-y: auto;
+        background: #fdfdff;
+        scroll-behavior: smooth;
     }
 
     .video-container {
@@ -101,10 +103,11 @@
         padding-bottom: 56.25%; /* 16:9 */
         height: 0;
         background: #000;
-        border-radius: 12px;
+        border-radius: 20px;
         overflow: hidden;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        border: 1px solid rgba(255,255,255,0.1);
     }
     
     .video-container iframe, 
@@ -114,6 +117,7 @@
         left: 0;
         width: 100%;
         height: 100%;
+        border-radius: 20px;
     }
 
     /* --- RESPONSIVE --- */
@@ -132,7 +136,7 @@
         
         .course-content-area {
             order: 1;
-            padding: 15px;
+            padding: 20px;
         }
     }
     
@@ -149,6 +153,61 @@
     .scrollbar-thin::-webkit-scrollbar { width: 6px; }
     .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+    
+    /* Fix clickability and overlays */
+    .course-player-wrapper {
+        z-index: 5 !important;
+        position: relative;
+    }
+    .course-sidebar {
+        position: sticky;
+        top: 70px;
+        width: 380px;
+        height: calc(100vh - 70px);
+        background: #fff;
+        border-right: 1px solid #eee;
+        overflow-y: auto;
+        z-index: 1000 !important;
+        pointer-events: auto !important;
+    }
+    .course-content-area {
+        position: relative;
+        flex: 1;
+        padding: 40px;
+        overflow-y: auto;
+        background: #fdfdff;
+        scroll-behavior: smooth;
+        z-index: 100 !important;
+        pointer-events: auto !important;
+    }
+    .lesson-item, .nav-link, button, a, .completion-status {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+    }
+    
+    /* Ensure modals don't block logic if closed incorrectly */
+    .modal {
+        pointer-events: none !important;
+    }
+    .modal-dialog, .modal-content, .modal-backdrop {
+        pointer-events: auto !important;
+    }
+    .modal.show {
+        pointer-events: auto !important;
+    }
+
+    body.modal-open {
+        overflow: auto !important;
+        padding-right: 0 !important;
+    }
+    
+    /* Force hide preloader on this page specifically to avoid click blocking */
+    .preloader {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
 </style>
 
 <div class="container-fluid p-0">
@@ -193,7 +252,7 @@
                                      data-type="lecture" 
                                      data-id="{{ $lecture->id }}"
                                      data-locked="{{ $isLocked ? 'true' : 'false' }}"
-                                     @if($isLocked) onclick="Swal.fire('Locked', 'This content is locked until {{ $unlockDate }}', 'info'); return false;" @endif
+                                     data-unlock-date="{{ $unlockDate }}"
                                      >
                                     <div class="flex-shrink-0">
                                         <i class="fs-5 bi {{ $isLocked ? 'bi-lock-fill' : 'bi-play-circle-fill' }}"></i>
@@ -211,7 +270,7 @@
 
                             <!-- Quizzes -->
                             @foreach($section->quizzes as $quiz)
-                            <div class="lesson-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false">
+                            <div class="lesson-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false" data-unlock-date="">
                                 <div class="flex-shrink-0"><i class="bi bi-question-circle-fill fs-5"></i></div>
                                 <span class="text-truncate flex-grow-1">{{ $quiz->quiz_title }}</span>
                                 <div class="completion-status text-success">
@@ -226,7 +285,7 @@
 
                             <!-- Materials -->
                             @foreach($section->materials as $material)
-                            <div class="lesson-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false">
+                             <div class="lesson-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false" data-unlock-date="">
                                 <div class="flex-shrink-0"><i class="bi bi-file-earmark-text-fill fs-5"></i></div>
                                 <span class="text-truncate flex-grow-1">{{ $material->material_title }}</span>
                                 <div class="completion-status text-success">
@@ -276,6 +335,9 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-pill fw-bold" id="pills-qa-tab" data-bs-toggle="pill" data-bs-target="#pills-qa" type="button" role="tab" aria-controls="pills-qa" aria-selected="false"><i class="bi bi-chat-dots-fill me-2"></i>Q&A</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill fw-bold" id="pills-reviews-tab" data-bs-toggle="pill" data-bs-target="#pills-reviews" type="button" role="tab" aria-controls="pills-reviews" aria-selected="false"><i class="bi bi-star-fill me-2"></i>Reviews</button>
                     </li>
                 </ul>
                 
@@ -360,73 +422,106 @@
 
 @push('scripts')
 <script>
-    const courseId = "{{ $course->id }}";
-    const userNotes = @json($notes);
-    let currentLectureId = null;
-    let quizTimerInterval = null;
+    var courseId = "{{ $course->id }}";
+    var userNotes = @json($notes);
+    var currentLectureId = null;
+    var quizTimerInterval = null;
+    var reviewsLoaded = false;
 
-    $(document).ready(function() {
-
-
+    function initLearnPage() {
         updateOverallProgress();
 
-        // Load content on click
-        $(document).on('click', '.load-content', function() {
-            if($(this).data('locked') === true) return;
-            loadContent($(this).data('type'), $(this).data('id'));
-        });
-
-        // Initialize first content / Auto-resume
-        const initialActive = $('.lesson-item.active');
+        var initialActive = $('.lesson-item.active');
         if (initialActive.length && initialActive.data('locked') !== true) {
-            const type = initialActive.data('type');
-            const id = initialActive.data('id');
+            var type = initialActive.data('type');
+            var id = initialActive.data('id');
             
             if (type === 'lecture') {
                 currentLectureId = id;
                 $('#sidebar-content-area').show();
                 renderNotes(id);
                 loadQuestions(id);
-                // setupVideoEndTracking(id); // Already handled in blade/iframe usually? Or need to re-attach
-                setTimeout(() => setupVideoEndTracking(id), 1000); 
+                // loadReviews(); 
+                setTimeout(() => setupVideoEndTracking(id), 200); 
             } else {
                 $('#sidebar-content-area').hide();
             }
             
-            // Scroll to active
-            initialActive[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+            setTimeout(() => {
+                var sidebar = $('.course-sidebar');
+                if (sidebar.length && initialActive.length) {
+                    sidebar.animate({
+                        scrollTop: initialActive.offset().top - sidebar.offset().top + sidebar.scrollTop() - 150
+                    }, 500);
+                }
+            }, 300);
 
-        // Handle Mark as Completed Button (Delegated)
-        $(document).on('click', '#mark-completed-btn', function() {
-            const btn = $(this);
-            const type = btn.data('type');
-            const id = btn.data('id');
+            updateNextButtonVisibility();
+        }
+    }
+
+    $(document).ready(initLearnPage);
+    document.addEventListener('turbo:load', initLearnPage);
+
+     $(document).off('click', '.load-content').on('click', '.load-content', function(e) {
+        e.preventDefault();
+        var item = $(this);
+        console.log('Loading content:', item.data('type'), item.data('id'), 'locked:', item.data('locked'));
+        
+        if(item.data('locked') == true || item.data('locked') == "true") {
+             var date = item.data('unlock-date');
+             var msg = date ? 'This content is locked until ' + date : 'This content is not yet available.';
+             Swal.fire('Locked', msg, 'info');
+             return false;
+        }
+        loadContent(item.data('type'), item.data('id'));
+    });
+
+    // Cleanup modals on navigation
+    $(document).on('turbo:before-cache', function() {
+        $('.modal').modal('hide');
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open').css('overflow', '');
+    });
+
+    $(document).on('hidden.bs.modal', function() {
+        if ($('.modal.show').length === 0) {
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open').css('overflow', '');
+        }
+    });
+
+    $(document).off('click', '#mark-completed-btn').on('click', '#mark-completed-btn', function() {
+        var btn = $(this);
+        if (btn.hasClass('btn-success')) return;
+
+        var type = btn.data('type');
+        var id = btn.data('id');
+        
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+        
+        saveProgress(type, id, function(res) {
+            btn.prop('disabled', true).removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
             
-            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Saving...');
+            var item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
+            item.find('.completion-status').html('<i class="bi bi-check-circle-fill fs-5"></i>');
             
-            saveProgress(type, id, function(res) {
-                btn.removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
-                
-                // Update sidebar icon
-                const item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
-                item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
-                
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Lesson Completed!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+            updateOverallProgress();
+            
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Lesson Completed!',
+                showConfirmButton: false,
+                timer: 1500
             });
         });
     });
 
     function loadContent(type, id) {
         $('.lesson-item').removeClass('active');
-        const activeItem = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
+        var activeItem = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
         activeItem.addClass('active');
         
         $('#content-loading').show();
@@ -436,9 +531,12 @@
 
         if (type === 'lecture') {
             currentLectureId = id;
-            $('#sidebar-content-area').fadeIn();
+            $('#sidebar-content-area').show();
             renderNotes(id);
-            loadQuestions(id); // Load Q&A
+            loadQuestions(id);
+            if ($('#pills-reviews-tab').hasClass('active') && !reviewsLoaded) {
+                loadReviews();
+            }
         } else {
             currentLectureId = null;
             $('#sidebar-content-area').hide();
@@ -446,19 +544,57 @@
 
         $.get(`/user/course-content/${courseId}/${type}/${id}`, function(data) {
             $('#content-loading').hide();
-            $('#content-display-area').html(data.html).fadeIn();
+            $('#content-display-area').html(data.html).show();
             
-            // Re-check completion status for button state
-            if (activeItem.find('.la-check-circle').length > 0) {
-                 // It's completed
-                 $('#mark-completed-btn').removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
+            // Sync sidebar icon instantly
+            if (data.is_completed) {
+                activeItem.find('.completion-status').html('<i class="bi bi-check-circle-fill fs-5"></i>');
+                $('#mark-completed-btn').prop('disabled', true).removeClass('btn-theme').addClass('btn-success text-white').html('<i class="bi bi-check-circle-fill me-2"></i> Completed');
+                updateOverallProgress();
+            } else {
+                $('#mark-completed-btn').prop('disabled', false).removeClass('btn-success text-white').addClass('btn-theme').html('<i class="bi bi-check-circle me-2"></i> Mark as Completed');
             }
 
             if (type === 'lecture') {
-                setTimeout(() => setupVideoEndTracking(id), 1000);
+                setTimeout(() => setupVideoEndTracking(id), 200);
             }
+            
+            updateNextButtonVisibility();
         });
     }
+
+    function updateNextButtonVisibility() {
+        var active = $('.lesson-item.active');
+        var next = active.next('.lesson-item');
+        
+        // If no next in current section, check next section
+        if (!next.length) {
+            next = active.closest('.accordion-item').next('.accordion-item').find('.lesson-item').first();
+        }
+
+        if (next.length && next.data('locked') !== true) {
+            $('#next-content-btn').show();
+        } else {
+            $('#next-content-btn').hide();
+        }
+    }
+
+    $(document).on('click', '#next-content-btn', function() {
+        var active = $('.lesson-item.active');
+        var next = active.next('.lesson-item');
+        if (!next.length) {
+            next = active.closest('.accordion-item').next('.accordion-item').find('.lesson-item').first();
+        }
+        
+        if (next.length) {
+            // Expand section if collapsed
+            var collapse = next.closest('.accordion-collapse');
+            if (!collapse.hasClass('show')) {
+                new bootstrap.Collapse(collapse[0]).show();
+            }
+            next.click();
+        }
+    });
 
     function renderNotes(lectureId) {
         const list = $('#saved-notes-list');
@@ -549,30 +685,84 @@
             if (data.success) {
                 const item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
                 // Update Checkmark
-                item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
+                item.find('.completion-status').html('<i class="bi bi-check-circle-fill fs-5"></i>');
                 updateOverallProgress();
                 
                 if (data.course_finished) {
                     $('#completionModal').modal('show');
                 }
+                
+                // Auto-advance or show next if available
+                updateNextButtonVisibility();
+                
                 if (callback) callback(data);
             }
         });
     }
 
     function updateOverallProgress() {
-        const total = $('.lesson-item').length;
-        const completed = $('.la-check-circle').length; 
-        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+        var total = $('.lesson-item').length;
+        var completed = $('.lesson-item .bi-check-circle-fill').length; 
+        var pct = total > 0 ? Math.round((completed / total) * 100) : 0;
         
         $('#overall-progress-bar').css('width', pct + '%');
         $('#overall-progress-pct').text(pct);
+        
+        if (pct === 100 && $('#overall-progress-pct').parent().find('.bi-patch-check-fill').length === 0) {
+            $('#overall-progress-pct').parent().append('<i class="bi bi-patch-check-fill text-success ms-2"></i>');
+        }
     }
 
     // --- Q&A Logic ---
+    $(document).on('shown.bs.tab', '#pills-reviews-tab', function (e) {
+        if (!reviewsLoaded) {
+            loadReviews();
+        }
+    });
+
+    function loadReviews() {
+        var list = $('#reviews-list');
+        if (!list.length) {
+             // Fallback or ensure we have a place to put it
+             $('#pills-reviews').html('<div id="reviews-list"><div class="text-center py-4"><div class="spinner-border spinner-border-sm text-theme"></div></div></div>');
+             list = $('#reviews-list');
+        }
+        
+        $.get(`/user/course-reviews/${courseId}`, function(res) {
+            reviewsLoaded = true;
+            list.empty();
+            if (res.reviews.length === 0) {
+                list.html('<p class="text-center text-muted py-3 small">No reviews yet for this course.</p>');
+                return;
+            }
+            
+            res.reviews.forEach(r => {
+                var stars = '';
+                for(var i=1; i<=5; i++) {
+                    stars += `<i class="bi bi-star${i <= r.rating ? '-fill text-warning' : ' text-muted'}"></i> `;
+                }
+
+                list.append(`
+                    <div class="review-item bg-white p-3 rounded-3 shadow-sm border mb-2">
+                        <div class="d-flex gap-3">
+                            <img src="${r.user.image}" class="rounded-circle object-fit-cover" width="35" height="35">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark small">${r.user.name}</strong>
+                                    <small class="text-muted" style="font-size: 10px;">${formatDate(r.created_at)}</small>
+                                </div>
+                                <div class="mb-2" style="font-size: 12px;">${stars}</div>
+                                <p class="mb-0 text-secondary small">${r.comment}</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        });
+    }
     function loadQuestions(lectureId) {
         if (!lectureId) return;
-        const list = $('#qa-list');
+        var list = $('#qa-list');
         list.html('<div class="text-center py-4"><div class="spinner-border spinner-border-sm text-theme"></div></div>');
         
         $.get(`/user/course-questions/${lectureId}`, function(res) {
@@ -657,7 +847,7 @@
     }
 
     function postReply(parentId) {
-        const text = $(`#reply-input-${parentId}`).val().trim();
+        var text = $(`#reply-input-${parentId}`).val().trim();
         if(!text) return;
 
         $.post("{{ route('user.course.question.reply') }}", {
@@ -674,14 +864,14 @@
     }
 
     function formatDate(dateString) {
-        const date = new Date(dateString);
+        var date = new Date(dateString);
         return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     }
 
     // Quiz Handlers (Same logic, modernized text)
     $(document).on('submit', '#quiz-form', function(e) {
         e.preventDefault();
-        const formData = $(this).serialize();
+        var formData = $(this).serialize();
         $('#submit-quiz-btn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Submitting...');
         if (quizTimerInterval) clearInterval(quizTimerInterval);
 
@@ -692,17 +882,17 @@
 
     $(document).on('click', '#start-quiz-btn', function() {
         $('#quiz-intro').hide();
-        $('#quiz-questions-area').fadeIn();
-        const duration = $(this).data('duration');
+        $('#quiz-questions-area').show();
+        var duration = $(this).data('duration');
         if (duration > 0) startTimer(duration);
     });
 
     function startTimer(minutes) {
-        let seconds = minutes * 60;
-        const timerDisplay = $('#timer-clock');
+        var seconds = minutes * 60;
+        var timerDisplay = $('#timer-clock');
         quizTimerInterval = setInterval(function() {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
+            var m = Math.floor(seconds / 60);
+            var s = seconds % 60;
             timerDisplay.text(`${m}:${s < 10 ? '0' : ''}${s}`);
             if (seconds <= 0) {
                 clearInterval(quizTimerInterval);
@@ -713,7 +903,7 @@
     }
     
     function showQuizResults(data) {
-        let html = `
+        var html = `
             <div class="text-center py-5">
                 <div class="mb-4">
                     <i class="bi ${data.is_pass ? 'bi-trophy-fill text-success' : 'bi-x-circle-fill text-danger'}" style="font-size: 80px;"></i>
@@ -730,9 +920,9 @@
          
         $('#content-display-area').html(html);
         if (data.is_pass) {
-            const item = $(`.lesson-item.active[data-type="quiz"]`);
+            var item = $(`.lesson-item.active[data-type="quiz"]`);
             // Mark complete
-            item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
+            item.find('.completion-status').html('<i class="bi bi-check-circle-fill fs-5"></i>');
             updateOverallProgress();
         }
         if (data.course_finished) $('#completionModal').modal('show');

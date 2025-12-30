@@ -8,6 +8,7 @@ use App\Models\CourseProgress;
 use App\Models\Course;
 use App\Models\Order;
 use App\Models\Wishlist;
+use App\Models\Certificate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -74,6 +75,12 @@ class UserController extends Controller
             ->get();
             
         return view('frontend.dashboard.leaderboard', compact('leaders'));
+    }
+
+    public function certificates() {
+        $id = Auth::user()->id;
+        $certificates = Certificate::where('user_id', $id)->with('course')->get();
+        return view('frontend.dashboard.certificates', compact('certificates'));
     }
     
     public function downloadInvoice($id) {

@@ -204,12 +204,13 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
 
 
     /* Course Delivery & Learning */
-    Route::get('/course-learn/{id}', [CourseDeliveryController::class, 'learn'])->name('course.learn');
+    Route::get('/course-learn/{course_id}', [CourseDeliveryController::class, 'learn'])->name('course.learn');
     Route::get('/course-content/{course_id}/{type}/{id}', [CourseDeliveryController::class, 'getContent'])->name('course.content');
     Route::post('/course/note/save', [CourseDeliveryController::class, 'saveNote'])->name('course.note.save');
     Route::post('/course/progress', [CourseDeliveryController::class, 'saveProgress'])->name('course.progress');
     Route::post('/course-quiz-submit', [CourseDeliveryController::class, 'submitQuiz'])->name('course.quiz.submit');
     Route::get('/course-certificate/{course_id}', [CourseDeliveryController::class, 'downloadCertificate'])->name('course.certificate');
+    Route::get('/course-reviews/{course_id}', [App\Http\Controllers\frontend\ReviewController::class, 'fetchReviews']);
 
     Route::middleware('auth')->group(function () {
     Route::get('/navbar/cart-count', [App\Http\Controllers\NavbarController::class, 'cartCount']);
@@ -227,6 +228,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::get('/purchase-history', [UserController::class, 'purchaseHistory'])->name('purchase.history');
     Route::get('/invoice/{id}', [UserController::class, 'downloadInvoice'])->name('invoice');
     Route::get('/leaderboard', [UserController::class, 'leaderboard'])->name('leaderboard');
+    Route::get('/my-certificates', [UserController::class, 'certificates'])->name('certificates.index');
     Route::delete('/course-remove/{id}', [UserController::class, 'removeCourse'])->name('course.remove');
 
     /* Notifications */

@@ -23,6 +23,9 @@ class CheckCourseAccess
         }
 
         if (!Auth::check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Please login to access this course.'], 401);
+            }
             return redirect()->route('login')->with('error', 'Please login to access this course.');
         }
 
@@ -41,6 +44,9 @@ class CheckCourseAccess
                 return $next($request);
             }
 
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'You must enroll in this course to access the content.'], 403);
+            }
             return redirect()->route('course-details', $course->slug ?? '')->with('error', 'You must enroll in this course to access the content.');
         }
 

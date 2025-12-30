@@ -49,4 +49,19 @@ class ReviewController extends Controller
 
         return back()->with('success', 'Review submitted successfully! It will be visible after approval.');
     }
+
+    public function fetchReviews($course_id)
+    {
+        $reviews = Review::with('user')
+            ->where('course_id', $course_id)
+            ->where('status', 1)
+            ->latest()
+            ->get();
+            
+        $reviews->each(function($r) {
+            $r->user->image = !empty($r->user->photo) ? url($r->user->photo) : url('frontend/images/small-avatar-1.jpg');
+        });
+
+        return response()->json(['reviews' => $reviews]);
+    }
 }

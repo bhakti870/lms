@@ -24,16 +24,16 @@ class CourseDeliveryController extends Controller
     /**
      * Learning Dashboard for a specific course
      */
-    public function learn($id)
+    public function learn($course_id)
     {
         $course = Course::with(['sections.lectures', 'sections.quizzes', 'sections.materials'])
-            ->findOrFail($id);
+            ->findOrFail($course_id);
         
         $user_id = Auth::id();
         
         // Drip Content Logic & Access Check
         $enrollment = \App\Models\Enrollment::where('user_id', $user_id)
-                        ->where('course_id', $id)
+                        ->where('course_id', $course_id)
                         ->where('status', 'active')
                         ->first();
                         
@@ -52,12 +52,12 @@ class CourseDeliveryController extends Controller
         
         // Get user progress
         $progress = CourseProgress::where('user_id', $user_id)
-            ->where('course_id', $id)
+            ->where('course_id', $course_id)
             ->get()
             ->groupBy('content_type');
 
         // Get saved notes
-        $notes = \App\Models\CourseNote::where('user_id', $user_id)->where('course_id', $id)->get()->groupBy('lecture_id');
+        $notes = \App\Models\CourseNote::where('user_id', $user_id)->where('course_id', $course_id)->get()->groupBy('lecture_id');
 
         // Find the first incomplete lesson to show
         $currentContent = $this->getResumeContent($course, $user_id);
@@ -80,7 +80,13 @@ class CourseDeliveryController extends Controller
             }
 
             if($content) {
-                $initialHtml = view('frontend.course.partials.content_view', compact('type', 'content', 'course'))->render();
+                $isCompleted = \App\Models\CourseProgress::where('user_id', $user_id)
+                    ->where('course_id', $course->id)
+                    ->where('content_type', $type)
+                    ->where('content_id', $id)
+                    ->where('is_completed', true)
+                    ->exists();
+                $initialHtml = view('frontend.course.partials.content_view', compact('type', 'content', 'course', 'isCompleted'))->render();
                 $initialTitle = $content->lecture_title ?? $content->quiz_title ?? $content->material_title;
             }
         }
@@ -113,9 +119,19 @@ class CourseDeliveryController extends Controller
             $this->markAsCompleted($user_id, $course_id, 'material', $id);
         }
 
+        $course = Course::find($course_id);
+        
+        $isCompleted = \App\Models\CourseProgress::where('user_id', $user_id)
+            ->where('course_id', $course_id)
+            ->where('content_type', $type)
+            ->where('content_id', $id)
+            ->where('is_completed', true)
+            ->exists();
+
         return response()->json([
-            'html' => view('frontend.course.partials.content_view', compact('type', 'content'))->render(),
-            'title' => $content->lecture_title ?? $content->quiz_title ?? $content->material_title
+            'html' => view('frontend.course.partials.content_view', compact('type', 'content', 'course'))->render(),
+            'title' => $content->lecture_title ?? $content->quiz_title ?? $content->material_title,
+            'is_completed' => $isCompleted
         ]);
     }
 

@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>SkillPoint Loader</title>
-
+<!-- ===== PRELOADER ===== -->
 <style>
 /* ===== PRELOADER WRAPPER ===== */
 .preloader {
@@ -89,65 +84,59 @@
     }
 }
 </style>
-</head>
 
-<body>
-
-<!-- ===== PRELOADER ===== -->
 <div class="preloader">
     <div class="skillpoint-loader">
-        <!-- Replace logo path -->
-        <!-- <img src="logo.png" class="logo" alt="SkillPoint Logo"> -->
-         <i class="bi bi-mortarboard-fill text-theme me-2"></i>
+         <i class="bi bi-mortarboard-fill text-theme me-2" style="font-size: 3rem;"></i>
 
         <h1 class="brand-name">
             <span>S</span><span>k</span><span>i</span><span>l</span><span>l</span>
             <span>P</span><span>o</span><span>i</span><span>n</span><span>t</span>
         </h1>
-
-        <!-- <p class="tagline">Level Up Your Skills</p>i -->
     </div>
 </div>
-
-<!-- ===== MAIN PAGE CONTENT (DEMO) ===== -->
-<!-- <div style="padding:40px;color:#111;font-family:sans-serif">
-    <h2>SkillPoint LMS Loaded 🎉</h2>
-    <p>Your website content goes here.</p>
-</div> -->
 
 <script>
 /* ===== SHOW LOADER ONLY ONCE PER SESSION ===== */
 (function() {
-    const preloader = document.querySelector(".preloader");
+    function hidePreloader() {
+        const preloader = document.querySelector(".preloader");
+        if (preloader) {
+            preloader.style.opacity = "0";
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 100);
+        }
+    }
+
     const hasSeenLoader = sessionStorage.getItem('skillpoint_loader_shown');
 
     if (hasSeenLoader) {
-        // If already seen in this session, hide immediately without ceremony
+        const preloader = document.querySelector(".preloader");
         if (preloader) {
             preloader.style.display = "none";
         }
     } else {
-        // First time in session: Show then hide
         window.addEventListener("load", function () {
-            if (preloader) {
-                preloader.style.opacity = "0";
-                setTimeout(() => {
-                    preloader.style.display = "none";
-                    sessionStorage.setItem('skillpoint_loader_shown', 'true');
-                }, 600);
-            }
+            hidePreloader();
+            sessionStorage.setItem('skillpoint_loader_shown', 'true');
         });
     }
+
+    /* Disable Turbo-driven loader triggers to prevent it appearing on every click */
+    document.addEventListener("turbo:load", function () {
+        const preloader = document.querySelector(".preloader");
+        if (preloader) {
+            preloader.style.display = "none";
+        }
+    });
+
+    // Fallback security: if preloader is still visible after 3 seconds, force hide it
+    setTimeout(() => {
+        const preloader = document.querySelector(".preloader");
+        if (preloader && preloader.style.display !== "none") {
+            preloader.style.display = "none";
+        }
+    }, 3000);
 })();
-
-/* Disable Turbo-driven loader triggers to prevent it appearing on every click */
-document.addEventListener("turbo:load", function () {
-    const preloader = document.querySelector(".preloader");
-    if (preloader) {
-        preloader.style.display = "none";
-    }
-});
 </script>
-
-</body>
-</html>
