@@ -83,11 +83,13 @@ class AppServiceProvider extends ServiceProvider
             if (auth()->check()) {
                 $view->with('header_cart_items', \App\Models\Cart::where('user_id', auth()->id())->with('course')->latest()->get());
                 $view->with('header_wishlist_items', \App\Models\Wishlist::where('user_id', auth()->id())->with('course')->latest()->get());
-                $view->with('header_notifications', auth()->user()->notifications()->limit(5)->get());
+                $view->with('header_notifications', auth()->user()->unreadNotifications()->limit(5)->get());
+                $view->with('header_unread_count', auth()->user()->unreadNotifications()->count());
             } else {
                 $view->with('header_cart_items', collect([]));
                 $view->with('header_wishlist_items', collect([]));
                 $view->with('header_notifications', collect([]));
+                $view->with('header_unread_count', 0);
             }
         });
     }

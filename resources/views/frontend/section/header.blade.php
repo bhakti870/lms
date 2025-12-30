@@ -132,20 +132,35 @@
                         <a href="#" class="btn btn-light rounded-circle border-0 shadow-sm position-relative d-flex align-items-center justify-content-center dropdown-toggle no-arrow" data-bs-display="static" style="width: 40px; height: 40px;">
                             <i class="bi bi-bell"></i>
                             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-count" style="font-size: 10px;">
-                                {{ $header_notifications->count() }}
+                                {{ $header_unread_count }}
                             </span>
                         </a>
                          <ul class="dropdown-menu dropdown-menu-end p-0 shadow" style="min-width: 320px;">
                             <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold mb-0">Notifications</h6>
-                                <a href="{{ route('user.notifications.index') }}" class="small text-decoration-none">View All</a>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Notifications</h6>
+                                    @if($header_unread_count > 0)
+                                        <small class="text-theme">{{ $header_unread_count }} Unread</small>
+                                    @endif
+                                </div>
+                                @if($header_unread_count > 0)
+                                    <a href="{{ route('user.notifications.markAllRead') }}" class="small text-decoration-none">Mark all read</a>
+                                @else
+                                    <a href="{{ route('user.notifications.index') }}" class="small text-decoration-none">View All</a>
+                                @endif
                             </li>
                             <div class="notification-items" style="max-height: 300px; overflow-y: auto;">
                                 @forelse($header_notifications as $notification)
                                     <li>
-                                        <a href="{{ route('user.notifications.index') }}" class="dropdown-item p-3 border-bottom">
-                                            <p class="small text-muted mb-1">{{ $notification->created_at->diffForHumans() }}</p>
-                                            <p class="mb-0 text-wrap small" style="line-height: 1.4;">
+                                        <a href="{{ route('user.notifications.index') }}" class="dropdown-item p-3 border-bottom {{ is_null($notification->read_at) ? 'bg-light' : '' }}">
+                                            <div class="d-flex align-items-center mb-1">
+                                                <span class="badge bg-{{ $notification->data['color'] ?? 'primary' }} p-1 me-2 rounded-circle">
+                                                    <i class="bi {{ $notification->data['icon'] ?? 'bi-bell' }}" style="font-size: 0.6rem;"></i>
+                                                </span>
+                                                <h6 class="mb-0 small fw-bold">{{ $notification->data['title'] ?? 'Notification' }}</h6>
+                                                <small class="ms-auto text-muted" style="font-size: 0.7rem;">{{ $notification->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            <p class="mb-0 text-wrap small text-muted" style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                                                 {{ $notification->data['message'] ?? 'New notification' }}
                                             </p>
                                         </a>
@@ -157,6 +172,11 @@
                                     </li>
                                 @endforelse
                             </div>
+                            @if($header_notifications->count() > 0)
+                                <li class="p-2 text-center border-top">
+                                    <a href="{{ route('user.notifications.index') }}" class="small text-decoration-none fw-bold">See all notifications</a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
 

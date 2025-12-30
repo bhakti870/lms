@@ -1,240 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SkillPoint Course Certificate</title>
+<meta charset="UTF-8">
+<title>SkillPoint Certificate</title>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0f766e;
-            font-family: 'Poppins', 'Helvetica', sans-serif;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Poppins:wght@300;400;500&family=Allura&display=swap');
 
-        .certificate-wrapper {
-            width: 1000px;
-            height: 700px;
-            margin: 40px auto;
-            background: #ffffff;
-            position: relative;
-            padding: 60px;
-            box-sizing: border-box;
-            border: 14px solid #0f766e;
-            overflow: hidden;
-        }
+body{
+    margin:0;
+    background:#e6c04a;
+    font-family:'Poppins',sans-serif;
+}
 
-        /* Decorative corners */
-        .corner-top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 350px;
-            height: 350px;
-            background: linear-gradient(135deg, #065f46 50%, #d4af37 50%);
-        }
+/* Certificate box */
+.certificate{
+    width:1100px;
+    height:750px;
+    background:#fff;
+    margin:40px auto;
+    padding:70px;
+    border:20px solid #d4af37;
+    box-sizing:border-box;
+    position:relative;
+}
 
-        .corner-bottom {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 320px;
-            height: 320px;
-            background: linear-gradient(315deg, #065f46 50%, #d4af37 50%);
-        }
+/* Inner border */
+.certificate:before{
+    content:"";
+    position:absolute;
+    inset:18px;
+    border:2px solid #0f766e;
+}
 
-        .content {
-            position: relative;
-            z-index: 2;
-            height: 100%;
-            text-align: center;
-        }
+/* Header */
+.brand{
+    text-align:center;
+    font-family:'Playfair Display',serif;
+    font-size:42px;
+    font-weight:900;
+    color:#0f766e;
+    letter-spacing:4px;
+}
 
-        .brand {
-            font-size: 38px;
-            font-weight: 900;
-            color: #065f46;
-            letter-spacing: 3px;
-        }
+.title{
+    text-align:center;
+    font-family:'Playfair Display',serif;
+    font-size:54px;
+    margin-top:25px;
+}
 
-        .certificate-title {
-            margin-top: 25px;
-            font-size: 50px;
-            font-weight: 700;
-            color: #111;
-        }
+.subtitle{
+    text-align:center;
+    margin-top:10px;
+    color:#555;
+}
 
-        .subtitle {
-            margin-top: 8px;
-            font-size: 18px;
-            color: #555;
-        }
+/* Name */
+.name{
+    text-align:center;
+    font-family:'Playfair Display',serif;
+    font-size:46px;
+    margin:45px auto 15px;
+    color:#0f766e;
+    display:inline-block;
+    padding-bottom:10px;
+    border-bottom:3px solid #d4af37;
+}
 
-        .student-name {
-            margin: 40px auto 10px;
-            font-size: 44px;
-            font-weight: 700;
-            color: #065f46;
-            border-bottom: 3px solid #d4af37;
-            display: inline-block;
-            padding-bottom: 6px;
-        }
+/* Course */
+.course-text{
+    text-align:center;
+    font-size:20px;
+    margin-top:25px;
+}
 
-        .course-text {
-            margin-top: 22px;
-            font-size: 20px;
-            color: #333;
-        }
+.course-name{
+    text-align:center;
+    font-size:26px;
+    font-style:italic;
+    font-weight:600;
+    margin-top:8px;
+}
 
-        .course-name {
-            font-size: 26px;
-            font-style: italic;
-            font-weight: 600;
-            margin-top: 10px;
-            color: #000;
-        }
+/* Footer info */
+.meta{
+    text-align:center;
+    margin-top:35px;
+    font-size:15px;
+}
 
-        .meta {
-            margin-top: 35px;
-            font-size: 15px;
-            color: #444;
-            line-height: 1.6;
-        }
+/* BLUE REALISTIC STAMP */
+.stamp{
+    position:absolute;
+    bottom:150px;
+    left:100px;
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    border:6px dashed #1e40af;
+    color:#1e40af;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:1px;
+    transform:rotate(-18deg);
+    opacity:0.75;
+    background:radial-gradient(circle, rgba(30,64,175,0.15), transparent 70%);
+}
 
-        /* Gold Stamp Seal */
-        .stamp {
-            position: absolute;
-            right: 90px;
-            top: 200px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 7px double #d4af37;
-            color: #d4af37;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-weight: 800;
-            font-size: 14px;
-            transform: rotate(-18deg);
-            background: radial-gradient(circle, rgba(212,175,55,0.15), transparent 70%);
-            box-shadow: 0 0 0 4px rgba(212,175,55,0.25);
-        }
+/* Signatures */
+.signatures{
+    position:absolute;
+    bottom:80px;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:space-between;
+    padding:0 160px;
+}
 
-        .stamp span {
-            line-height: 1.4;
-            letter-spacing: 1px;
-        }
+.sign-box{
+    width:260px;
+    text-align:center;
+}
 
-        /* Signatures */
-        .signatures {
-            position: absolute;
-            bottom: 90px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-around;
-            padding: 0 80px;
-        }
+.signature{
+    font-family:'Allura',cursive;
+    font-size:38px;
+    color:#000;
+}
 
-        .sign-box {
-            text-align: center;
-            width: 260px;
-        }
+.line{
+    border-top:2px solid #333;
+    margin:8px 0;
+}
 
-        .signature-text {
-            font-family: 'Brush Script MT', 'Comic Sans MS', cursive;
-            font-size: 34px;
-            color: #111;
-            margin-bottom: 8px;
-        }
+.label{
+    font-size:14px;
+}
 
-        .sign-line {
-            border-top: 2px solid #333;
-            margin-bottom: 6px;
-        }
+/* Print */
+.print-btn{
+    display:block;
+    margin:30px auto;
+    padding:14px 32px;
+    font-size:16px;
+    background:#0f766e;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
 
-        .sign-label {
-            font-size: 14px;
-            color: #333;
-        }
-
-        .print-btn {
-            margin: 25px auto;
-            display: block;
-            padding: 12px 26px;
-            background: #065f46;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        @media print {
-            body {
-                background: #fff;
-            }
-            .print-btn {
-                display: none;
-            }
-        }
-    </style>
+@media print{
+    body{background:#fff;}
+    .print-btn{display:none;}
+}
+</style>
 </head>
 
 <body>
 
-<div class="certificate-wrapper">
-    <div class="corner-top"></div>
-    <div class="corner-bottom"></div>
+<div class="certificate">
 
-    <div class="content">
+    <div class="brand">SKILLPOINT</div>
+    <div class="title">Certificate of Excellence</div>
+    <div class="subtitle">This certificate is proudly presented to</div>
 
-        <div class="brand">SKILLPOINT</div>
+    <div style="text-align:center;">
+        <div class="name">{{ $user->name ?? 'Student 3' }}</div>
+    </div>
 
-        <div class="certificate-title">Certificate of Completion</div>
-        <div class="subtitle">This is proudly presented to</div>
+    <div class="course-text">For successfully completing the professional course</div>
+    <div class="course-name">
+        {{ $course->course_name ?? 'Cyber Security – Masterclass (Vol 3)' }}
+    </div>
 
-        <div class="student-name">{{ $user->name ?? 'John Doe' }}</div>
+    <div class="meta">
+        Issued on: {{ \Carbon\Carbon::now()->format('F d, Y') }}<br>
+        Certificate ID: SP-{{ rand(100000,999999) }}
+    </div>
 
-        <div class="course-text">For successfully completing the course</div>
-        <div class="course-name">{{ $course->course_name ?? 'Full Stack Web Development' }}</div>
+    <!-- BLUE INK STAMP -->
+    <div class="stamp">
+        VERIFIED<br>PREMIUM<br>SKILLPOINT
+    </div>
 
-        <div class="meta">
-            Issued on: {{ \Carbon\Carbon::now()->format('F d, Y') }}<br>
-            Certificate ID: SP-{{ rand(100000,999999) }}
+    <!-- SIGNATURES -->
+    <div class="signatures">
+        <div class="sign-box">
+            <div class="signature">A. Sharma</div>
+            <div class="line"></div>
+            <div class="label">Course Instructor</div>
         </div>
 
-        <!-- Gold Stamp -->
-        <div class="stamp">
-            <span>
-                VERIFIED<br>
-                OFFICIAL<br>
-                SKILLPOINT
-            </span>
-        </div>
-
-        <!-- Signatures -->
-        <div class="signatures">
-
-            <div class="sign-box">
-                <div class="signature-text">A. Sharma</div>
-                <div class="sign-line"></div>
-                <div class="sign-label">Course Instructor</div>
-            </div>
-
-            <div class="sign-box">
-                <div class="signature-text">R. Mehta</div>
-                <div class="sign-line"></div>
-                <div class="sign-label">Authorized Director</div>
-            </div>
-
+        <div class="sign-box">
+            <div class="signature">R. Mehta</div>
+            <div class="line"></div>
+            <div class="label">Authorized Director</div>
         </div>
     </div>
 </div>
 
-<button onclick="window.print()" class="print-btn">Download PDF</button>
+<button class="print-btn" onclick="window.print()">Download Certificate</button>
 
 </body>
 </html>

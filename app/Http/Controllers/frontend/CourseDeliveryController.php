@@ -80,13 +80,7 @@ class CourseDeliveryController extends Controller
             }
 
             if($content) {
-                $isCompleted = \App\Models\CourseProgress::where('user_id', $user_id)
-                    ->where('course_id', $course->id)
-                    ->where('content_type', $type)
-                    ->where('content_id', $id)
-                    ->where('is_completed', true)
-                    ->exists();
-                $initialHtml = view('frontend.course.partials.content_view', compact('type', 'content', 'course', 'isCompleted'))->render();
+                $initialHtml = view('frontend.course.partials.content_view', compact('type', 'content', 'course'))->render();
                 $initialTitle = $content->lecture_title ?? $content->quiz_title ?? $content->material_title;
             }
         }

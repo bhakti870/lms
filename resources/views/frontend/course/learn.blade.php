@@ -92,10 +92,8 @@
     /* --- MAIN CONTENT --- */
     .course-content-area {
         flex: 1;
-        padding: 40px;
-        overflow-y: auto;
-        background: #fdfdff;
-        scroll-behavior: smooth;
+        padding: 30px;
+        overflow-x: hidden;
     }
 
     .video-container {
@@ -103,11 +101,10 @@
         padding-bottom: 56.25%; /* 16:9 */
         height: 0;
         background: #000;
-        border-radius: 20px;
+        border-radius: 12px;
         overflow: hidden;
-        margin-bottom: 30px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     
     .video-container iframe, 
@@ -117,7 +114,6 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 20px;
     }
 
     /* --- RESPONSIVE --- */
@@ -136,7 +132,7 @@
         
         .course-content-area {
             order: 1;
-            padding: 20px;
+            padding: 15px;
         }
     }
     
@@ -159,54 +155,48 @@
         z-index: 5 !important;
         position: relative;
     }
-    .course-sidebar {
-        position: sticky;
-        top: 70px;
-        width: 380px;
-        height: calc(100vh - 70px);
-        background: #fff;
-        border-right: 1px solid #eee;
-        overflow-y: auto;
-        z-index: 1000 !important;
-        pointer-events: auto !important;
-    }
-    .course-content-area {
+    .course-sidebar, .course-content-area {
         position: relative;
-        flex: 1;
-        padding: 40px;
-        overflow-y: auto;
-        background: #fdfdff;
-        scroll-behavior: smooth;
-        z-index: 100 !important;
+        z-index: 200 !important;
         pointer-events: auto !important;
     }
     .lesson-item, .nav-link, button, a, .completion-status {
         pointer-events: auto !important;
         cursor: pointer !important;
     }
-    
-    /* Ensure modals don't block logic if closed incorrectly */
-    .modal {
-        pointer-events: none !important;
+    .modal-backdrop {
+        display: none !important;
+        visibility: hidden !important;
     }
-    .modal-dialog, .modal-content, .modal-backdrop {
-        pointer-events: auto !important;
-    }
-    .modal.show {
-        pointer-events: auto !important;
-    }
-
     body.modal-open {
         overflow: auto !important;
         padding-right: 0 !important;
     }
     
+    /* Ensure tabs are always visible once loaded */
+    #sidebar-content-area {
+        margin-top: 40px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    /* Lesson items click area */
+    .lesson-item {
+        position: relative;
+        z-index: 30;
+    }
+    
+    /* Prominent Green Checkmark */
+    .completion-status i.bi-check-circle-fill {
+        color: #198754 !important;
+        filter: drop-shadow(0 0 2px rgba(25, 135, 84, 0.2));
+    }
+
     /* Force hide preloader on this page specifically to avoid click blocking */
     .preloader {
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
-        z-index: -1 !important;
     }
 </style>
 
@@ -252,7 +242,7 @@
                                      data-type="lecture" 
                                      data-id="{{ $lecture->id }}"
                                      data-locked="{{ $isLocked ? 'true' : 'false' }}"
-                                     data-unlock-date="{{ $unlockDate }}"
+                                     @if($isLocked) onclick="Swal.fire('Locked', 'This content is locked until {{ $unlockDate }}', 'info'); return false;" @endif
                                      >
                                     <div class="flex-shrink-0">
                                         <i class="fs-5 bi {{ $isLocked ? 'bi-lock-fill' : 'bi-play-circle-fill' }}"></i>
@@ -270,7 +260,7 @@
 
                             <!-- Quizzes -->
                             @foreach($section->quizzes as $quiz)
-                            <div class="lesson-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false" data-unlock-date="">
+                            <div class="lesson-item load-content" data-type="quiz" data-id="{{ $quiz->id }}" data-locked="false">
                                 <div class="flex-shrink-0"><i class="bi bi-question-circle-fill fs-5"></i></div>
                                 <span class="text-truncate flex-grow-1">{{ $quiz->quiz_title }}</span>
                                 <div class="completion-status text-success">
@@ -285,7 +275,7 @@
 
                             <!-- Materials -->
                             @foreach($section->materials as $material)
-                             <div class="lesson-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false" data-unlock-date="">
+                            <div class="lesson-item load-content" data-type="material" data-id="{{ $material->id }}" data-locked="false">
                                 <div class="flex-shrink-0"><i class="bi bi-file-earmark-text-fill fs-5"></i></div>
                                 <span class="text-truncate flex-grow-1">{{ $material->material_title }}</span>
                                 <div class="completion-status text-success">
@@ -426,7 +416,6 @@
     var userNotes = @json($notes);
     var currentLectureId = null;
     var quizTimerInterval = null;
-    var reviewsLoaded = false;
 
     function initLearnPage() {
         updateOverallProgress();
@@ -441,7 +430,7 @@
                 $('#sidebar-content-area').show();
                 renderNotes(id);
                 loadQuestions(id);
-                // loadReviews(); 
+                loadReviews();
                 setTimeout(() => setupVideoEndTracking(id), 200); 
             } else {
                 $('#sidebar-content-area').hide();
@@ -450,45 +439,23 @@
             setTimeout(() => {
                 var sidebar = $('.course-sidebar');
                 if (sidebar.length && initialActive.length) {
-                    sidebar.animate({
-                        scrollTop: initialActive.offset().top - sidebar.offset().top + sidebar.scrollTop() - 150
-                    }, 500);
+                    sidebar.scrollTop(initialActive.offset().top - sidebar.offset().top + sidebar.scrollTop() - 100);
                 }
-            }, 300);
-
-            updateNextButtonVisibility();
+            }, 50);
         }
     }
 
     $(document).ready(initLearnPage);
     document.addEventListener('turbo:load', initLearnPage);
 
-     $(document).off('click', '.load-content').on('click', '.load-content', function(e) {
+    $(document).off('click', '.load-content').on('click', '.load-content', function(e) {
         e.preventDefault();
         var item = $(this);
-        console.log('Loading content:', item.data('type'), item.data('id'), 'locked:', item.data('locked'));
-        
         if(item.data('locked') == true || item.data('locked') == "true") {
-             var date = item.data('unlock-date');
-             var msg = date ? 'This content is locked until ' + date : 'This content is not yet available.';
-             Swal.fire('Locked', msg, 'info');
+             Swal.fire('Locked', 'This content is not yet available.', 'info');
              return false;
         }
         loadContent(item.data('type'), item.data('id'));
-    });
-
-    // Cleanup modals on navigation
-    $(document).on('turbo:before-cache', function() {
-        $('.modal').modal('hide');
-        $('.modal-backdrop').remove();
-        $('body').removeClass('modal-open').css('overflow', '');
-    });
-
-    $(document).on('hidden.bs.modal', function() {
-        if ($('.modal.show').length === 0) {
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open').css('overflow', '');
-        }
     });
 
     $(document).off('click', '#mark-completed-btn').on('click', '#mark-completed-btn', function() {
@@ -534,9 +501,7 @@
             $('#sidebar-content-area').show();
             renderNotes(id);
             loadQuestions(id);
-            if ($('#pills-reviews-tab').hasClass('active') && !reviewsLoaded) {
-                loadReviews();
-            }
+            loadReviews();
         } else {
             currentLectureId = null;
             $('#sidebar-content-area').hide();
@@ -558,43 +523,8 @@
             if (type === 'lecture') {
                 setTimeout(() => setupVideoEndTracking(id), 200);
             }
-            
-            updateNextButtonVisibility();
         });
     }
-
-    function updateNextButtonVisibility() {
-        var active = $('.lesson-item.active');
-        var next = active.next('.lesson-item');
-        
-        // If no next in current section, check next section
-        if (!next.length) {
-            next = active.closest('.accordion-item').next('.accordion-item').find('.lesson-item').first();
-        }
-
-        if (next.length && next.data('locked') !== true) {
-            $('#next-content-btn').show();
-        } else {
-            $('#next-content-btn').hide();
-        }
-    }
-
-    $(document).on('click', '#next-content-btn', function() {
-        var active = $('.lesson-item.active');
-        var next = active.next('.lesson-item');
-        if (!next.length) {
-            next = active.closest('.accordion-item').next('.accordion-item').find('.lesson-item').first();
-        }
-        
-        if (next.length) {
-            // Expand section if collapsed
-            var collapse = next.closest('.accordion-collapse');
-            if (!collapse.hasClass('show')) {
-                new bootstrap.Collapse(collapse[0]).show();
-            }
-            next.click();
-        }
-    });
 
     function renderNotes(lectureId) {
         const list = $('#saved-notes-list');
@@ -685,16 +615,12 @@
             if (data.success) {
                 const item = $(`.lesson-item[data-type="${type}"][data-id="${id}"]`);
                 // Update Checkmark
-                item.find('.completion-status').html('<i class="bi bi-check-circle-fill fs-5"></i>');
+                item.find('.completion-status').html('<i class="la la-check-circle fs-5"></i>');
                 updateOverallProgress();
                 
                 if (data.course_finished) {
                     $('#completionModal').modal('show');
                 }
-                
-                // Auto-advance or show next if available
-                updateNextButtonVisibility();
-                
                 if (callback) callback(data);
             }
         });
@@ -714,22 +640,11 @@
     }
 
     // --- Q&A Logic ---
-    $(document).on('shown.bs.tab', '#pills-reviews-tab', function (e) {
-        if (!reviewsLoaded) {
-            loadReviews();
-        }
-    });
-
     function loadReviews() {
         var list = $('#reviews-list');
-        if (!list.length) {
-             // Fallback or ensure we have a place to put it
-             $('#pills-reviews').html('<div id="reviews-list"><div class="text-center py-4"><div class="spinner-border spinner-border-sm text-theme"></div></div></div>');
-             list = $('#reviews-list');
-        }
+        list.html('<div class="text-center py-4"><div class="spinner-border spinner-border-sm text-theme"></div></div>');
         
         $.get(`/user/course-reviews/${courseId}`, function(res) {
-            reviewsLoaded = true;
             list.empty();
             if (res.reviews.length === 0) {
                 list.html('<p class="text-center text-muted py-3 small">No reviews yet for this course.</p>');

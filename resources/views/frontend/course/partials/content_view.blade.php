@@ -174,17 +174,11 @@
     </div>
 
     <div class="content-info">
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="d-flex justify-content-between align-items-start mb-4">
             <h2 class="fw-bold m-0 text-dark">{{ $content->lecture_title }}</h2>
-            <div class="d-flex gap-2">
-                <button class="btn {{ (isset($isCompleted) && $isCompleted) ? 'btn-success text-white' : 'btn-theme' }} shadow-sm fw-bold px-4 py-2 rounded-pill transition-all" id="mark-completed-btn" data-type="lecture" data-id="{{ $content->id }}" {{ (isset($isCompleted) && $isCompleted) ? 'disabled' : '' }}>
-                    <i class="bi {{ (isset($isCompleted) && $isCompleted) ? 'bi-check-circle-fill' : 'bi-check-circle' }} me-2"></i> 
-                    {{ (isset($isCompleted) && $isCompleted) ? 'Completed' : 'Mark as Completed' }}
-                </button>
-                <button class="btn btn-outline-dark shadow-sm fw-bold px-4 py-2 rounded-pill transition-all" id="next-content-btn" style="{{ (isset($isCompleted) && $isCompleted) ? '' : 'display: none;' }}">
-                    Next <i class="bi bi-arrow-right ms-2"></i>
-                </button>
-            </div>
+            <button class="btn btn-theme shadow-sm btn-sm fw-bold px-3 py-2 rounded-pill" id="mark-completed-btn" data-type="lecture" data-id="{{ $content->id }}">
+                <i class="bi bi-check-circle me-2"></i> Mark as Completed
+            </button>
         </div>
         
         <hr class="border-light-subtle my-4">
@@ -329,14 +323,9 @@
              @endif
          </div>
 
-         <div class="d-flex justify-content-center gap-3">
-             <button class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow-sm" id="mark-completed-btn" data-type="material" data-id="{{ $content->id }}">
-                <i class="bi bi-check-circle-fill me-2"></i> Mark as Completed
-            </button>
-            <button class="btn btn-outline-dark btn-lg rounded-pill px-5 fw-bold shadow-sm" id="next-content-btn">
-                Next Lesson <i class="bi bi-arrow-right ms-2"></i>
-            </button>
-         </div>
+         <button class="btn btn-outline-success rounded-pill px-4 fw-bold" id="mark-completed-btn" data-type="material" data-id="{{ $content->id }}">
+            <i class="bi bi-check-circle me-2"></i> Mark as Completed
+        </button>
     </div>
 @endif
 </div>

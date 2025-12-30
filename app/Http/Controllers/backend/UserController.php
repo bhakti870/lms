@@ -79,8 +79,65 @@ class UserController extends Controller
 
     public function certificates() {
         $id = Auth::user()->id;
+        
+        // 1. Earned Certificates
         $certificates = Certificate::where('user_id', $id)->with('course')->get();
-        return view('frontend.dashboard.certificates', compact('certificates'));
+        
+        // 2. Earnable Certificates (Enrolled courses not yet earned)
+        $earnedCourseIds = $certificates->pluck('course_id')->toArray();
+        
+        $earnableCourses = Enrollment::where('user_id', $id)
+            ->whereNotIn('course_id', $earnedCourseIds)
+            ->where('status', 'active')
+            ->with(['course' => function($q) {
+                // Ensure we get counts for progress calculation
+                $q->withCount(['lectures', 'quizzes', 'materials']);
+            }])
+            ->get();
+            
+        // Calculate progress for each earnable course
+        foreach ($earnableCourses as $enrollment) {
+            $course = $enrollment->course;
+            if (!$course) continue;
+
+            $totalItems = $course->lectures_count + $course->quizzes_count + $course->materials_count;
+            
+            $completedItems = CourseProgress::where('user_id', $id)
+                ->where('course_id', $enrollment->course_id)
+                ->where('is_completed', true)
+                ->count();
+                
+            $enrollment->progress_percent = ($totalItems > 0) ? min(100, round(($completedItems / $totalItems) * 100)) : 0;
+            $enrollment->completed_items = $completedItems;
+            $enrollment->total_items = $totalItems;
+
+            // Trigger certificate generation if 100% (syncing)
+            if ($enrollment->progress_percent >= 100 && $totalItems > 0) {
+                 $this->syncCertificateRecord($id, $enrollment->course_id);
+            }
+        }
+
+        // Re-fetch certificates in case some were just generated
+        $certificates = Certificate::where('user_id', $id)->with('course')->get();
+        // Filter out earneable courses that just became earned
+        $earnedCourseIds = $certificates->pluck('course_id')->toArray();
+        $earnableCourses = $earnableCourses->reject(function($e) use ($earnedCourseIds) {
+            return in_array($e->course_id, $earnedCourseIds);
+        });
+
+        return view('frontend.dashboard.certificates', compact('certificates', 'earnableCourses'));
+    }
+
+    private function syncCertificateRecord($user_id, $course_id)
+    {
+        if (!Certificate::where('user_id', $user_id)->where('course_id', $course_id)->exists()) {
+            Certificate::create([
+                'user_id' => $user_id,
+                'course_id' => $course_id,
+                'certificate_number' => 'CERT-' . strtoupper(uniqid()),
+                'issued_at' => now(),
+            ]);
+        }
     }
     
     public function downloadInvoice($id) {
