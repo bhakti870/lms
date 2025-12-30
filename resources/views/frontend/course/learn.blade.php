@@ -193,11 +193,22 @@
     }
 
     /* Force hide preloader on this page specifically to avoid click blocking */
-    .preloader {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
+    .rating-stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
     }
+    .rating-stars input:checked ~ label,
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label {
+        color: #ffc107 !important;
+    }
+    .rating-stars label {
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .cursor-pointer { cursor: pointer; }
 </style>
 
 <div class="container-fluid p-0">
@@ -371,6 +382,39 @@
                                 <div class="spinner-border spinner-border-sm text-theme" role="status"></div>
                                 <p class="mb-0 mt-2 small">Loading discussions...</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- REVIEWS TAB -->
+                    <div class="tab-pane fade" id="pills-reviews" role="tabpanel" aria-labelledby="pills-reviews-tab">
+                        <div class="mb-4">
+                            <h6 class="text-muted fw-bold mb-3 small text-uppercase ls-1">Course Reviews</h6>
+                            <div id="reviews-list" class="d-flex flex-column gap-3" style="max-height: 500px; overflow-y: auto;">
+                                <!-- Reviews loaded via JS -->
+                            </div>
+                        </div>
+
+                        <div class="mt-4 border-top pt-4">
+                            <h6 class="fw-bold mb-3">Leave a Review</h6>
+                            <form action="{{ route('store.review') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted">RATING</label>
+                                    <div class="rating-stars mb-2">
+                                        <input type="radio" name="rating" value="5" id="star5" class="d-none"><label for="star5" class="bi bi-star-fill fs-4 me-1"></label>
+                                        <input type="radio" name="rating" value="4" id="star4" class="d-none"><label for="star4" class="bi bi-star-fill fs-4 me-1"></label>
+                                        <input type="radio" name="rating" value="3" id="star3" class="d-none"><label for="star3" class="bi bi-star-fill fs-4 me-1"></label>
+                                        <input type="radio" name="rating" value="2" id="star2" class="d-none"><label for="star2" class="bi bi-star-fill fs-4 me-1"></label>
+                                        <input type="radio" name="rating" value="1" id="star1" class="d-none"><label for="star1" class="bi bi-star-fill fs-4 me-1"></label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted">COMMENT</label>
+                                    <textarea name="comment" class="form-control rounded-3" rows="3" placeholder="Share your experience..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-theme w-100 fw-bold py-2 rounded-pill shadow-sm">Submit Review</button>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -91,6 +91,30 @@
                 });
             @endif
 
+            @if (session('purchase_success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '<h2 class="mt-2 text-theme fw-bold">Success! 🎉</h2>',
+                    html: `
+                        <div class="text-start px-3">
+                            <p class="mb-3 lead">Congratulations! Your purchase was successful.</p>
+                            <ul class="list-unstyled mb-4">
+                                <li class="mb-2"><i class="bi bi-play-circle-fill text-theme me-2"></i> <strong>Start Learning:</strong> Your course is now available.</li>
+                                <li class="mb-2"><i class="bi bi-patch-check-fill text-theme me-2"></i> <strong>Get Certified:</strong> Complete the course to earn your certificate.</li>
+                                <li class="mb-2"><i class="bi bi-person-badge-fill text-theme me-2"></i> <strong>Dashboard:</strong> Track your progress in your dashboard.</li>
+                            </ul>
+                            <div class="d-grid gap-2">
+                                <a href="{{ route('user.dashboard') }}" class="btn btn-theme text-white border-0 py-2 rounded-pill shadow-sm">Go to My Courses</a>
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    timer: 10000,
+                    timerProgressBar: true,
+                });
+            @endif
+
             @if ($errors->any())
                 let errorMessages = '';
                 @foreach ($errors->all() as $error)

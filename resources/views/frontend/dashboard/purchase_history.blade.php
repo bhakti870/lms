@@ -73,7 +73,7 @@
                                                     <i class="bi bi-play-fill me-1"></i> Learn
                                                 </a>
                                                 
-                                                <button class="btn btn-outline-secondary btn-theme-sm border-0 shadow-none px-2" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{ $enrollment->id }}" aria-expanded="false">
+                                                <button class="btn btn-outline-secondary btn-theme-sm border-0 shadow-none px-2" type="button" onclick="toggleDetails({{ $enrollment->id }})">
                                                     <i class="bi bi-info-circle"></i>
                                                 </button>
 
@@ -197,6 +197,13 @@
 
 @push('scripts')
 <script>
+    function toggleDetails(id) {
+        const element = document.getElementById('details-' + id);
+        if (typeof bootstrap !== 'undefined') {
+            const instance = bootstrap.Collapse.getOrCreateInstance(element, { toggle: false });
+            instance.toggle();
+        }
+    }
     function confirmRemoval(id) {
         Swal.fire({
             title: 'Are you sure?',
