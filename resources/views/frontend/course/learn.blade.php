@@ -157,7 +157,7 @@
     }
     .course-sidebar, .course-content-area {
         position: relative;
-        z-index: 200 !important;
+        z-index: 1020 !important;
         pointer-events: auto !important;
     }
     .lesson-item, .nav-link, button, a, .completion-status {
@@ -482,8 +482,12 @@
             
             setTimeout(() => {
                 var sidebar = $('.course-sidebar');
-                if (sidebar.length && initialActive.length) {
-                    sidebar.scrollTop(initialActive.offset().top - sidebar.offset().top + sidebar.scrollTop() - 100);
+                if (sidebar.length && initialActive.length && initialActive.is(':visible')) {
+                    try {
+                        sidebar.scrollTop(initialActive.offset().top - sidebar.offset().top + sidebar.scrollTop() - 100);
+                    } catch(e) {
+                        console.warn('Sidebar scroll failed', e);
+                    }
                 }
             }, 50);
         }

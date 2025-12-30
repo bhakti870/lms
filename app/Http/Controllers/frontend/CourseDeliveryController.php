@@ -110,7 +110,7 @@ class CourseDeliveryController extends Controller
             $content->previous_result = $previousResult;
         } elseif ($type === 'material') {
             $content = CourseMaterial::findOrFail($id);
-            $this->markAsCompleted($user_id, $course_id, 'material', $id);
+            // $this->markAsCompleted($user_id, $course_id, 'material', $id); // Removed auto-complete
         }
 
         $course = Course::find($course_id);

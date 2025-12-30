@@ -62,6 +62,7 @@ View all enrolled courses.
 PDF Invoices: Download official invoices for every purchase.
 Theme Customization: Dual-theme support (Dark Mode and Light Mode) with persistence via LocalStorage.
 Responsive UI: Modern, premium design fully optimized for mobile and desktop screens.
+certificates:download earnable certificate with track and also show all certificates of a student
 
 Key Technical Features
 AJAX Driven Actions: Cart management and coupon applications happen without page refreshes.
