@@ -181,13 +181,13 @@
                                 <h3 class="card-title fs-22 pb-3">Order Summary</h3>
                                 <div class="divider"><span></span></div>
                                 <ul class="generic-list-item generic-list-item-flash fs-15">
-                                    <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
+                                    <!-- <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                                         <span class="text-black">Original price:</span>
                                         <span id="originalPrice">₹{{ $total }}</span>
                                         <input type="hidden" name="original_price" value="{{ $total }}" />
-                                    </li>
+                                    </li> -->
 
-                                    <li class="mt-3">
+                                    <!-- <li class="mt-3">
                                         <div id="couponAreaCheckout">
                                             @foreach ($cart as $item)
                                                 <input type="hidden" class="coupon-course-id" name="course_id[]"
@@ -204,7 +204,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
+                                    </li> -->
 
                                     <li id="couponDiscountItem"
                                         class="d-flex align-items-center justify-content-between font-weight-semi-bold"

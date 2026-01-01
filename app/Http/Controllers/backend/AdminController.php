@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Course;
+use App\Models\User;
 class AdminController extends Controller
 {
     public function login()
@@ -17,12 +20,12 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        $total_orders = \App\Models\Order::count();
-        $total_revenue = \App\Models\Payment::where('status', 'completed')->sum('total_amount');
-        $total_courses = \App\Models\Course::count();
-        $total_instructors = \App\Models\User::where('role', 'instructor')->count();
-        $total_students = \App\Models\User::where('role', 'user')->count();
-        $recent_orders = \App\Models\Order::latest()->limit(10)->get();
+        $total_orders = Order::count();
+        $total_revenue = Payment::where('status', 'completed')->sum('total_amount');
+        $total_courses = Course::count();
+        $total_instructors = User::where('role', 'instructor')->count();
+        $total_students = User::where('role', 'user')->count();
+        $recent_orders = Order::latest()->limit(10)->get();
 
         return view('backend.admin.dashboard.index', compact('total_orders', 'total_revenue', 'total_courses', 'total_instructors', 'total_students', 'recent_orders'));
     }

@@ -106,7 +106,7 @@
                     <ul class="generic-list-item pb-4">
                         <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Subtotal:</span>
-                            <span id="subTotalValue">₹{{ $subTotal }}</span> <!-- Update ID for easy targeting -->
+                            <span id="subTotalValue">₹{{ $subTotal }}</span> 
                         </li>
 
 
@@ -151,32 +151,40 @@
 
 
 <script>
+
+
+
     $(document).ready(function() {
         $('#applyCouponBtn').click(function() {
-            let formData = $('#couponForm').serialize(); // Serialize form data
+            let formData = $('#couponForm').serialize(); 
 
             $.ajax({
-                url: "/apply-coupon", // Replace with your route name
+                url: "/apply-coupon", 
                 type: "POST",
                 data: formData,
                 success: function(response) {
-                    let totalDiscount = response.discounts.reduce((sum, item) => {
-                        return sum + parseFloat(item.discount); 
-                    }, 0);
+
+                    // Use the  total discount 
+                    let totalDiscount = parseFloat(response.total_discount);
 
                     $('#totalDiscount').text(`-₹${totalDiscount.toFixed(2)}`);
                     $('#totalDiscountItem').show(); 
 
-                    let subTotal = parseFloat("{{ $subTotal }}");
+                    let subTotal = parseFloat("{{ $subTotal }}");   
                     let totalAmount = subTotal - totalDiscount;
                     $('#totalAmount').text(`₹${totalAmount.toFixed(2)}`);
 
-                    $('#couponForm').hide(); 
+                    // Hide form if max coupons reached
+                    if (response.coupon_count >= 2) {
+                        $('#couponForm').hide(); 
+                    }
+                    
+                    $('#couponInput').val('');
 
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Coupon applied successfully!',
+                        title: response.message || 'Coupon applied successfully!',
                         showConfirmButton: false,
                         toast: true,
                         timer: 3000,
@@ -197,12 +205,6 @@
                         errorMessage = xhr.responseJSON.message;
                     }
 
-                    // On error, we should make sure the discount is not displayed if it's invalid
-                    // However, if there was a previous valid coupon, we might want to keep it.
-                    // But usually, an invalid attempt shouldn't destroy the current one unless specified.
-                    // "destroy the discount price not dispaly yet" -> maybe hide it on error?
-                    // $('#totalDiscountItem').hide(); // Uncomment if requirement is strictly hide on error
-
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
@@ -217,6 +219,72 @@
                 }
             });
         });
+
+
+
+
+        //   $(document).ready(function() {
+        // $('#applyCouponBtn').click(function() {
+        //     let formData = $('#couponForm').serialize(); 
+
+        //     $.ajax({
+        //         url: "/apply-coupon", 
+        //         type: "POST",
+        //         data: formData,
+        //         success: function(response) {
+        //             let totalDiscount = response.discounts.reduce((sum, item) => {
+        //                 return sum + parseFloat(item.discount); 
+        //             }, 0);
+
+        //             $('#totalDiscount').text(`-₹${totalDiscount.toFixed(2)}`);
+        //             $('#totalDiscountItem').show(); 
+
+        //             let subTotal = parseFloat("{{ $subTotal }}");
+        //             let totalAmount = subTotal - totalDiscount;
+        //             $('#totalAmount').text(`₹${totalAmount.toFixed(2)}`);
+
+        //             $('#couponForm').hide(); 
+
+        //             Swal.fire({
+        //                 position: 'top-end',
+        //                 icon: 'success',
+        //                 title: 'Coupon applied successfully!',
+        //                 showConfirmButton: false,
+        //                 toast: true,
+        //                 timer: 3000,
+        //                 background: '#28a745',
+        //                 color: '#fff'
+        //             });
+        //         },
+        //         error: function(xhr) {
+        //             let errorMessage = 'Coupon not applied successfully!';
+                    
+        //             if (xhr.status === 422) {
+        //                 let errors = xhr.responseJSON.errors;
+        //                 errorMessage = '';
+        //                 for (let field in errors) {
+        //                     errorMessage += errors[field].join('<br>') + '<br>';
+        //                 }
+        //             } else if (xhr.responseJSON && xhr.responseJSON.message) {
+        //                 errorMessage = xhr.responseJSON.message;
+        //             }
+
+
+        //             Swal.fire({
+        //                 position: 'top-end',
+        //                 icon: 'error',
+        //                 title: 'Oops...',
+        //                 html: errorMessage,
+        //                 showConfirmButton: false,
+        //                 toast: true,
+        //                 timer: 3000,
+        //                 background: '#dc3545',
+        //                 color: '#fff'
+        //             });
+        //         }
+        //     });
+        // });
+
 
         // Coupon Remove
         $(document).on('click', '#removeCoupon', function() {

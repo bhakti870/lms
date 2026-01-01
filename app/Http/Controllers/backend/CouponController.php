@@ -88,19 +88,96 @@ class CouponController extends Controller
         return redirect()->route('instructor.coupon.index')->with('success', 'Coupon deleted successfully.');
     }
 
+    // public function applyCoupon(ApplyCouponRequest $request)
+    // {
+    //     // Validate the input
+    //     $validated = $request->validated();
+
+    //     $couponName = $validated['coupon'];
+    //     $courseIds = $validated['course_id'];
+    //     $instructorIds = $validated['instructor_id'];
+
+    //     $discounts =  $this->applyCouponService->applyCoupon($couponName, $courseIds, $instructorIds);
+
+    //     // If no valid coupon found
+    //     if (empty($discounts)) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'No valid coupon found for the selected courses.',
+    //         ], 400);    
+    //     }
+
+
+    //     // Validate if coupon discount is greater than course price
+    //     foreach ($discounts as $item) {
+    //         if ($item['course_price'] < $item['discount']) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'The coupon discount (₹' . $item['discount'] . ') is greater than the course price (₹' . $item['course_price'] . '). It cannot be applied.',
+    //             ], 400);
+    //         }
+    //     }
+  
+    //     // Calculate total discount
+    //     $totalDiscount = collect($discounts)->sum('discount');
+
+    //     // Store total discount and applied coupons in session
+    //     session(['coupon' => $totalDiscount]);
+    //     session(['applied_coupons' => $discounts]);
+
+
+    //     // Success response
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Coupon applied successfully!',
+    //         'discounts' => $discounts,
+    //     ]);
+    // }
+
+
     public function applyCoupon(ApplyCouponRequest $request)
     {
-
-        // Validate the input
+        // Validated data
         $validated = $request->validated();
 
-        $couponName = $validated['coupon'];
-        $courseIds = $validated['course_id'];
+        $couponName    = $validated['coupon'];
+        $courseIds     = $validated['course_id'];
         $instructorIds = $validated['instructor_id'];
 
-        $discounts =  $this->applyCouponService->applyCoupon($couponName, $courseIds, $instructorIds);
+        // Get coupon
+        $coupon = Coupon::where('coupon_name', $couponName)->first();
 
-        // If no valid coupon found
+        if (!$coupon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid coupon code.',
+            ], 400);
+        }
+
+        // Already applied coupons (names)
+        $appliedCouponNames = session()->get('applied_coupon_names', []);
+
+        // Max 2 coupons allowed
+        if (count($appliedCouponNames) >= 2) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can apply maximum 2 coupons only.',
+            ], 422);
+        }
+
+        // Same coupon cannot be applied twice
+        if (in_array($couponName, $appliedCouponNames)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This coupon is already applied.',
+            ], 422);
+        }
+
+        // Apply coupon via service
+        $discounts = $this->applyCouponService
+            ->applyCoupon($couponName, $courseIds, $instructorIds);
+
+        // No valid discount
         if (empty($discounts)) {
             return response()->json([
                 'success' => false,
@@ -108,35 +185,91 @@ class CouponController extends Controller
             ], 400);
         }
 
-
-        // Validate if coupon discount is greater than course price
+        // Discount > course price check
         foreach ($discounts as $item) {
-            if ($item['course_price'] < $item['discount']) {
+            if ($item['discount'] > $item['course_price']) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'The coupon discount (₹' . $item['discount'] . ') is greater than the course price (₹' . $item['course_price'] . '). It cannot be applied.',
+                    'message' => 'Coupon discount (₹' . $item['discount'] .
+                        ') cannot be greater than course price (₹' .
+                        $item['course_price'] . ').',
                 ], 400);
             }
         }
 
-        // Calculate total discount
-        $totalDiscount = collect($discounts)->sum('discount');
+        // Calculate this coupon total discount
+        $currentCouponDiscount = collect($discounts)->sum('discount');
 
-        // Store total discount in session
-        session(['coupon' => $totalDiscount]);
+        // Old total discount (if any)
+        $oldDiscount = session()->get('coupon', 0);
 
+        // Store updated discount
+        session()->put('coupon', $oldDiscount + $currentCouponDiscount);
+
+        // Store applied coupon name
+        $appliedCouponNames[] = $couponName;
+        session()->put('applied_coupon_names', $appliedCouponNames);
+
+        // Store discount details (optional for UI)
+        $allDiscounts = session()->get('coupon_discounts', []);
+        $allDiscounts[] = [
+            'coupon'   => $couponName,
+            'discount' => $currentCouponDiscount,
+            'courses'  => $discounts,
+        ];
+        session()->put('coupon_discounts', $allDiscounts);
 
         // Success response
         return response()->json([
-            'success' => true,
-            'message' => 'Coupon applied successfully!',
-            'discounts' => $discounts,
+            'success'        => true,
+            'message'        => 'Coupon applied successfully!',
+            'discounts'      => $discounts,
+            'total_discount' => session()->get('coupon'),
+            'coupon_count'   => count($appliedCouponNames),
         ]);
     }
 
-    public function couponRemove()
+    
+
+    public function couponRemove(Request $request)
     {
-        session()->forget('coupon');
-        return response()->json(['success' => 'Coupon Removed Successfully']);
+        $couponName = $request->coupon_name;
+
+        if ($couponName) {
+            $appliedCouponNames = session()->get('applied_coupon_names', []);
+            $couponDiscounts = session()->get('coupon_discounts', []);
+
+            // Remove the specific coupon name
+            $appliedCouponNames = array_values(array_filter($appliedCouponNames, fn($name) => $name !== $couponName));
+            
+            // Remove the specific discount details
+            $couponDiscounts = array_values(array_filter($couponDiscounts, fn($item) => $item['coupon'] !== $couponName));
+
+            session()->put('applied_coupon_names', $appliedCouponNames);
+            session()->put('coupon_discounts', $couponDiscounts);
+
+            // Re-calculate total discount
+            $totalDiscount = collect($couponDiscounts)->sum('discount');
+            if ($totalDiscount <= 0) {
+                session()->forget(['coupon', 'applied_coupon_names', 'coupon_discounts']);
+                $totalDiscount = 0;
+            } else {
+                session()->put('coupon', $totalDiscount);
+            }
+            
+            return response()->json([
+                'status' => 'success',
+                'success' => 'Coupon Removed Successfully', 
+                'total_discount' => $totalDiscount,
+                'coupon_count' => count($appliedCouponNames)
+            ]);
+        }
+
+        // Default: remove all if no specific name provided
+        session()->forget(['coupon', 'applied_coupon_names', 'coupon_discounts']);
+        return response()->json([
+            'status' => 'success',
+            'success' => 'All Coupons Removed Successfully'
+        ]);
     }
 }

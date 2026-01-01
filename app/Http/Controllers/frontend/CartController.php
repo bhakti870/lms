@@ -33,6 +33,7 @@ class CartController extends Controller
 
         // Total Amount
         $subTotal = $cart->sum(function ($cartItem) {
+            if (!$cartItem->course) return 0;
             $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
             return $cartItem->quantity * ($price ?? 0);
         });
@@ -67,6 +68,7 @@ class CartController extends Controller
 
         // Total Amount
         $subTotal = $cart->sum(function ($cartItem) {
+            if (!$cartItem->course) return 0;
             $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
             return $cartItem->quantity * ($price ?? 0);
         });

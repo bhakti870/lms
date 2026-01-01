@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class ApplyCouponRequest extends FormRequest
 {
@@ -14,11 +15,7 @@ class ApplyCouponRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+ 
     public function rules(): array
     {
         return [
@@ -28,15 +25,36 @@ class ApplyCouponRequest extends FormRequest
                 'exists:coupons,coupon_name',
                 function ($attribute, $value, $fail) {
                     $coupon = \App\Models\Coupon::where('coupon_name', $value)->first();
-                    if ($coupon && \Carbon\Carbon::now()->greaterThan($coupon->coupon_validity)) {
+                    // if ($coupon && \Carbon\Carbon::now()->endOfDay($coupon->coupon_validity)) 
+                    // {
+                    //     $fail('The coupon has expired.');
+                    // }
+
+                       if (Carbon::now()->gt(Carbon::parse($coupon->coupon_validity)->endOfDay())) {
                         $fail('The coupon has expired.');
                     }
+
+
+                    // max 2 couppon apply
+                     $appliedCoupons = session()->get('applied_coupon_names', []);
+                    if (count($appliedCoupons) >= 2) {
+                        $fail('You can apply maximum 2 coupons only.');
+                    }
+
+
+
+                    //not apply same coupon
+                      if (in_array($value, $appliedCoupons)) {
+                        $fail('This coupon is already applied.');
+                    }
+
+
                 },
             ],
             'course_id' => 'required|array',
-            'course_id.*' => 'exists:courses,id', // Validate each course_id
+            'course_id.*' => 'exists:courses,id', 
             'instructor_id' => 'required|array',
-            'instructor_id.*' => 'exists:users,id', // Validate each instructor_id
+            'instructor_id.*' => 'exists:users,id', 
         ];
     }
 }
