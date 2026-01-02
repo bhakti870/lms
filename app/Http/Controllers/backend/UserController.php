@@ -25,6 +25,9 @@ class UserController extends Controller
         
         $recentNotifications = $user->notifications()->take(5)->get();
         
+        // Clear success messages if they exist to prevent repeats in Turbo navigation
+        session()->forget('purchase_success');
+
         return view('frontend.dashboard.index', compact('enrolledCourses', 'wishlistCount', 'totalPurchase', 'recentNotifications'));
     }
 
@@ -63,6 +66,9 @@ class UserController extends Controller
         $id = Auth::user()->id;
         $courses = Enrollment::where('user_id', $id)->with('course')->get();
         
+        // Clear success messages
+        session()->forget('purchase_success');
+
         return view('frontend.dashboard.purchase_history', compact('courses'));
     }
 

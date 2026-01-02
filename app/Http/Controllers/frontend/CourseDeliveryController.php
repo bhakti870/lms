@@ -21,9 +21,7 @@ class CourseDeliveryController extends Controller
         $this->middleware(['auth', 'course.access']);
     }
 
-    /**
-     * Learning Dashboard for a specific course
-     */
+ 
     public function learn($course_id)
     {
         $course = Course::with(['sections.lectures', 'sections.quizzes', 'sections.materials'])
@@ -197,7 +195,12 @@ class CourseDeliveryController extends Controller
 
         foreach ($quiz->questions as $question) {
             $selected = $answers[$question->id] ?? null;
-            $isCorrect = ($selected === $question->correct_answer);
+            
+            // Robust comparison: handle case sensitivity and whitespace
+            $isCorrect = false;
+            if ($selected !== null) {
+                $isCorrect = (trim(strtolower($selected)) === trim(strtolower($question->correct_answer)));
+            }
             
             if ($isCorrect) $correctCount++;
 
@@ -245,10 +248,15 @@ class CourseDeliveryController extends Controller
         }
 
         return response()->json([
+            'quiz_id' => $quiz->id,
             'score' => round($score, 2),
             'is_pass' => $isPass,
             'details' => $resultsDetail,
-            'course_finished' => $this->checkCourseCompletion($quiz->course_id)
+            'course_finished' => $this->checkCourseCompletion($quiz->course_id),
+            'debug' => [
+                'received_answers' => $answers,
+                'quiz_questions' => $quiz->questions->map(fn($q) => ['id' => $q->id, 'correct_answer' => $q->correct_answer])
+            ]
         ]);
     }
 

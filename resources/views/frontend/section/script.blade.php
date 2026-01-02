@@ -35,13 +35,27 @@
             new Plyr('#player');
         }
 
-        // Flash Messages (SweetAlert)
+    }
+
+    // Flash Messages (One-time execution, decoupled from turbo:load to prevent duplicates)
+    (function() {
+        // Prevent execution during Turbo preview or if already shown on this specific DOM load
+        if (document.documentElement.hasAttribute('data-turbo-preview')) return;
+        
+        @php
+            $success = session()->pull('success');
+            $error = session()->pull('error');
+            $regSuccess = session()->pull('registration_success');
+            $loginSuccess = session()->pull('login_success');
+            $purchaseSuccess = session()->pull('purchase_success');
+        @endphp
+
         if (typeof Swal !== 'undefined') {
-            @if (session('success'))
+            @if ($success)
                 Swal.fire({
                     toast: true,
                     icon: 'success',
-                    title: '{{ session('success') }}',
+                    title: '{{ $success }}',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
@@ -52,11 +66,11 @@
                 });
             @endif
 
-            @if (session('error'))
+            @if ($error)
                 Swal.fire({
                     toast: true,
                     icon: 'error',
-                    title: '{{ session('error') }}',
+                    title: '{{ $error }}',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 3000,
@@ -67,7 +81,7 @@
                 });
             @endif
 
-            @if (session('registration_success'))
+            @if ($regSuccess)
                 Swal.fire({
                     icon: 'success',
                     title: '<h3 class="mt-2 text-theme">Welcome! 👋</h3>',
@@ -76,11 +90,11 @@
                 });
             @endif
 
-            @if (session('login_success'))
+            @if ($loginSuccess)
                 Swal.fire({
                     toast: true,
                     icon: 'success',
-                    title: '{{ session('login_success') }}',
+                    title: '{{ $loginSuccess }}',
                     position: 'top-end',
                     showConfirmButton: false,
                     timer: 4000,
@@ -91,7 +105,7 @@
                 });
             @endif
 
-            @if (session('purchase_success'))
+            @if ($purchaseSuccess)
                 Swal.fire({
                     icon: 'success',
                     title: '<h2 class="mt-2 text-theme fw-bold">Success! 🎉</h2>',
@@ -130,12 +144,9 @@
                 });
             @endif
         }
-    }
+    })();
 
-    // Run on first load
-    document.addEventListener('DOMContentLoaded', initializeScripts);
-
-    // Run on every Turbo navigation
+    // Run on every Turbo navigation (covers both initial load and AJAX navigation)
     document.addEventListener('turbo:load', initializeScripts);
 </script>
 
@@ -164,6 +175,5 @@
         @endauth
     }
 
-    document.addEventListener('DOMContentLoaded', fetchNotificationCount);
     document.addEventListener('turbo:load', fetchNotificationCount);
 </script>

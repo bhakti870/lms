@@ -69,13 +69,7 @@ function initTheme() {
     });
 }
 
-// Initial Run
-document.addEventListener('DOMContentLoaded', () => {
-    initStats();
-    initTheme();
-});
-
-// Turbo Support
+// Initial Run & Turbo Support
 document.addEventListener('turbo:load', () => {
     initStats();
     initTheme();

@@ -66,35 +66,27 @@
 
 
                 <div class="d-flex flex-wrap align-items-center justify-content-between pt-4">
-                    <form id="couponForm">
+                    <form id="couponForm" style="{{ count(session()->get('applied_coupon_names', [])) >= 2 ? 'display: none;' : '' }}">
                         @csrf
                         @foreach ($cart as $item)
                             <input type="hidden" name="course_id[]" value="{{ $item->course->id }}">
                             <input type="hidden" name="instructor_id[]" value="{{ $item->course->user->id }}">
                         @endforeach
 
-                        @if (!session()->get('coupon'))
-                            <div class="input-group mb-2">
-                                <input class="form-control form--control pl-3" type="text" name="coupon"
-                                    id="couponInput" placeholder="Enter Coupon Code">
-                                <div class="input-group-append">
-                                    <button type="button" id="applyCouponBtn" class="btn theme-btn">
-                                        Apply Code
-                                    </button>
-                                </div>
+                        <div class="input-group mb-2">
+                            <input class="form-control form--control pl-3" type="text" name="coupon"
+                                id="couponInput" placeholder="Enter Coupon Code">
+                            <div class="input-group-append">
+                                <button type="button" id="applyCouponBtn" class="btn theme-btn">
+                                    Apply Code
+                                </button>
                             </div>
-                        @endif
+                        </div>
                     </form>
-                    <a href="#" class="btn theme-btn mb-2 sr-only">Update Cart</a>
                 </div>
-
 
                 <!-- Error/Success Message -->
                 <div id="couponMessage" class="mt-2"></div>
-
-
-
-
 
             </div>
             <div class="col-lg-4 ml-auto">
@@ -102,40 +94,46 @@
                     <h3 class="fs-18 font-weight-bold pb-3">Cart Totals</h3>
                     <div class="divider"><span></span></div>
 
-
                     <ul class="generic-list-item pb-4">
                         <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Subtotal:</span>
-                            <span id="subTotalValue">₹{{ $subTotal }}</span> 
+                            <span id="subTotalValue" data-value="{{ $subTotal }}">₹{{ $subTotal }}</span> 
                         </li>
 
-
-
-                        <!-- Total Discount -->
-
+                        <!-- Applied Coupons List -->
+                        <div id="appliedCouponsList">
+                            @php
+                                $appliedCouponNames = session()->get('applied_coupon_names', []);
+                                $couponDiscounts = session()->get('coupon_discounts', []);
+                            @endphp
+                            @foreach($couponDiscounts as $coupon)
+                                <li class="d-flex align-items-center justify-content-between font-weight-semi-bold coupon-item" data-coupon="{{ $coupon['coupon'] }}">
+                                    <span class="text-black">Coupon: <strong class="text-success">{{ $coupon['coupon'] }}</strong>
+                                        <a href="javascript:void(0)" class="remove-specific-coupon text-danger ml-1" data-name="{{ $coupon['coupon'] }}" title="Remove Coupon">
+                                            <i class="la la-times-circle"></i>
+                                        </a>
+                                    </span>
+                                    <span class="text-success">-₹{{ number_format($coupon['discount'], 2) }}</span>
+                                </li>
+                            @endforeach
+                        </div>
 
                         <li id="totalDiscountItem"
                             class="d-flex align-items-center justify-content-between font-weight-semi-bold" 
                             style="{{ session()->has('coupon') ? '' : 'display: none !important' }}">
-                            <span class="text-black">Total Discount: 
-                                <a href="javascript:void(0)" id="removeCoupon" class="text-danger ml-1" title="Remove Coupon"><i class="la la-times-circle"></i></a>
-                            </span>
-                            <span id="totalDiscount">
-                                -₹{{ session()->get('coupon') ?? '0.00' }}
+                            <span class="text-black font-weight-bold">Total Discount:</span>
+                            <span id="totalDiscount" class="text-danger font-weight-bold">
+                                -₹{{ number_format(session()->get('coupon') ?? 0, 2) }}
                             </span>
                         </li>
 
                         <li class="d-flex align-items-center justify-content-between font-weight-semi-bold">
                             <span class="text-black">Total:</span>
                             <span id="totalAmount">
-                                ₹{{ $subTotal - (session()->get('coupon') ?? 0) }}
+                                ₹{{ number_format($subTotal - (session()->get('coupon') ?? 0), 2) }}
                             </span>
                         </li>
                     </ul>
-
-
-
-
 
                     <a href="{{ route('checkout.index') }}" class="btn theme-btn w-100">Checkout <i
                             class="la la-arrow-right icon ml-1"></i></a>
@@ -147,15 +145,10 @@
     </div><!-- end container -->
 </section>
 
-
-
-
 <script>
-
-
-
     $(document).ready(function() {
-        $('#applyCouponBtn').click(function() {
+        // Apply Coupon
+        $('#applyCouponBtn').off('click').on('click', function() {
             let formData = $('#couponForm').serialize(); 
 
             $.ajax({
@@ -163,23 +156,8 @@
                 type: "POST",
                 data: formData,
                 success: function(response) {
-
-                    // Use the  total discount 
-                    let totalDiscount = parseFloat(response.total_discount);
-
-                    $('#totalDiscount').text(`-₹${totalDiscount.toFixed(2)}`);
-                    $('#totalDiscountItem').show(); 
-
-                    let subTotal = parseFloat("{{ $subTotal }}");   
-                    let totalAmount = subTotal - totalDiscount;
-                    $('#totalAmount').text(`₹${totalAmount.toFixed(2)}`);
-
-                    // Hide form if max coupons reached
-                    if (response.coupon_count >= 2) {
-                        $('#couponForm').hide(); 
-                    }
-                    
-                    $('#couponInput').val('');
+                    // Refresh cart partial to get updated list and values
+                    fetchCart(); 
 
                     Swal.fire({
                         position: 'top-end',
@@ -194,17 +172,9 @@
                 },
                 error: function(xhr) {
                     let errorMessage = 'Coupon not applied successfully!';
-                    
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-                        errorMessage = '';
-                        for (let field in errors) {
-                            errorMessage += errors[field].join('<br>') + '<br>';
-                        }
-                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message;
                     }
-
                     Swal.fire({
                         position: 'top-end',
                         icon: 'error',
@@ -220,91 +190,22 @@
             });
         });
 
+        // Remove Specific Coupon
+        $(document).off('click', '.remove-specific-coupon').on('click', '.remove-specific-coupon', function () {
+            let couponName = $(this).data('name');
 
-
-
-        //   $(document).ready(function() {
-        // $('#applyCouponBtn').click(function() {
-        //     let formData = $('#couponForm').serialize(); 
-
-        //     $.ajax({
-        //         url: "/apply-coupon", 
-        //         type: "POST",
-        //         data: formData,
-        //         success: function(response) {
-        //             let totalDiscount = response.discounts.reduce((sum, item) => {
-        //                 return sum + parseFloat(item.discount); 
-        //             }, 0);
-
-        //             $('#totalDiscount').text(`-₹${totalDiscount.toFixed(2)}`);
-        //             $('#totalDiscountItem').show(); 
-
-        //             let subTotal = parseFloat("{{ $subTotal }}");
-        //             let totalAmount = subTotal - totalDiscount;
-        //             $('#totalAmount').text(`₹${totalAmount.toFixed(2)}`);
-
-        //             $('#couponForm').hide(); 
-
-        //             Swal.fire({
-        //                 position: 'top-end',
-        //                 icon: 'success',
-        //                 title: 'Coupon applied successfully!',
-        //                 showConfirmButton: false,
-        //                 toast: true,
-        //                 timer: 3000,
-        //                 background: '#28a745',
-        //                 color: '#fff'
-        //             });
-        //         },
-        //         error: function(xhr) {
-        //             let errorMessage = 'Coupon not applied successfully!';
-                    
-        //             if (xhr.status === 422) {
-        //                 let errors = xhr.responseJSON.errors;
-        //                 errorMessage = '';
-        //                 for (let field in errors) {
-        //                     errorMessage += errors[field].join('<br>') + '<br>';
-        //                 }
-        //             } else if (xhr.responseJSON && xhr.responseJSON.message) {
-        //                 errorMessage = xhr.responseJSON.message;
-        //             }
-
-
-        //             Swal.fire({
-        //                 position: 'top-end',
-        //                 icon: 'error',
-        //                 title: 'Oops...',
-        //                 html: errorMessage,
-        //                 showConfirmButton: false,
-        //                 toast: true,
-        //                 timer: 3000,
-        //                 background: '#dc3545',
-        //                 color: '#fff'
-        //             });
-        //         }
-        //     });
-        // });
-
-
-        // Coupon Remove
-        $(document).on('click', '#removeCoupon', function() {
             $.ajax({
                 url: "/coupon-remove",
                 type: "GET",
-                success: function(response) {
-                    $('#totalDiscountItem').hide();
-                    $('#totalDiscount').text('₹0.00');
-                    
-                    let subTotal = parseFloat("{{ $subTotal }}");
-                    $('#totalAmount').text(`₹${subTotal.toFixed(2)}`);
-                    
-                    $('#couponForm').show();
-                    $('#couponInput').val('');
+                data: { coupon_name: couponName },
+                success: function (response) {
+                    // Refresh cart partial
+                    fetchCart();
 
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: response.success,
+                        title: response.message,
                         showConfirmButton: false,
                         toast: true,
                         timer: 3000,

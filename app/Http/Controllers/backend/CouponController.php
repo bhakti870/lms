@@ -154,8 +154,9 @@ class CouponController extends Controller
             ], 400);
         }
 
-        // Already applied coupons (names)
+        // Already applied coupons
         $appliedCouponNames = session()->get('applied_coupon_names', []);
+        $couponDiscounts = session()->get('coupon_discounts', []);
 
         // Max 2 coupons allowed
         if (count($appliedCouponNames) >= 2) {
@@ -181,95 +182,124 @@ class CouponController extends Controller
         if (empty($discounts)) {
             return response()->json([
                 'success' => false,
-                'message' => 'No valid coupon found for the selected courses.',
+                'message' => 'This coupon does not apply to any courses in your cart.',
             ], 400);
-        }
-
-        // Discount > course price check
-        foreach ($discounts as $item) {
-            if ($item['discount'] > $item['course_price']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Coupon discount (₹' . $item['discount'] .
-                        ') cannot be greater than course price (₹' .
-                        $item['course_price'] . ').',
-                ], 400);
-            }
         }
 
         // Calculate this coupon total discount
         $currentCouponDiscount = collect($discounts)->sum('discount');
-
-        // Old total discount (if any)
         $oldDiscount = session()->get('coupon', 0);
+        $newTotalDiscount = $oldDiscount + $currentCouponDiscount;
+
+        // Calculate Subtotal consistent with CartController
+        $cart = [];
+        if (Auth::check()) {
+            $cart = \App\Models\Cart::where('user_id', Auth::id())->get();
+        } else {
+            $guestToken = request()->cookie('guest_token');
+            if ($guestToken) {
+                $cart = \App\Models\Cart::where('guest_token', $guestToken)->get();
+            }
+        }
+
+        $totalPrice = collect($cart)->sum(function ($cartItem) {
+            if (!$cartItem->course) return 0;
+            $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
+            return ($cartItem->quantity ?? 1) * ($price ?? 0);
+        });
+
+        if ($newTotalDiscount >= $totalPrice) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Total discount cannot be greater than or equal to total price.',
+            ], 400);
+        }
 
         // Store updated discount
-        session()->put('coupon', $oldDiscount + $currentCouponDiscount);
+        session()->put('coupon', $newTotalDiscount);
 
         // Store applied coupon name
         $appliedCouponNames[] = $couponName;
         session()->put('applied_coupon_names', $appliedCouponNames);
 
-        // Store discount details (optional for UI)
-        $allDiscounts = session()->get('coupon_discounts', []);
-        $allDiscounts[] = [
+        // Store discount details
+        $couponDiscounts[] = [
             'coupon'   => $couponName,
             'discount' => $currentCouponDiscount,
             'courses'  => $discounts,
         ];
-        session()->put('coupon_discounts', $allDiscounts);
+        session()->put('coupon_discounts', $couponDiscounts);
 
         // Success response
         return response()->json([
             'success'        => true,
             'message'        => 'Coupon applied successfully!',
-            'discounts'      => $discounts,
             'total_discount' => session()->get('coupon'),
             'coupon_count'   => count($appliedCouponNames),
+            'applied_coupons' => $appliedCouponNames,
         ]);
     }
 
-    
-
     public function couponRemove(Request $request)
     {
-        $couponName = $request->coupon_name;
+        $couponToRemove = $request->coupon_name;
+        $appliedCoupons  = session()->get('applied_coupon_names', []);
+        $couponDiscounts = session()->get('coupon_discounts', []);
 
-        if ($couponName) {
-            $appliedCouponNames = session()->get('applied_coupon_names', []);
-            $couponDiscounts = session()->get('coupon_discounts', []);
-
-            // Remove the specific coupon name
-            $appliedCouponNames = array_values(array_filter($appliedCouponNames, fn($name) => $name !== $couponName));
-            
-            // Remove the specific discount details
-            $couponDiscounts = array_values(array_filter($couponDiscounts, fn($item) => $item['coupon'] !== $couponName));
-
-            session()->put('applied_coupon_names', $appliedCouponNames);
-            session()->put('coupon_discounts', $couponDiscounts);
-
-            // Re-calculate total discount
-            $totalDiscount = collect($couponDiscounts)->sum('discount');
-            if ($totalDiscount <= 0) {
-                session()->forget(['coupon', 'applied_coupon_names', 'coupon_discounts']);
-                $totalDiscount = 0;
-            } else {
-                session()->put('coupon', $totalDiscount);
-            }
-            
+        if (empty($appliedCoupons)) {
             return response()->json([
-                'status' => 'success',
-                'success' => 'Coupon Removed Successfully', 
-                'total_discount' => $totalDiscount,
-                'coupon_count' => count($appliedCouponNames)
+                'success' => true,
+                'message' => 'No coupon applied.',
+                'total_discount' => 0,
+                'coupon_count' => 0,
             ]);
         }
 
-        // Default: remove all if no specific name provided
-        session()->forget(['coupon', 'applied_coupon_names', 'coupon_discounts']);
+        // If coupon_name is provided, remove that specific one. Otherwise remove last one (fallback).
+        if ($couponToRemove) {
+            $index = array_search($couponToRemove, $appliedCoupons);
+            if ($index !== false) {
+                unset($appliedCoupons[$index]);
+                // Re-index appliedCoupons if it's not and we want it to be a clean array for session
+                $appliedCoupons = array_values($appliedCoupons);
+
+                // Also remove from couponDiscounts
+                foreach ($couponDiscounts as $k => $v) {
+                    if ($v['coupon'] == $couponToRemove) {
+                        unset($couponDiscounts[$k]);
+                        break;
+                    }
+                }
+                $couponDiscounts = array_values($couponDiscounts);
+            }
+        } else {
+            // Default behavior if no name provided
+            array_pop($appliedCoupons);
+            array_pop($couponDiscounts);
+        }
+
+        $totalDiscount = collect($couponDiscounts)->sum('discount');
+
+        if (!empty($appliedCoupons)) {
+            session()->put('coupon', $totalDiscount);
+            session()->put('applied_coupon_names', $appliedCoupons);
+            session()->put('coupon_discounts', $couponDiscounts);
+        } else {
+            // CLEAR EVERYTHING
+            session()->forget([
+                'coupon',
+                'applied_coupon_names',
+                'coupon_discounts'
+            ]);
+            $totalDiscount = 0;
+        }
+
         return response()->json([
-            'status' => 'success',
-            'success' => 'All Coupons Removed Successfully'
+            'success' => true,
+            'message' => 'Coupon removed successfully!',
+            'total_discount' => $totalDiscount,
+            'coupon_count' => count($appliedCoupons),
+            'applied_coupons' => $appliedCoupons,
         ]);
     }
 }

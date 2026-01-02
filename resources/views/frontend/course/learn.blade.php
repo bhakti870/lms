@@ -866,22 +866,89 @@
     }
     
     function showQuizResults(data) {
+        let reviewHtml = '';
+        if (data.details) {
+            reviewHtml = `
+                <div class="mt-5 text-start">
+                    <h4 class="fw-bold mb-4 border-bottom pb-2">Review Your Answers</h4>
+                    <div class="d-flex flex-column gap-4">
+                        ${data.details.map((d, i) => `
+                            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="card-header ${d.is_correct ? 'bg-success-subtle' : 'bg-danger-subtle'} py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge ${d.is_correct ? 'bg-success' : 'bg-danger'} rounded-pill">Question ${i+1}</span>
+                                        <span class="fw-bold ${d.is_correct ? 'text-success' : 'text-danger'}">
+                                            <i class="bi ${d.is_correct ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}"></i> 
+                                            ${d.is_correct ? 'Correct' : 'Incorrect'}
+                                        </span>
+                                    </div>
+                                    <p class="mt-3 mb-0 fs-5 text-dark fw-medium">${d.question}</p>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="row g-3">
+                                        ${Object.entries(d.options).map(([key, value]) => {
+                                            const normalizedKey = key.toLowerCase();
+                                            const normalizedCorrect = String(d.correct || '').toLowerCase();
+                                            const normalizedSelected = String(d.selected || '').toLowerCase();
+                                            
+                                            const isThisCorrect = normalizedKey === normalizedCorrect;
+                                            const isThisSelected = normalizedKey === normalizedSelected;
+                                            
+                                            let borderClass = 'bg-light';
+                                            if (isThisCorrect) borderClass = 'border-success bg-success-subtle';
+                                            else if (isThisSelected) borderClass = 'border-danger bg-danger-subtle';
+
+                                            return `
+                                                <div class="col-md-6">
+                                                    <div class="p-3 border rounded-3 ${borderClass} h-100">
+                                                        <span class="fw-bold me-2 text-uppercase">${key}.</span> ${value}
+                                                        ${isThisCorrect ? '<i class="bi bi-check-circle-fill text-success float-end"></i>' : ''}
+                                                        ${isThisSelected && !isThisCorrect ? '<i class="bi bi-x-circle-fill text-danger float-end"></i>' : ''}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                    ${d.explanation ? `
+                                        <div class="mt-4 p-3 bg-light rounded-3 border-start border-4 border-theme">
+                                            <strong class="text-theme d-block mb-1">Explanation:</strong>
+                                            <p class="mb-0 small text-secondary">${d.explanation}</p>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         var html = `
             <div class="text-center py-5">
                 <div class="mb-4">
                     <i class="bi ${data.is_pass ? 'bi-trophy-fill text-success' : 'bi-x-circle-fill text-danger'}" style="font-size: 80px;"></i>
                 </div>
-                <h3 class="fw-bold ${data.is_pass ? 'text-success' : 'text-danger'}">${data.is_pass ? 'Congratulations! You Passed!' : 'Don\'t give up! Try again.'}</h3>
+                <h2 class="fw-bold ${data.is_pass ? 'text-success' : 'text-danger'}">${data.is_pass ? 'Congratulations! You Passed!' : 'Don\'t give up! Try again.'}</h2>
                 <div class="display-3 fw-bold my-4 text-dark">${data.score}%</div>
                 
                 <div class="d-flex justify-content-center gap-3 mb-5">
-                    <button class="btn btn-theme shadow-sm" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')"><i class="bi bi-eye"></i> Review Answers</button>
-                    ${!data.is_pass ? `<button class="btn btn-outline-danger" onclick="loadContent('quiz', '${currentLectureId || data.quiz_id || ''}')"><i class="bi bi-arrow-repeat"></i> Retry Quiz</button>` : ''}
+                    <button class="btn btn-outline-secondary rounded-pill px-4" onclick="loadContent('quiz', '${data.quiz_id}')">
+                        <i class="bi bi-arrow-repeat me-2"></i> Retake Quiz
+                    </button>
+                    ${data.is_pass ? `
+                        <button class="btn btn-theme rounded-pill px-4" onclick="goToNextContent()">
+                            Continue Learning <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    ` : ''}
                 </div>
+
+                ${reviewHtml}
             </div>
         `;
          
         $('#content-display-area').html(html);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         if (data.is_pass) {
             var item = $(`.lesson-item.active[data-type="quiz"]`);
             // Mark complete
@@ -889,6 +956,24 @@
             updateOverallProgress();
         }
         if (data.course_finished) $('#completionModal').modal('show');
+    }
+
+    function goToNextContent() {
+        var current = $('.lesson-item.active');
+        var next = current.nextAll('.lesson-item:not(.locked)').first();
+        if (next.length) {
+            next.click();
+        } else {
+            // Check next section
+            var nextSection = current.closest('.accordion-item').next('.accordion-item');
+            if (nextSection.length) {
+               var nextItem = nextSection.find('.lesson-item:not(.locked)').first();
+               if (nextItem.length) {
+                   nextSection.find('.accordion-button.collapsed').click(); // Open accordion
+                   nextItem.click();
+               }
+            }
+        }
     }
 </script>
 <style>

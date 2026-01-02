@@ -33,6 +33,5 @@ function initHeaderDropdowns() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', initHeaderDropdowns);
 document.addEventListener('turbo:load', initHeaderDropdowns);
 
