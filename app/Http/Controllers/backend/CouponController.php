@@ -144,41 +144,11 @@ class CouponController extends Controller
         $courseIds     = $validated['course_id'];
         $instructorIds = $validated['instructor_id'];
 
-        // Get coupon
-        $coupon = Coupon::where('coupon_name', $couponName)->first();
-
-        if (!$coupon) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid coupon code.',
-            ], 400);
-        }
-
-        // Already applied coupons
-        $appliedCouponNames = session()->get('applied_coupon_names', []);
-        $couponDiscounts = session()->get('coupon_discounts', []);
-
-        // Max 2 coupons allowed
-        if (count($appliedCouponNames) >= 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You can apply maximum 2 coupons only.',
-            ], 422);
-        }
-
-        // Same coupon cannot be applied twice
-        if (in_array($couponName, $appliedCouponNames)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This coupon is already applied.',
-            ], 422);
-        }
-
         // Apply coupon via service
         $discounts = $this->applyCouponService
             ->applyCoupon($couponName, $courseIds, $instructorIds);
 
-        // No valid discount
+        // If coupon does not apply to any course
         if (empty($discounts)) {
             return response()->json([
                 'success' => false,
@@ -186,43 +156,23 @@ class CouponController extends Controller
             ], 400);
         }
 
-        // Calculate this coupon total discount
+        // Calculate current coupon discount
         $currentCouponDiscount = collect($discounts)->sum('discount');
+
+        // Previous total discount
         $oldDiscount = session()->get('coupon', 0);
         $newTotalDiscount = $oldDiscount + $currentCouponDiscount;
 
-        // Calculate Subtotal consistent with CartController
-        $cart = [];
-        if (Auth::check()) {
-            $cart = \App\Models\Cart::where('user_id', Auth::id())->get();
-        } else {
-            $guestToken = request()->cookie('guest_token');
-            if ($guestToken) {
-                $cart = \App\Models\Cart::where('guest_token', $guestToken)->get();
-            }
-        }
-
-        $totalPrice = collect($cart)->sum(function ($cartItem) {
-            if (!$cartItem->course) return 0;
-            $price = $cartItem->course->discount_price ?? $cartItem->course->selling_price;
-            return ($cartItem->quantity ?? 1) * ($price ?? 0);
-        });
-
-        if ($newTotalDiscount >= $totalPrice) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Total discount cannot be greater than or equal to total price.',
-            ], 400);
-        }
-
-        // Store updated discount
+        // Store total discount
         session()->put('coupon', $newTotalDiscount);
 
-        // Store applied coupon name
+        // Store applied coupon names
+        $appliedCouponNames = session()->get('applied_coupon_names', []);
         $appliedCouponNames[] = $couponName;
         session()->put('applied_coupon_names', $appliedCouponNames);
 
-        // Store discount details
+        // Store coupon-wise discount details
+        $couponDiscounts = session()->get('coupon_discounts', []);
         $couponDiscounts[] = [
             'coupon'   => $couponName,
             'discount' => $currentCouponDiscount,
@@ -232,13 +182,14 @@ class CouponController extends Controller
 
         // Success response
         return response()->json([
-            'success'        => true,
-            'message'        => 'Coupon applied successfully!',
-            'total_discount' => session()->get('coupon'),
-            'coupon_count'   => count($appliedCouponNames),
-            'applied_coupons' => $appliedCouponNames,
+            'success'          => true,
+            'message'          => 'Coupon applied successfully!',
+            'total_discount'   => $newTotalDiscount,
+            'coupon_count'     => count($appliedCouponNames),
+            'applied_coupons'  => $appliedCouponNames,
         ]);
     }
+
 
     public function couponRemove(Request $request)
     {
@@ -285,7 +236,7 @@ class CouponController extends Controller
             session()->put('applied_coupon_names', $appliedCoupons);
             session()->put('coupon_discounts', $couponDiscounts);
         } else {
-            // CLEAR EVERYTHING
+            // CLEAR
             session()->forget([
                 'coupon',
                 'applied_coupon_names',
