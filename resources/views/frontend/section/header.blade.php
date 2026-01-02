@@ -46,10 +46,7 @@
                 </ul>
 
                 <div class="d-flex align-items-center gap-3 mt-3 mt-xl-0">
-                    <!-- <button id="theme-toggle" class="btn btn-light rounded-circle border-0 shadow-sm"
-                        style="width: 40px; height: 40px;">
-                        <i class="bi bi-moon-fill"></i>
-                    </button> -->
+
                     
                     @auth
                     <!-- Cart Dropdown -->

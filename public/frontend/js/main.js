@@ -10,38 +10,7 @@ Author Email:   contact@techydevs.com
 
     var $window = $(window);
 
-    /*====== Dark mode js ========*/
-    const themePicker = document.querySelectorAll(".theme-picker-btn");
-    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    const currentTheme = localStorage.getItem("theme");
 
-    const applyTheme = (theme) => {
-        if (theme === "dark") {
-            document.body.classList.add("dark-theme");
-            document.body.classList.remove("light-theme");
-        } else {
-            document.body.classList.add("light-theme");
-            document.body.classList.remove("dark-theme");
-        }
-    };
-
-    if (currentTheme) {
-        applyTheme(currentTheme);
-    } else if (prefersDarkScheme.matches) {
-        applyTheme("dark");
-    } else {
-        applyTheme("light");
-    }
-
-    themePicker.forEach(function (btn) {
-        if (btn) {
-            btn.addEventListener("click", function () {
-                const newTheme = document.body.classList.contains("dark-theme") ? "light" : "dark";
-                applyTheme(newTheme);
-                localStorage.setItem("theme", newTheme);
-            });
-        }
-    });
 
     $window.on("load", function (key, value) {
         var $document = $(document);

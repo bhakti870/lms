@@ -73,10 +73,10 @@
                                     </div>
                                 </div>
                                 <div class="row ms-2">
-                                    <div class="col-md-6 mb-2 {{ $question->correct_answer == 'a' ? 'text-success fw-bold' : '' }}">A) {{ $question->option_a }}</div>
-                                    <div class="col-md-6 mb-2 {{ $question->correct_answer == 'b' ? 'text-success fw-bold' : '' }}">B) {{ $question->option_b }}</div>
-                                    <div class="col-md-6 mb-2 {{ $question->correct_answer == 'c' ? 'text-success fw-bold' : '' }}">C) {{ $question->option_c }}</div>
-                                    <div class="col-md-6 mb-2 {{ $question->correct_answer == 'd' ? 'text-success fw-bold' : '' }}">D) {{ $question->option_d }}</div>
+                                    <div class="col-md-6 mb-2 {{ strtolower($question->correct_answer) == 'a' ? 'text-success fw-bold' : '' }}">A) {{ $question->option_a }}</div>
+                                    <div class="col-md-6 mb-2 {{ strtolower($question->correct_answer) == 'b' ? 'text-success fw-bold' : '' }}">B) {{ $question->option_b }}</div>
+                                    <div class="col-md-6 mb-2 {{ strtolower($question->correct_answer) == 'c' ? 'text-success fw-bold' : '' }}">C) {{ $question->option_c }}</div>
+                                    <div class="col-md-6 mb-2 {{ strtolower($question->correct_answer) == 'd' ? 'text-success fw-bold' : '' }}">D) {{ $question->option_d }}</div>
                                 </div>
                                 @if($question->explanation)
                                     <div class="mt-2 p-2 bg-light border-start border-4 border-info">
@@ -122,10 +122,10 @@
                                             <div class="mb-3">
                                                 <label class="form-label text-success">Correct Answer</label>
                                                 <select name="correct_answer" class="form-select border-success" required>
-                                                    <option value="a" {{ $question->correct_answer == 'a' ? 'selected' : '' }}>Option A</option>
-                                                    <option value="b" {{ $question->correct_answer == 'b' ? 'selected' : '' }}>Option B</option>
-                                                    <option value="c" {{ $question->correct_answer == 'c' ? 'selected' : '' }}>Option C</option>
-                                                    <option value="d" {{ $question->correct_answer == 'd' ? 'selected' : '' }}>Option D</option>
+                                                    <option value="a" {{ strtolower($question->correct_answer) == 'a' ? 'selected' : '' }}>Option A</option>
+                                                    <option value="b" {{ strtolower($question->correct_answer) == 'b' ? 'selected' : '' }}>Option B</option>
+                                                    <option value="c" {{ strtolower($question->correct_answer) == 'c' ? 'selected' : '' }}>Option C</option>
+                                                    <option value="d" {{ strtolower($question->correct_answer) == 'd' ? 'selected' : '' }}>Option D</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">

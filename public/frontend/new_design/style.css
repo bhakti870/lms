@@ -45,42 +45,6 @@ h6 {
     --hero-overlay: linear-gradient(to bottom, transparent, transparent);
 }
 
-[data-theme="dark"] {
-    /* --- DARK THEME OVERRIDES --- */
-    --body-bg: #0f0f1a;
-    /* Deep Navy Background */
-    --text-main: #e2e8f0;
-    /* Soft White Text */
-    --text-muted: #94a3b8;
-    /* Muted Blue-Gray */
-    --heading-color: #ffffff;
-
-    /* Component Backgrounds */
-    --card-bg: #1e1e2f;
-    /* Lighter Navy for Cards */
-    --navbar-bg: #0f0f1a;
-    /* Matches Body */
-    --section-bg: #0f0f1a;
-    /* Matches Body */
-    --notch-bg: #0f0f1a;
-    /* Matches Body for seamless cutout */
-
-    /* Borders & Shadows */
-    --border-color: #2d2d44;
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.4);
-
-    /* Inputs */
-    --input-bg: #1e1e2f;
-    --input-text: #ffffff;
-
-    /* Hero Assets */
-    /* Dark Wave (Matches #0f0f1a) */
-    --wave-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='%230f0f1a' %3E%3C/path%3E%3C/svg%3E");
-
-    /* Darkening overlay for images that are too bright */
-    --hero-overlay: linear-gradient(to bottom, rgba(15, 15, 26, 0.3), rgba(15, 15, 26, 0.8));
-}
-
 /* =========================================
    2. GLOBAL RESETS & TYPOGRAPHY
    ========================================= */
@@ -127,13 +91,13 @@ a {
    3. NAVBAR
    ========================================= */
 .navbar {
-    background-color: var(--navbar-bg) !important;
+    background-color: white !important;
     border-bottom: 1px solid var(--border-color);
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .navbar-nav .nav-link {
-    color: var(--text-main);
+    color: black !important;
     font-weight: 500;
     font-size: 17px;
     margin: 0 5px;
@@ -179,36 +143,14 @@ a {
 }
 
 /* Theme Toggle Button */
-#theme-toggle {
-    background-color: var(--input-bg);
-    color: var(--text-main);
-    transition: all 0.3s ease;
-}
 
-#theme-toggle:hover {
-    background-color: #5b50d6;
-    color: white;
-}
 
 /* --- Fix Logo Hover Color --- */
-.navbar-brand:hover {
+.navbar-brand {
     /* Keeps the color the same as it is without hovering */
-    color: var(--heading-color) !important;
+    color: #5b50d6 !important;
 }
 
-/* --- Fix Search Bar Text in Dark Mode --- */
-[data-theme="dark"] .search-input {
-    color: #ffffff !important;
-    /* Makes typed text WHITE */
-    background-color: #2d2d44;
-    /* Ensures background stays dark */
-}
-
-/* Fix the 'Placeholder' text (e.g., "Search for anything") */
-[data-theme="dark"] .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-    /* Light gray for placeholder */
-}
 
 /* Login Button */
 .btn-theme {
@@ -245,63 +187,15 @@ a {
     z-index: 0;
 }
 
-/* DARK MODE HERO IMAGE SWAP */
-[data-theme="dark"] .my-image {
-    /* Replace this URL with your actual Dark Hero Image */
-    content: url('bg-plain.jpg');
-    filter: brightness(0.8);
-    /* Slightly dim the image so text pops */
-}
-
-
-/* [data-theme="dark"] .my-image {
-    content: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1920&auto=format&fit=crop');
-    filter: brightness(0.6) contrast(1.1);
-    object-position: center;
-} */
-
 /* --- Fix Hero Badge Color in Dark Mode --- */
-[data-theme="dark"] .text-content .badge {
-    /* Sets the background to White (or any light color you want) */
-    background-color: #ffffff !important;
-
-    /* Ensures the text turns Purple so it is readable on white */
-    color: #5b50d6 !important;
-
-    /* Optional: Add a soft glow so it pops against the dark background */
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
-}
 
 /* --- Fix 'Browse Courses' Button in Dark Mode --- */
-[data-theme="dark"] .btn-outline-dark {
-    color: #ffffff !important;
-    /* White Text */
-    border-color: #ffffff !important;
-    /* White Border */
-}
 
 /* Optional: Hover effect for that button in Dark Mode */
-[data-theme="dark"] .btn-outline-dark:hover {
-    background-color: #ffffff !important;
-    /* White Background on Hover */
-    color: #000000 !important;
-    /* Black Text on Hover */
-}
 
 /* Optional: Gradient Text Effect for Hero in Dark Mode */
-[data-theme="dark"] .text-content h1 {
-    background: linear-gradient(to right, #ffffff, #a5b4fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-size: 2.5rem !important;
-    transition: 0.3s ease;
-}
 
 /* --- Fix Hero Wave Color in Dark Mode --- */
-[data-theme="dark"] .hero-wave-curves {
-    /* This replaces the White Wave with a Dark Navy Wave (#0f0f1a) */
-    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='%230f0f1a' %3E%3C/path%3E%3C/svg%3E");
-}
 
 /* Content Layer */
 .content-layer {
@@ -394,17 +288,6 @@ a {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] .active-learners-badge {
-    background: rgba(30, 30, 47, 0.95);
-    /* Dark Badge */
-    border: 1px solid var(--border-color);
-}
-
-/* --- Change Active Learners Number Color (Dark Mode Only) --- */
-[data-theme="dark"] .card-top-right h4 {
-    color: #0dcaf0 !important;
-    /* Example: Cyan to stand out against dark bg */
-}
 
 .learner-text strong {
     color: var(--heading-color);
@@ -452,15 +335,6 @@ a {
     transition: background-color 0.3s ease;
 }
 
-/* --- Fix Stats Numbers Visibility in Dark Mode --- */
-[data-theme="dark"] .ot-fun-box-item h3,
-[data-theme="dark"] .ot-fun-box-item p {
-    /* Changes text to Dark Navy so it is readable on the light circles */
-    color: #1a1a2e !important;
-
-    /* Optional: Adds a slight shadow to make it pop even more */
-    text-shadow: none !important;
-}
 
 .bg-light {
     background-color: var(--body-bg) !important;
@@ -483,10 +357,6 @@ a {
     z-index: 0;
 }
 
-[data-theme="dark"] .about-bg-shape {
-    background-color: #2d2d44;
-    opacity: 0.5;
-}
 
 .about-card {
     position: absolute;
@@ -597,10 +467,6 @@ a {
     border-top: 1px solid var(--border-color);
 }
 
-[data-theme="dark"] .cp-hover-info {
-    background: rgba(30, 30, 47, 0.95);
-}
-
 .cp-title a {
     color: var(--heading-color);
 }
@@ -662,10 +528,6 @@ a {
 }
 
 /* In dark mode, footer can stay the same or go slightly darker */
-[data-theme="dark"] .footer-section {
-    background-color: #050510;
-    border-top: 1px solid var(--border-color);
-}
 
 .text-theme-light {
     color: #5b50d6;
@@ -821,7 +683,7 @@ a {
 
 /* --- Nav Link Styling --- */
 .navbar-nav .nav-link {
-    color: var(--text-main);
+    color: white;
     font-weight: 500;
     font-size: 17px;
     margin: 0 5px;
@@ -845,52 +707,16 @@ a {
 /* --- Fix Course Category Cards in Dark Mode (Match Reference Image) --- */
 
 /* 1. Change the Card Body Color */
-[data-theme="dark"] .marquee_card {
-    /* Deep Midnight Navy (Matches your 'Defensive Laravel' image) */
-    background-color: #111827 !important;
-
-    /* Subtle border to separate it from the main dark background */
-    border: 1px solid #1f2937 !important;
-
-    /* Remove white shadow, add a dark one */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-}
 
 /* 2. Fix the Pop-out Icon Circle */
 /* Currently it is white. We must make it dark to blend with the card. */
-[data-theme="dark"] .card-icon-top {
-    background-color: #111827 !important;
-    /* Match card background */
-    border-color: #111827 !important;
-    /* Match card background */
-}
 
 /* 3. Text & Divider Colors */
-[data-theme="dark"] .course-title {
-    color: #ffffff !important;
-    /* Pure White Title */
-}
 
-[data-theme="dark"] .instructor-text {
-    color: #9ca3af !important;
-    /* Light Gray for "With Simon..." */
-}
 
-[data-theme="dark"] .card-divider {
-    border-top-color: #374151 !important;
-    /* Darker line */
-}
 
 /* 4. Meta Icons (Episodes, Level, etc.) */
-[data-theme="dark"] .meta-item {
-    color: #cbd5e1 !important;
-    /* Light Blue-Gray text */
-}
 
-[data-theme="dark"] .meta-icon {
-    color: #64748b !important;
-    /* Muted icon color */
-}
 
 /* @media (min-width: 992px) {
     .dropdown:hover .dropdown-menu {
@@ -1323,7 +1149,7 @@ a {
 
 /* 1. Neutralize the Domain Name (Category) */
 .badge-domain {
-    color: #4b5563 !important;
+    color: #125fca !important;
     /* Dark Gray instead of rainbow colors */
     font-weight: 700;
     /* Optional: Add a subtle background pill */
@@ -1439,22 +1265,8 @@ a {
 }
 
 /* --- Fix Instructor Name Color in Dark Mode --- */
-[data-theme="dark"] .instructor-info h5 {
-    /* Option 1: Make it White (Best for readability) */
-    color: #ffffff !important;
-
-    /* Option 2: Make it Purple (Matches your theme) */
-    /* color: #5b50d6 !important; */
-
-    /* Option 3: Make it Cyan (To make it pop) */
-    /* color: #0dcaf0 !important; */
-}
 
 /* Optional: Change the small text below the name (Job Title) */
-[data-theme="dark"] .instructor-info p {
-    color: #9ca3af !important;
-    /* Light Gray */
-}
 
 .card-divider {
     border-top: 1px solid #eee;

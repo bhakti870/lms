@@ -87,7 +87,10 @@ class QuizController extends Controller
             'explanation' => 'nullable',
         ]);
 
-        QuizQuestion::create($request->all());
+        $data = $request->all();
+        $data['correct_answer'] = strtolower($request->correct_answer);
+        
+        QuizQuestion::create($data);
 
         return back()->with('success', 'Question added successfully!');
     }
@@ -107,7 +110,11 @@ class QuizController extends Controller
         ]);
 
         $question = QuizQuestion::findOrFail($id);
-        $question->update($request->all());
+        
+        $data = $request->all();
+        $data['correct_answer'] = strtolower($request->correct_answer);
+        
+        $question->update($data);
 
         return back()->with('success', 'Question updated successfully!');
     }
