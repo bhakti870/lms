@@ -41,6 +41,15 @@
                             <label class="form-label">Pass Mark (%)</label>
                             <input type="number" name="pass_mark" class="form-control" value="{{ $quiz->pass_mark }}">
                         </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input negative-toggle" id="negCheckMsg" name="negative_marking_status" value="1" {{ $quiz->negative_marking_status ? 'checked' : '' }}>
+                            <label class="form-check-label" for="negCheckMsg">Enable Negative Marking</label>
+                        </div>
+                        <div class="mb-3 negative-value-div" style="{{ $quiz->negative_marking_status ? '' : 'display: none;' }}">
+                            <label class="form-label">Negative Mark Value</label>
+                            <input type="number" step="0.01" min="0" name="negative_marks" class="form-control" value="{{ $quiz->negative_marks }}">
+                            <small class="text-muted">Assumes 1 mark per correct answer.</small>
+                        </div>
                         <button type="submit" class="btn btn-primary w-100">Update Quiz</button>
                     </form>
                 </div>
@@ -215,6 +224,16 @@
 
 @push('scripts')
 <script>
+    $(document).on('change', '.negative-toggle', function() {
+        let $container = $(this).closest('.card-body'); 
+        let $target = $container.find('.negative-value-div');
+        if(this.checked) {
+            $target.slideDown();
+        } else {
+            $target.slideUp();
+        }
+    });
+
     $(document).on('click', '.delete-question', function(e) {
         e.preventDefault();
         let id = $(this).data('id');

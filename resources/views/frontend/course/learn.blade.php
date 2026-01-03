@@ -931,6 +931,24 @@
                 <h2 class="fw-bold ${data.is_pass ? 'text-success' : 'text-danger'}">${data.is_pass ? 'Congratulations! You Passed!' : 'Don\'t give up! Try again.'}</h2>
                 <div class="display-3 fw-bold my-4 text-dark">${data.score}%</div>
                 
+                ${data.negative_marking ? `
+                    <div class="alert alert-warning d-inline-block px-4 mb-4">
+                        <small class="fw-bold text-uppercase d-block text-muted mb-1">Score Calculation (Negative Marking Enabled)</small>
+                        <div class="fs-5">
+                            <span class="text-success"><i class="bi bi-check-circle-fill"></i> ${data.correct_count} Correct</span> 
+                            - 
+                            <span class="text-danger"><i class="bi bi-x-circle-fill"></i> ${data.wrong_count} Wrong (&times; ${data.negative_mark_value})</span>
+                        </div>
+                        <div class="mt-1 small text-muted">
+                            (Raw Score: ${(data.correct_count - (data.wrong_count * data.negative_mark_value)).toFixed(2)} / ${data.total_questions})
+                        </div>
+                    </div>
+                ` : `
+                   <div class="mb-4 text-muted">
+                        ${data.correct_count} Correct / ${data.total_questions} Questions
+                   </div>
+                `}
+                
                 <div class="d-flex justify-content-center gap-3 mb-5">
                     <button class="btn btn-outline-secondary rounded-pill px-4" onclick="loadContent('quiz', '${data.quiz_id}')">
                         <i class="bi bi-arrow-repeat me-2"></i> Retake Quiz

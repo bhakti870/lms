@@ -210,6 +210,16 @@
                                                 <input type="number" name="pass_mark" class="form-control" value="50">
                                             </div>
                                         </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input negative-toggle" id="negCheck{{ $data->id }}" name="negative_marking_status" value="1">
+                                            <label class="form-check-label" for="negCheck{{ $data->id }}">Enable Negative Marking</label>
+                                        </div>
+                                        <div class="mb-3 negative-value-div" style="display: none;">
+                                            <label class="form-label">Negative Mark Value</label>
+                                            <input type="number" step="0.01" min="0" name="negative_marks" class="form-control" placeholder="e.g. 0.25 (for 0.25 mark deduction per wrong answer)">
+                                            <small class="text-muted">Assumes 1 mark per correct answer.</small>
+                                        </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -485,6 +495,17 @@
                     $('#delete-form').attr('action', deleteUrl).submit();
                 }
             });
+        });
+
+        // Negative Marking Toggle
+        $(document).on('change', '.negative-toggle', function() {
+            let $container = $(this).closest('.modal-body, form'); 
+            let $target = $container.find('.negative-value-div');
+            if(this.checked) {
+                $target.slideDown();
+            } else {
+                $target.slideUp();
+            }
         });
     </script>
 @endpush

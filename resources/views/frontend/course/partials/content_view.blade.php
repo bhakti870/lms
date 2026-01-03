@@ -252,6 +252,14 @@
                             <strong class="fs-4 text-dark">{{ $content->pass_mark }}%</strong>
                         </div>
                     </div>
+                    @if($content->negative_marking_status)
+                    <div class="col-4 col-md-3">
+                        <div class="p-3 border rounded-3 bg-danger-subtle shadow-sm h-100 border-danger">
+                            <span class="d-block text-danger small text-uppercase fw-bold mb-1">Negative Marking</span>
+                            <strong class="fs-4 text-danger">-{{ 0 + $content->negative_marks }}</strong>
+                        </div>
+                    </div>
+                    @endif
                 </div>
 
                 @if(isset($content->previous_result))

@@ -187,19 +187,23 @@ class CourseDeliveryController extends Controller
     {
         $quiz = Quiz::with('questions')->findOrFail($request->quiz_id);
         $user_id = Auth::id();
-        $answers = $request->answers ?? []; // ['question_id' => 'selected_option']
+        $answers = $request->answers ?? []; 
         
         $totalQuestions = $quiz->questions->count();
         $correctCount = 0;
         $resultsDetail = [];
 
+        $wrongCount = 0;
+
         foreach ($quiz->questions as $question) {
             $selected = $answers[$question->id] ?? null;
             
-            // Robust comparison: handle case sensitivity and whitespace
             $isCorrect = false;
             if ($selected !== null) {
                 $isCorrect = (trim(strtolower($selected)) === trim(strtolower($question->correct_answer)));
+                if (!$isCorrect) {
+                     $wrongCount++;
+                }
             }
             
             if ($isCorrect) $correctCount++;
@@ -219,7 +223,17 @@ class CourseDeliveryController extends Controller
             ];
         }
 
-        $score = ($totalQuestions > 0) ? ($correctCount / $totalQuestions) * 100 : 0;
+        $score = 0;
+        if ($totalQuestions > 0) {
+            if ($quiz->negative_marking_status) {
+                $rawScore = $correctCount - ($wrongCount * $quiz->negative_marks);
+                if ($rawScore < 0) $rawScore = 0;
+                $score = ($rawScore / $totalQuestions) * 100;
+            } else {
+                $score = ($correctCount / $totalQuestions) * 100;
+            }
+        }
+
         $isPass = $score >= $quiz->pass_mark;
 
         // Save Result
@@ -252,6 +266,11 @@ class CourseDeliveryController extends Controller
             'score' => round($score, 2),
             'is_pass' => $isPass,
             'details' => $resultsDetail,
+            'total_questions' => $totalQuestions,
+            'correct_count' => $correctCount,
+            'wrong_count' => $wrongCount,
+            'negative_marking' => $quiz->negative_marking_status,
+            'negative_mark_value' => $quiz->negative_marks,
             'course_finished' => $this->checkCourseCompletion($quiz->course_id),
             'debug' => [
                 'received_answers' => $answers,

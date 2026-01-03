@@ -21,6 +21,7 @@ class QuizController extends Controller
             'quiz_title' => 'required|string|max:255',
             'duration_minutes' => 'nullable|integer|min:0',
             'pass_mark' => 'nullable|integer|min:0|max:100',
+            'negative_marks' => 'nullable|numeric|min:0',
         ]);
 
         Quiz::create([
@@ -30,6 +31,8 @@ class QuizController extends Controller
             'description' => $request->description,
             'duration_minutes' => $request->duration_minutes ?? 0,
             'pass_mark' => $request->pass_mark ?? 0,
+            'negative_marking_status' => $request->has('negative_marking_status') ? 1 : 0,
+            'negative_marks' => $request->negative_marks ?? 0,
             'is_active' => true,
         ]);
 
@@ -54,10 +57,15 @@ class QuizController extends Controller
             'quiz_title' => 'required|string|max:255',
             'duration_minutes' => 'nullable|integer|min:0',
             'pass_mark' => 'nullable|integer|min:0|max:100',
+            'negative_marks' => 'nullable|numeric|min:0',
         ]);
 
         $quiz = Quiz::findOrFail($id);
-        $quiz->update($request->all());
+        
+        $data = $request->all();
+        $data['negative_marking_status'] = $request->has('negative_marking_status') ? 1 : 0;
+        
+        $quiz->update($data);
 
         return back()->with('success', 'Quiz updated successfully!');
     }

@@ -13,6 +13,11 @@ class Quiz extends Model
         return $this->belongsTo(Course::class);
     }
 
+    protected $casts = [
+        'negative_marking_status' => 'boolean',
+        'negative_marks' => 'decimal:2',
+    ];
+
     public function section()
     {
         return $this->belongsTo(CourseSection::class);
