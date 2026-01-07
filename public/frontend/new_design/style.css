@@ -1,0 +1,1768 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Merriweather', serif;
+}
+
+/* =========================================
+   1. CSS VARIABLES & THEMING SYSTEM
+   ========================================= */
+:root {
+    /* --- LIGHT THEME (Default) --- */
+    --body-bg: #f8f9fa;
+    --text-main: #1a1a2e;
+    --text-muted: #6c757d;
+    --heading-color: #1a1a2e;
+
+    /* Component Backgrounds */
+    --card-bg: #ffffff;
+    --navbar-bg: #ffffff;
+    --section-bg: #ffffff;
+    --notch-bg: #ffffff;
+    /* For Instructor card corner */
+
+    /* Borders & Shadows */
+    --border-color: #eeeeee;
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    /* Inputs */
+    --input-bg: #f4f6f9;
+    --input-text: #1a1a2e;
+
+    /* Hero Assets */
+    /* Light Wave (White) */
+    --wave-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='rgb(255,255,255)' %3E%3C/path%3E%3C/svg%3E");
+    /* Light Hero Image Overlay */
+    --hero-overlay: linear-gradient(to bottom, transparent, transparent);
+}
+
+/* =========================================
+   2. GLOBAL RESETS & TYPOGRAPHY
+   ========================================= */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar-brand,
+.h6 {
+    font-family: 'Merriweather', serif;
+    color: var(--heading-color);
+    transition: color 0.3s ease;
+}
+
+p,
+.text-muted,
+.small {
+    color: var(--text-muted) !important;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Theme Colors (Purple) */
+.text-theme {
+    color: #5b50d6 !important;
+}
+
+.bg-theme {
+    background-color: #5b50d6 !important;
+}
+
+/* =========================================
+   3. NAVBAR
+   ========================================= */
+.navbar {
+    background-color: white !important;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.navbar-nav .nav-link {
+    color: black !important;
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 5px;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #5b50d6;
+}
+
+/* Search Bar */
+.search-form {
+    position: relative;
+    min-width: 250px;
+}
+
+.search-input {
+    border-radius: 50px;
+    background-color: var(--input-bg);
+    border: 1px solid transparent;
+    color: var(--input-text);
+    padding: 10px 40px 10px 20px;
+    height: 45px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    background-color: var(--card-bg);
+    border-color: #5b50d6;
+    color: var(--heading-color);
+    box-shadow: 0 0 0 4px rgba(91, 80, 214, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: var(--text-muted);
+}
+
+/* Theme Toggle Button */
+
+
+/* --- Fix Logo Hover Color --- */
+.navbar-brand {
+    /* Keeps the color the same as it is without hovering */
+    color: #5b50d6 !important;
+}
+
+
+/* Login Button */
+.btn-theme {
+    background-color: #5b50d6;
+    color: white;
+    border: 1px solid #5b50d6;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-theme:hover {
+    background-color: #4a41b5;
+    color: white;
+}
+
+/* =========================================
+   4. HERO SECTION (Dark Mode Image Logic)
+   ========================================= */
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* The Background Image */
+.my-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+/* --- Fix Hero Badge Color in Dark Mode --- */
+
+/* --- Fix 'Browse Courses' Button in Dark Mode --- */
+
+/* Optional: Hover effect for that button in Dark Mode */
+
+/* Optional: Gradient Text Effect for Hero in Dark Mode */
+
+/* --- Fix Hero Wave Color in Dark Mode --- */
+
+/* Content Layer */
+.content-layer {
+    position: relative;
+    z-index: 2;
+    padding-top: 100px;
+    padding-bottom: 140px;
+}
+
+/* Floating Images */
+.hero-img,
+.hero-float-img {
+    position: absolute;
+    object-fit: cover;
+    border: 5px solid var(--card-bg);
+    /* Border matches card bg (white or navy) */
+    box-shadow: var(--shadow-soft);
+    border-radius: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.hero-float-img {
+    border-radius: 50%;
+}
+
+/* Positioning (Left/Right) - Same as before */
+.image-group {
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+.left-group .float-back {
+    width: 300px;
+    height: 350px;
+    top: 0;
+    left: 20px;
+    z-index: 1;
+}
+
+.left-group .float-front {
+    width: 220px;
+    height: 220px;
+    bottom: 0;
+    right: 10px;
+    z-index: 2;
+}
+
+.left-group .hero-float-img {
+    border: none !important;
+    border-radius: 0% !important;
+    box-shadow: none !important;
+}
+
+.right-image-composition {
+    position: relative;
+    height: 450px;
+    width: 100%;
+    overflow: visible;
+}
+
+.right-back-img {
+    width: 280px;
+    height: 350px;
+    top: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.right-front-img {
+    width: 190px;
+    height: 230px;
+    bottom: 80px;
+    left: 20px;
+    z-index: 2;
+}
+
+/* Active Learners Badge */
+.active-learners-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+.learner-text strong {
+    color: var(--heading-color);
+    font-size: 1.2rem;
+}
+
+.avatar-group img {
+    border: 3px solid var(--card-bg);
+    margin-left: -15px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+}
+
+.avatar-group img:first-child {
+    margin-left: 0;
+}
+
+/* WAVE SVG (The Magic Part) */
+.bottom-wave-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    max-height: 86px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.hero-wave-curves {
+    content: var(--wave-url);
+    /* Uses Variable to switch color */
+    display: block;
+    width: 100%;
+}
+
+/* =========================================
+   5. SECTIONS (About, Stats, Courses, etc)
+   ========================================= */
+.about-section,
+.stats-section,
+.bg-white {
+    background-color: var(--section-bg) !important;
+    transition: background-color 0.3s ease;
+}
+
+
+.bg-light {
+    background-color: var(--body-bg) !important;
+    /* Slightly darker than section in dark mode */
+}
+
+/* About Floating Cards */
+.about-image-wrapper {
+    position: relative;
+    padding: 30px;
+    display: inline-block;
+}
+
+.about-bg-shape {
+    position: absolute;
+    inset: 40px 40px 0 40px;
+    background-color: #dbeafe;
+    /* Keep blue or adjust for dark mode */
+    border-radius: 20px;
+    z-index: 0;
+}
+
+
+.about-card {
+    position: absolute;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 160px;
+    z-index: 2;
+    text-align: center;
+    background: var(--card-bg);
+    color: var(--heading-color);
+    box-shadow: var(--shadow-soft);
+}
+
+.card-top-right {
+    top: 60px;
+    right: 0;
+}
+
+.card-bottom-left {
+    bottom: 40px;
+    left: 0;
+    background: #0dcaf0;
+    color: white;
+}
+
+/* Stats Circles */
+.ot-fun-box-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    color: var(--heading-color);
+    /* Colors specific overrides */
+}
+
+/* Re-apply colored borders in a generic way or specific */
+.ot-fun-box-item {
+    border-color: #4e57d4;
+    color: #4e57d4;
+    background-color: var(--card-bg);
+}
+
+.ot-fun-box-item.wrap2 {
+    border-color: #20c997;
+    color: #20c997;
+}
+
+.ot-fun-box-item.wrap3 {
+    border-color: #ffc107;
+    color: #ffc107;
+}
+
+.ot-fun-box-item.wrap4 {
+    border-color: #ff5722;
+    color: #ff5722;
+}
+
+/* Marquee Cards (Pixel Pop-out) */
+.marquee_card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-soft);
+    margin-top: 40px;
+    margin-right: 20px;
+    width: 280px;
+    border-radius: 12px;
+    overflow: visible;
+}
+
+.card-icon-top {
+    background: var(--card-bg);
+    border: 4px solid var(--card-bg);
+    box-shadow: var(--shadow-soft);
+}
+
+.course-title {
+    color: var(--heading-color);
+}
+
+.card-divider {
+    border-top-color: var(--border-color);
+}
+
+/* =========================================
+   6. COURSE PRODUCT CARDS (DVD Style)
+   ========================================= */
+.course-product-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.course-product-card:hover {
+    box-shadow: var(--shadow-soft);
+    transform: translateY(-5px);
+    border-color: transparent;
+}
+
+.cp-img-wrapper {
+    background: var(--body-bg);
+    border: 1px solid var(--border-color);
+}
+
+.cp-hover-info {
+    background: var(--card-bg);
+    /* Solid bg in dark mode */
+    border-top: 1px solid var(--border-color);
+}
+
+.cp-title a {
+    color: var(--heading-color);
+}
+
+.new-price {
+    color: var(--heading-color);
+}
+
+.btn-theme-icon {
+    background-color: var(--input-bg);
+    color: #5b50d6;
+}
+
+.btn-theme-icon:hover {
+    background-color: #5b50d6;
+    color: #fff;
+}
+
+/* =========================================
+   7. INSTRUCTOR CARDS (The Notch)
+   ========================================= */
+.instructor-card {
+    /* No specific container styling needed if pure grid, but good to have */
+}
+
+.instructor-img-wrapper {
+    border-radius: 30px;
+    overflow: hidden;
+    position: relative;
+}
+
+.social-notch {
+    background-color: var(--notch-bg);
+    /* This is crucial for the cutout effect */
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 15px 20px 0 20px;
+    border-top-left-radius: 30px;
+    z-index: 2;
+    transition: background-color 0.3s ease;
+}
+
+.social-notch a {
+    color: var(--text-muted);
+}
+
+.social-notch a:hover {
+    color: #5b50d6;
+}
+
+/* =========================================
+   8. FOOTER
+   ========================================= */
+.footer-section {
+    background-color: #1a1a2e;
+    /* Always dark */
+    color: #adb5bd;
+}
+
+/* In dark mode, footer can stay the same or go slightly darker */
+
+.text-theme-light {
+    color: #5b50d6;
+}
+
+.footer-form input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* =========================================
+   9. RESPONSIVE HELPERS
+   ========================================= */
+@media (max-width: 768px) {
+    .ot-fun-box-item {
+        max-width: 200px;
+        margin-bottom: 20px;
+    }
+
+    .ot-fun-box-item h3 {
+        font-size: 2rem;
+    }
+
+    .testimonial-img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (min-width: 992px) {
+    .stats-section .row>[class*="col-"] {
+        margin-left: -55px;
+    }
+
+    .stats-section .row>[class*="col-"]:first-child {
+        margin-left: 0;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(1) {
+        z-index: 4;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(2) {
+        z-index: 3;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(3) {
+        z-index: 2;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(4) {
+        z-index: 1;
+    }
+
+    .ot-fun-box-item:hover {
+        z-index: 10 !important;
+        position: relative;
+    }
+}
+
+/* MARQUEE ANIMATION */
+.marquee__track {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 20px 0;
+}
+
+.marquee__grid {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+}
+
+.marquee__track:hover .marquee__grid {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* --- Theme Colors --- */
+.text-theme {
+    color: #5b50d6;
+}
+
+.bg-theme {
+    background-color: #5b50d6;
+}
+
+/* --- Search Bar Styling --- */
+.search-form {
+    position: relative;
+    min-width: 250px;
+    /* Adjust width of search bar */
+}
+
+.search-input {
+    border-radius: 50px;
+    /* Fully rounded pill shape */
+    background-color: #f4f6f9;
+    border: 1px solid transparent;
+    padding-right: 40px;
+    /* Space for the search icon */
+    padding-left: 20px;
+    height: 45px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    background-color: #fff;
+    border-color: #5b50d6;
+    /* Purple border on focus */
+    box-shadow: 0 0 0 4px rgba(91, 80, 214, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: #666;
+    padding: 5px 10px;
+}
+
+/* --- Login Button Styling --- */
+.btn-theme {
+    background-color: #5b50d6;
+    color: white;
+    border: 1px solid #5b50d6;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-theme:hover {
+    background-color: #4a41b5;
+    color: white;
+}
+
+/* --- Nav Link Styling --- */
+.navbar-nav .nav-link {
+    color: white;
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    /* Aligns SVG icon with text */
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #5b50d6;
+}
+
+/* --- Category Specifics --- */
+.category-icon {
+    margin-right: 5px;
+}
+
+/* --- Fix Course Category Cards in Dark Mode (Match Reference Image) --- */
+
+/* 1. Change the Card Body Color */
+
+/* 2. Fix the Pop-out Icon Circle */
+/* Currently it is white. We must make it dark to blend with the card. */
+
+/* 3. Text & Divider Colors */
+
+
+
+/* 4. Meta Icons (Episodes, Level, etc.) */
+
+
+/* @media (min-width: 992px) {
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
+} */
+
+.dropend .dropdown-toggle {
+    color: black;
+    margin-left: 1em;
+}
+
+.dropdown-item:hover {
+    background-color: #adaacb;
+    color: #fff;
+}
+
+.dropdown .dropdown-menu {
+    display: none;
+}
+
+.dropdown:hover>.dropdown-menu,
+.dropend:hover>.dropdown-menu {
+    display: block;
+    margin-top: 0.125em;
+    margin-left: 0.125em;
+}
+
+/* --- 1. Container & Background Image --- */
+.image-container {
+    position: relative;
+    width: 100%;
+    /* No fixed height; height is determined by the content inside + padding */
+    overflow: hidden;
+}
+
+.my-image {
+    position: absolute;
+    /* Takes image out of flow to sit behind text */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image covers area without stretching */
+    z-index: 0;
+}
+
+/* --- 2. Content Layout --- */
+.content-layer {
+    position: relative;
+    z-index: 2;
+    /* Sits on top of image */
+    padding-top: 100px;
+    padding-bottom: 140px;
+    /* Extra padding at bottom so text doesn't hit the wave */
+}
+
+/* --- 3. Floating Image Styling --- */
+.image-group {
+    position: relative;
+    height: 350px;
+    /* Fixed height for the floating area */
+    width: 100%;
+}
+
+.hero-float-img {
+    /* position: absolute;
+    border: 5px solid #fff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); */
+    object-fit: cover;
+}
+
+/* Left Side Specifics */
+.left-group .float-back {
+    width: 300px;
+    height: 350px;
+    top: 0;
+    left: 20px;
+    z-index: 1;
+}
+
+.left-group .float-front {
+    width: 220px;
+    height: 220px;
+    bottom: 0;
+    right: 10px;
+    z-index: 2;
+}
+
+
+/* --- Right Side Composition Container --- */
+.right-image-composition {
+    position: relative;
+    height: 450px;
+    width: 100%;
+    /* Ensure the images don't get cut off if they slide slightly right */
+    overflow: visible;
+}
+
+/* --- Common Image Styles --- */
+.hero-img {
+    position: absolute;
+    object-fit: cover;
+    border: 10px solid #ffffff;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+}
+
+/* The Man (Back Image) - Positioning */
+.right-back-img {
+    width: 280px;
+    height: 350px;
+    top: 0;
+    right: 0;
+    /* Aligns strictly to the right edge of the column */
+    z-index: 1;
+}
+
+/* The Woman (Front Image) - Positioning */
+.right-front-img {
+    width: 190px;
+    height: 230px;
+    bottom: 80px;
+    left: 20px;
+    /* Overlaps correctly */
+    z-index: 2;
+}
+
+/* --- Active Learners Badge --- */
+.active-learners-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.8);
+    /* Optional: slight background for readability */
+    padding: 10px;
+    border-radius: 12px;
+    backdrop-filter: blur(5px);
+    /* distinct look */
+}
+
+/* Avatar Group (Overlapping Circles) */
+.avatar-group {
+    display: flex;
+}
+
+.avatar-group img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    margin-left: -15px;
+    /* Creates the overlap effect */
+}
+
+.avatar-group img:first-child {
+    margin-left: 0;
+}
+
+/* Text next to avatars */
+.learner-text {
+    line-height: 1.2;
+    color: #333;
+}
+
+.learner-text strong {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.learner-text span {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* --- 4. The Wave (Unchanged) --- */
+.bottom-wave-section {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    max-height: 86px;
+    z-index: 3;
+    /* Topmost layer */
+    pointer-events: none;
+}
+
+.hero-wave-curves {
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z' fill='rgb(255,255,255)' %3E%3C/path%3E%3C/svg%3E");
+}
+
+/* --- About Section Styling --- */
+
+.about-section {
+    background-color: #fff;
+    /* White background for the section */
+}
+
+/* 1. Wrapper to hold image + cards together */
+.about-image-wrapper {
+    position: relative;
+    padding: 30px;
+    /* Space for cards to poke out */
+    display: inline-block;
+}
+
+/* 2. The Blue Background Rectangle */
+.about-bg-shape {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 0;
+    background-color: #dbeafe;
+    /* Light Blue color like the reference */
+    border-radius: 20px;
+    z-index: 0;
+    /* Behind everything */
+}
+
+/* 3. Main Image */
+.about-main-img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    /* Adjust based on your image size */
+    border-radius: 0 0 20px 20px;
+    /* Rounded bottom to match shape */
+    display: block;
+}
+
+/* 4. Floating Cards Common Styles */
+.about-card {
+    position: absolute;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 160px;
+    z-index: 2;
+    /* On top of image */
+    text-align: center;
+}
+
+/* Card 1: Top Right (White) */
+.card-top-right {
+    top: 60px;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    /* Soft Shadow */
+}
+
+/* Card 2: Bottom Left (Cyan/Blue) */
+.card-bottom-left {
+    bottom: 40px;
+    left: 0;
+    background: #0dcaf0;
+    /* Bootstrap Info Cyan color */
+    color: white;
+    /* Or use a custom cyan if needed: background: #00cba9; */
+}
+
+/* 5. Content Side Styling */
+.feature-icon i {
+    font-size: 14px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Uses .bg-theme from your existing CSS for purple color */
+}
+
+/* --- Stats Section Styling --- */
+
+.stats-section {
+    background-color: #fff;
+    overflow: hidden;
+    padding-top: 4rem !important;
+    padding-bottom: 9rem !important;
+    /* Ensures circles don't spill out */
+}
+
+/* Common Circle Style */
+.ot-fun-box-item {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    /* Limits size so it doesn't get too huge */
+    aspect-ratio: 1/1;
+    /* Forces it to be a perfect square/circle */
+    border-radius: 50%;
+    /* Makes it round */
+    margin: 0 auto;
+    /* Centers it in the column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid transparent;
+    /* Placeholder for border */
+    transition: transform 0.3s ease;
+}
+
+.ot-fun-box-item:hover {
+    transform: scale(1.05);
+
+    /* Slight zoom on hover */
+}
+
+/* Typography inside Circle */
+.ot-fun-box-item h3 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+}
+
+.ot-fun-box-item p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    margin-bottom: 0;
+    color: #666;
+}
+
+/* --- Color Themes --- */
+
+/* 1. Default Blue (First Item) */
+.ot-fun-box-item {
+    background-color: #ebf0fe;
+    /* Light Blue BG */
+    border-color: #4e57d4;
+    /* Dark Blue Border */
+    color: #4e57d4;
+    /* Dark Blue Text */
+}
+
+/* 2. Cyan (.wrap2) */
+.ot-fun-box-item.wrap2 {
+    background-color: #e0fbf8;
+    /* Light Cyan BG */
+    border-color: #20c997;
+    /* Teal Border */
+    color: #20c997;
+    /* Teal Text */
+}
+
+/* 3. Yellow (.wrap3) */
+.ot-fun-box-item.wrap3 {
+    background-color: #fff8e1;
+    /* Light Yellow BG */
+    border-color: #ffc107;
+    /* Gold Border */
+    color: #ffc107;
+    /* Gold Text */
+}
+
+/* 4. Orange/Red (.wrap4) */
+.ot-fun-box-item.wrap4 {
+    background-color: #ffebe5;
+    /* Light Red BG */
+    border-color: #ff5722;
+    /* Red Border */
+    color: #ff5722;
+    /* Red Text */
+}
+
+/* --- Marquee Container --- */
+.marquee__track {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 20px 0;
+    /* Space for shadows */
+}
+
+.marquee__grid {
+    display: flex;
+    gap: 24px;
+    /* Space between cards */
+    width: max-content;
+    /* Important: Ensures row doesn't wrap */
+    animation: marquee 40s linear infinite;
+    /* Smooth scrolling */
+}
+
+/* Pause animation on hover */
+.marquee__track:hover .marquee__grid {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    /* NOTE: For -50% to work perfectly, you must duplicate your content 
+       once in the HTML. e.g. [Cards A, B, C] + [Cards A, B, C] */
+}
+
+
+
+.course-card-inner {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+}
+
+
+
+
+/* --- Professional Card Overrides --- */
+
+/* 1. Neutralize the Domain Name (Category) */
+.badge-domain {
+    color: #125fca !important;
+    /* Dark Gray instead of rainbow colors */
+    font-weight: 700;
+    /* Optional: Add a subtle background pill */
+    background-color: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+}
+
+/* 2. Neutralize the Instructor Avatar */
+.instructor-avatar {
+    background-color: #f3f4f6 !important;
+    /* Light Gray background */
+    color: #1f2937 !important;
+    /* Dark text for initials */
+    border: 1px solid #e5e7eb;
+    /* Subtle border for definition */
+
+    /* Ensure the text inside is centered and clean */
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Optional: Hover Effect for Avatar to make it interactive */
+.course-card-inner:hover .instructor-avatar {
+    background-color: #5b50d6 !important;
+    /* Changes to your Theme Purple on hover */
+    color: #fff !important;
+    border-color: #5b50d6;
+    transition: all 0.3s ease;
+}
+
+/* --- Course Card Top Image Styling --- */
+
+/* --- NEW PIXEL POP-OUT CARD STYLES --- */
+
+/* 1. The Card Container */
+.marquee_card {
+    width: 280px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    /* CRITICAL: visible allows the icon to pop out of the top */
+    overflow: visible;
+    position: relative;
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s ease;
+
+    /* Important: Add margin top so the pop-out icon isn't cut off by the row above */
+    margin-top: 40px;
+    margin-right: 20px;
+    /* Space between cards */
+}
+
+.marquee_card:hover {
+    transform: translateY(-5px);
+}
+
+/* 2. The Pop-out Icon */
+.card-icon-top {
+    width: 80px;
+    height: 80px;
+    background: #fff;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    /* This pulls the icon UP by half its height */
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.card-icon-top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 3. Card Content */
+.pixel-card-inner {
+    padding: 20px 24px 24px;
+    text-align: left;
+    margin-top: 35px;
+    /* Pushes text down so it doesn't hide behind the icon */
+}
+
+.course-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    /* Extra bold */
+    color: #1a1a2e;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.instructor-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    /* Techy font vibe */
+}
+
+/* --- Fix Instructor Name Color in Dark Mode --- */
+
+/* Optional: Change the small text below the name (Job Title) */
+
+.card-divider {
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+    opacity: 1;
+}
+
+/* 4. Meta List (The icons at bottom) */
+.meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.meta-icon {
+    font-size: 1.1rem;
+    color: #9ca3af;
+    width: 20px;
+    text-align: center;
+}
+
+/* --- Popular Courses Section --- */
+
+.btn-outline-theme {
+    color: #5b50d6;
+    border: 1px solid #5b50d6;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-theme:hover {
+    background-color: #5b50d6;
+    color: #fff;
+}
+
+/* 1. The Card Container */
+.course-product-card {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 15px;
+    /* Creates the white frame around the image like a DVD case */
+    border-radius: 8px;
+    /* Slightly rounded corners */
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.course-product-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    border-color: transparent;
+}
+
+/* 2. Image Wrapper (The Frame) */
+.cp-img-wrapper {
+    position: relative;
+    width: 100%;
+    /* Aspect ratio for Vertical DVD Case look */
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    border: 1px solid #f1f1f1;
+}
+
+/* Image Swap Logic */
+.cp-img-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.img-back {
+    opacity: 0;
+    /* Hidden by default */
+    z-index: 2;
+}
+
+.course-product-card:hover .img-back {
+    opacity: 1;
+    /* Show on hover */
+}
+
+/* Badge (Sale/Hot) */
+.cp-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #79ae38;
+    /* Green for Sale, or use .bg-theme */
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 3;
+    text-transform: uppercase;
+}
+
+/* 3. Hover Details (Instructor & Level) */
+.cp-hover-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    /* Semi-transparent white overlay */
+    backdrop-filter: blur(4px);
+    z-index: 4;
+
+    /* Animation: Slide up */
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.course-product-card:hover .cp-hover-info {
+    transform: translateY(0);
+}
+
+/* 4. Card Content */
+.cp-title a {
+    color: #1a1a2e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.3s;
+}
+
+.cp-title a:hover {
+    color: #5b50d6;
+}
+
+/* Price Styling */
+.cp-price {
+    font-family: 'Outfit', sans-serif;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+.new-price {
+    color: #1a1a2e;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* Action Buttons (Square with Icon) */
+.btn-theme-icon {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightgrey;
+    /* Green to match your image reference */
+    /* OR Use your theme color: background-color: #5b50d6; */
+    color: #4a41b5;
+    border-radius: 6px;
+    border: none;
+    margin-left: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-theme-icon:hover {
+    background-color: #1a1a2e;
+    /* Darken on hover */
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* --- Testimonial Section Styling --- */
+
+/* 1. The Image & Quote Icon */
+.testimonial-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 4px solid #fff;
+    /* White border to make it pop */
+}
+
+.quote-icon {
+    position: absolute;
+    bottom: 0;
+    right: -10px;
+    width: 35px;
+    height: 35px;
+    background-color: #5b50d6;
+    /* Theme Purple */
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(91, 80, 214, 0.3);
+}
+
+/* 2. Custom Dotted Slider (Overriding Bootstrap) */
+.custom-dots {
+    bottom: -10px;
+    /* Push dots slightly below content */
+    margin-bottom: 0;
+}
+
+.custom-dots [data-bs-target] {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    /* Makes them circles */
+    background-color: #cbd5e1;
+    /* Inactive Color (Light Gray) */
+    border: none;
+    margin: 0 6px;
+    /* Spacing between dots */
+    opacity: 1;
+    /* Remove default transparency */
+    transition: all 0.3s ease;
+}
+
+/* Active Dot State */
+.custom-dots .active {
+    background-color: #5b50d6;
+    /* Theme Purple */
+    transform: scale(1.3);
+    /* Slightly larger when active */
+    box-shadow: 0 0 0 3px rgba(91, 80, 214, 0.2);
+    /* Ring effect */
+}
+
+/* --- Instructor Section Styling --- */
+
+/* 1. Wrapper for the image */
+.instructor-img-wrapper {
+    position: relative;
+    border-radius: 30px;
+    /* Big rounded corners for the image */
+    overflow: hidden;
+    /* Ensures image stays inside the rounded shape */
+    aspect-ratio: 1/1;
+    /* Keeps image perfect square */
+}
+
+.instructor-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 2. The "Cutout" Notch */
+.social-notch {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    /* Must match the SECTION background color */
+    padding: 15px 20px 0 20px;
+    /* Padding to position icons */
+
+    /* This creates the curve effect */
+    border-top-left-radius: 30px;
+
+    display: flex;
+    gap: 15px;
+    z-index: 2;
+}
+
+/* 3. Social Icons */
+.social-notch a {
+    color: #6c757d;
+    /* Gray icons */
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.social-notch a:hover {
+    color: #5b50d6;
+    /* Purple on hover */
+}
+
+/* 4. Text Content */
+.instructor-info h5 {
+    color: #1a1a2e;
+    font-size: 1.2rem;
+}
+
+.instructor-info p {
+    font-size: 0.9rem;
+}
+
+/* 5. Optional: Add a subtle overlay so the white notch stands out more if image is light */
+/* .instructor-img-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.05));
+    pointer-events: none;
+} */
+
+
+/* --- Footer Styling --- */
+
+.footer-section {
+    background-color: #1a1a2e;
+    /* Dark Navy to match your headings */
+    font-size: 0.95rem;
+}
+
+/* 1. Brand Accent Color */
+.text-theme-light {
+    color: #5b50d6;
+    /* Your theme purple */
+}
+
+/* 2. Footer Links */
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #adb5bd;
+    /* Bootstrap Gray-500 */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: #fff;
+    padding-left: 5px;
+    /* Subtle slide effect */
+}
+
+/* 3. Social Icons */
+.social-icon {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #5b50d6;
+    /* Turn Purple on hover */
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+/* 4. Form Styling */
+.footer-form input {
+    padding-right: 50px;
+    /* Space for the button */
+    border-radius: 4px;
+}
+
+.footer-form input::placeholder {
+    color: #6c757d;
+}
+
+.footer-form input:focus {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: #5b50d6 !important;
+    color: #fff;
+}
+
+/* Helper for letter spacing */
+.ls-1 {
+    letter-spacing: 1px;
+}
+
+/* 3. Responsive Text Adjustments */
+@media (max-width: 768px) {
+    .testimonial-content h4 {
+        font-size: 1.1rem !important;
+        /* Smaller text on mobile */
+    }
+
+    .testimonial-img {
+        width: 80px;
+        /* Smaller image on mobile */
+        height: 80px;
+    }
+
+    /* 1. Make the circle container smaller */
+    .ot-fun-box-item {
+        max-width: 200px;
+        /* Reduced from 350px to 200px */
+        margin-bottom: 20px;
+        /* Adds space between the stacked circles */
+    }
+
+    /* 2. Make the big number smaller so it fits */
+    .ot-fun-box-item h3 {
+        font-size: 2rem;
+        /* Reduced from 3rem */
+    }
+
+    /* 3. Make the text label smaller */
+    .ot-fun-box-item p {
+        font-size: 0.75rem;
+        margin-top: 5px;
+    }
+}
+
+/* Only apply overlap on Large Screens (Desktop) */
+@media (min-width: 992px) {
+
+    /* 1. Create the Overlap */
+    .stats-section .row>[class*="col-"] {
+        margin-left: -55px;
+        /* Pulls the item to the left to overlap */
+    }
+
+    /* 2. Reset the first item so it doesn't get pulled */
+    .stats-section .row>[class*="col-"]:first-child {
+        margin-left: 0;
+    }
+
+    /* 3. Stack Order (Left on top of Right) */
+    .stats-section .row>[class*="col-"]:nth-child(1) {
+        z-index: 4;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(2) {
+        z-index: 3;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(3) {
+        z-index: 2;
+    }
+
+    .stats-section .row>[class*="col-"]:nth-child(4) {
+        z-index: 1;
+    }
+
+    /* Optional: Ensure the hover effect still pops up above neighbors */
+    .ot-fun-box-item:hover {
+        z-index: 10 !important;
+        /* Forces hovered item to top */
+        position: relative;
+    }
+}
+
+/* Responsive Fix for Mobile */
+@media (max-width: 991px) {
+    .about-image-wrapper {
+        margin-bottom: 40px;
+        display: block;
+        text-align: center;
+    }
+
+    .about-main-img {
+        margin: 0 auto;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .dropend:hover>.dropdown-menu {
+        position: absolute;
+        top: 0;
+        left: 100%;
+    }
+
+    .dropend .dropdown-toggle {
+        margin-left: 0.5em;
+    }
+}
