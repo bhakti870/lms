@@ -7,7 +7,7 @@ use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\AdminCourseController;
 use App\Http\Controllers\backend\AdminInstructorController;
 use App\Http\Controllers\backend\AdminProfileController;
-use App\Http\Controllers\backend\BackendOrderController;    
+use App\Http\Controllers\backend\BackendOrderController;
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CouponController;
 use App\Http\Controllers\backend\CourseController;
@@ -76,7 +76,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     /* Control Slider */
     Route::resource('slider', SliderController::class);
 
-     /* control Course  */
+    /* control Course  */
 
     Route::resource('course', AdminCourseController::class);
     Route::post('/course-status', [AdminCourseController::class, 'courseStatus'])->name('course.status');
@@ -103,11 +103,11 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/google-setting', [SettingController::class, 'googleSetting'])->name('googleSetting ');
     Route::post('/google-settings/update', [SettingController::class, 'updateGoogleSettings'])->name('google.settings.update');
 
-     /* Manage Partner  */
+    /* Manage Partner  */
 
     Route::resource('partner', PartnerController::class);
 
-     /* Manage Site Seetings */
+    /* Manage Site Seetings */
     Route::resource('site-setting', SiteSettingController::class);
 
     /* Manage Roles & Permissions */
@@ -213,16 +213,16 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
     Route::get('/course-reviews/{course_id}', [App\Http\Controllers\frontend\ReviewController::class, 'fetchReviews']);
 
     Route::middleware('auth')->group(function () {
-    Route::get('/navbar/cart-count', [App\Http\Controllers\NavbarController::class, 'cartCount']);
-    Route::get('/navbar/wishlist-count', [App\Http\Controllers\NavbarController::class, 'wishlistCount']);
-    Route::get('/navbar/notification-count', [App\Http\Controllers\NavbarController::class, 'notificationCount']);
-});
+        Route::get('/navbar/cart-count', [App\Http\Controllers\NavbarController::class, 'cartCount']);
+        Route::get('/navbar/wishlist-count', [App\Http\Controllers\NavbarController::class, 'wishlistCount']);
+        Route::get('/navbar/notification-count', [App\Http\Controllers\NavbarController::class, 'notificationCount']);
+    });
 
 
     /* Course Q&A */
-    Route::get('/course-questions/{lecture_id}', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'fetchQuestions']);
-    Route::post('/course/question/store', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'store'])->name('course.question.store');
-    Route::post('/course/question/reply', [\App\Http\Controllers\Frontend\CourseQuestionController::class, 'reply'])->name('course.question.reply');
+    Route::get('/course-questions/{lecture_id}', [\App\Http\Controllers\frontend\CourseQuestionController::class, 'fetchQuestions']);
+    Route::post('/course/question/store', [\App\Http\Controllers\frontend\CourseQuestionController::class, 'store'])->name('course.question.store');
+    Route::post('/course/question/reply', [\App\Http\Controllers\frontend\CourseQuestionController::class, 'reply'])->name('course.question.reply');
 
     /* Purchase History */
     Route::get('/purchase-history', [UserController::class, 'purchaseHistory'])->name('purchase.history');
@@ -243,11 +243,11 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
 //Frontend Route
 
 Route::get('/', [FrontendDashboardController::class, 'home'])->name('frontend.home');
-Route::get('/instructors', [App\Http\Controllers\Frontend\InstructorController::class, 'index'])->name('all.instructors');
-Route::get('/instructor/details/{id}', [App\Http\Controllers\Frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
+Route::get('/instructors', [App\Http\Controllers\frontend\InstructorController::class, 'index'])->name('all.instructors');
+Route::get('/instructor/details/{id}', [App\Http\Controllers\frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
 
 // All Courses
-Route::get('/courses', [App\Http\Controllers\Frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
+Route::get('/courses', [App\Http\Controllers\frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
 Route::get('/course-details/{slug}', [FrontendDashboardController::class, 'view'])->name('course-details');
 Route::get('/category/{slug}', [FrontendDashboardController::class, 'categoryDetails'])->name('category.details');
 Route::get('/subcategory/{slug}', [FrontendDashboardController::class, 'subcategoryDetails'])->name('subcategory.details');
@@ -282,7 +282,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment-cancel', [OrderController::class, 'cancel'])->name('cancel');
     Route::post('/razorpay-success', [OrderController::class, 'razorpaySuccess'])->name('razorpay.success');
     Route::get('/razorpay-cancel', [OrderController::class, 'razorpayCancel'])->name('razorpay.cancel');
-    
+
     /* Review */
     Route::post('/store/review', [FrontendReviewController::class, 'storeReview'])->name('store.review');
 });
@@ -294,13 +294,13 @@ Route::get('/test-qa-data', function () {
         ->whereNull('parent_id')
         ->take(5)
         ->get();
-    
+
     $output = "<h1 style='font-family: Arial; color: #333;'>Course Q&A Test Data Preview</h1>";
     $output .= "<p><strong>Total Questions:</strong> " . \App\Models\CourseQuestion::whereNull('parent_id')->count() . "</p>";
     $output .= "<p><strong>Total Answers:</strong> " . \App\Models\CourseQuestion::whereNotNull('parent_id')->count() . "</p>";
     $output .= "<p style='background: #fff3cd; padding: 10px; border-left: 4px solid #ffc107;'><strong>📖 How to Test:</strong> Login as instructor at <a href='/instructor/login'>/instructor/login</a> with email: <code>instructor1@example.com</code> password: <code>password</code></p>";
     $output .= "<hr>";
-    
+
     foreach ($questions as $q) {
         $output .= "<div style='margin: 20px 0; padding: 20px; border: 2px solid #ddd; border-radius: 10px; font-family: Arial;'>";
         $output .= "<h3 style='color: #007bff;'>📚 " . htmlspecialchars($q->course->course_name) . "</h3>";
@@ -309,7 +309,7 @@ Route::get('/test-qa-data', function () {
         $output .= "<div style='background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 10px 0;'>";
         $output .= "<strong>❓ Question:</strong><br>" . nl2br(htmlspecialchars($q->question));
         $output .= "</div>";
-        
+
         if ($q->replies->count() > 0) {
             $reply = $q->replies->first();
             $output .= "<div style='background: #e7f3ff; padding: 15px; border-left: 4px solid #28a745; margin: 10px 0;'>";
@@ -318,10 +318,10 @@ Route::get('/test-qa-data', function () {
             $output .= "<br><small style='color: #666;'>Answered: " . $reply->created_at->format('M d, Y h:i A') . "</small>";
             $output .= "</div>";
         }
-        
+
         $output .= "</div>";
     }
-    
+
     return $output;
 });
 

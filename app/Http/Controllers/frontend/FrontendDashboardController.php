@@ -37,16 +37,16 @@ class FrontendDashboardController extends Controller
             ->whereNotNull('photo')
             ->limit(3)
             ->get();
-            
+
         $instructors_count = User::where('role', 'instructor')->where('status', '1')->count();
 
         // Testimonials from Reviews
         $reviews = \App\Models\Review::where('status', 1)
-                    ->where('rating', '>=', 4)
-                    ->with('user')
-                    ->latest()
-                    ->limit(5)
-                    ->get();
+            ->where('rating', '>=', 4)
+            ->with('user')
+            ->latest()
+            ->limit(5)
+            ->get();
 
         $courses_count = Course::where('status', '1')->count();
         $countries_count = User::distinct('country')->whereNotNull('country')->where('role', 'user')->count('country');
@@ -60,10 +60,10 @@ class FrontendDashboardController extends Controller
             ->get();
 
         return view('frontend.index', compact(
-            'all_sliders', 
-            'all_info', 
-            'all_categories', 
-            'categories', 
+            'all_sliders',
+            'all_info',
+            'all_categories',
+            'categories',
             'course_category',
             'top_instructors',
             'active_learners_count',
@@ -83,7 +83,7 @@ class FrontendDashboardController extends Controller
         $slug = preg_replace('/\.html$/', '', $slug);
 
         $course = Course::where('course_name_slug', $slug)->with('category', 'subcategory', 'user', 'quizzes', 'materials', 'lectures')->firstOrFail();
-        
+
         $total_lecture = CourseLecture::where('course_id', $course->id)->count();
         $course_content = CourseSection::where('course_id', $course->id)
             ->with(['lectures', 'quizzes.questions', 'materials'])
@@ -117,23 +117,23 @@ class FrontendDashboardController extends Controller
                 ->where('course_id', $course->id)
                 ->where('status', 'active')
                 ->exists();
-            
+
             if ($is_enrolled) {
                 // Check if user has certificate or all lessons completed
                 $is_completed = \App\Models\Certificate::where('user_id', Auth::id())
-                                ->where('course_id', $course->id)
-                                ->exists();
-                
+                    ->where('course_id', $course->id)
+                    ->exists();
+
                 if (!$is_completed) {
-                    $totalLessons = CourseLecture::where('course_id', $course->id)->count() + 
-                                   \App\Models\Quiz::where('course_id', $course->id)->count() + 
-                                   \App\Models\CourseMaterial::where('course_id', $course->id)->count();
-                    
+                    $totalLessons = CourseLecture::where('course_id', $course->id)->count() +
+                        \App\Models\Quiz::where('course_id', $course->id)->count() +
+                        \App\Models\CourseMaterial::where('course_id', $course->id)->count();
+
                     $completedLessons = \App\Models\CourseProgress::where('user_id', Auth::id())
-                                       ->where('course_id', $course->id)
-                                       ->where('is_completed', true)
-                                       ->count();
-                    
+                        ->where('course_id', $course->id)
+                        ->where('is_completed', true)
+                        ->count();
+
                     if ($totalLessons > 0 && $completedLessons >= $totalLessons) {
                         $is_completed = true;
                     }
@@ -163,7 +163,7 @@ class FrontendDashboardController extends Controller
                 $query->where('selling_price', '>', 0);
             }
         }
-        
+
         $courses = $query->paginate(12);
         $categories = Category::withCount('course')->get();
         $instructors = User::where('role', 'instructor')->withCount('courses')->get();
