@@ -27,7 +27,7 @@ trait FileUploadTrait
             $file->move($targetFolder, $fileName);
 
             // Return the full public URL
-            return url("upload/{$folder}/{$fileName}");
+            return ("upload/{$folder}/{$fileName}");
         }
 
         return $existingFile;
