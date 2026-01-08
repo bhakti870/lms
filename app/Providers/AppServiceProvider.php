@@ -18,7 +18,13 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+
+        if (app()->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
         Paginator::useBootstrapFive();
+
+
 
         /**
          * ✅ Dynamic SMTP Settings (CACHED)
@@ -49,23 +55,33 @@ class AppServiceProvider extends ServiceProvider
         /**
          * Blade Permission Directives
          */
-        Blade::if('hasPermission', fn ($permission) =>
+        Blade::if(
+            'hasPermission',
+            fn($permission) =>
             auth()->check() && auth()->user()->hasPermission($permission)
         );
 
-        Blade::if('hasAnyPermission', fn ($permissions) =>
+        Blade::if(
+            'hasAnyPermission',
+            fn($permissions) =>
             auth()->check() && auth()->user()->hasAnyPermission($permissions)
         );
 
-        Blade::if('hasAllPermissions', fn ($permissions) =>
+        Blade::if(
+            'hasAllPermissions',
+            fn($permissions) =>
             auth()->check() && auth()->user()->hasAllPermissions($permissions)
         );
 
-        Blade::if('hasRole', fn ($role) =>
+        Blade::if(
+            'hasRole',
+            fn($role) =>
             auth()->check() && auth()->user()->hasRole($role)
         );
-        
-        Blade::if('hasAnyRole', fn ($roles) =>
+
+        Blade::if(
+            'hasAnyRole',
+            fn($roles) =>
             auth()->check() && auth()->user()->hasAnyRole($roles)
         );
 
@@ -77,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
                     ->orderBy('name')
                     ->get();
             });
-            
+
             $view->with('header_categories', $categories);
 
             if (auth()->check()) {
