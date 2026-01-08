@@ -176,9 +176,9 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')
     Route::get('/orders/view/{id}', [InstructorOrderController::class, 'show'])->name('orders.show');
 
     // Instructor Course Q&A
-    Route::get('/questions', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'index'])->name('question.index');
-    Route::get('/questions/{id}', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'show'])->name('question.show');
-    Route::post('/questions/{id}/reply', [\App\Http\Controllers\Backend\InstructorQuestionController::class, 'reply'])->name('question.reply');
+    Route::get('/questions', [\App\Http\Controllers\backend\InstructorQuestionController::class, 'index'])->name('question.index');
+    Route::get('/questions/{id}', [\App\Http\Controllers\backend\InstructorQuestionController::class, 'show'])->name('question.show');
+    Route::post('/questions/{id}/reply', [\App\Http\Controllers\backend\InstructorQuestionController::class, 'reply'])->name('question.reply');
 });
 
 
