@@ -244,10 +244,10 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
 
 Route::get('/', [FrontendDashboardController::class, 'home'])->name('frontend.home');
 Route::get('/instructors', [App\Http\Controllers\frontend\InstructorController::class, 'index'])->name('all.instructors');
-Route::get('/instructor/details/{id}', [App\Http\Controllers\frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
+Route::get('/instructor/details/{id}', action: [App\Http\Controllers\frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
 
 // All Courses
-Route::get('/courses', [App\Http\Controllers\frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
+Route::get('/courses', [FrontendDashboardController::class, 'allCourses'])->name('all.courses');
 Route::get('/course-details/{slug}', [FrontendDashboardController::class, 'view'])->name('course-details');
 Route::get('/category/{slug}', [FrontendDashboardController::class, 'categoryDetails'])->name('category.details');
 Route::get('/subcategory/{slug}', [FrontendDashboardController::class, 'subcategoryDetails'])->name('subcategory.details');

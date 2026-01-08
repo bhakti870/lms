@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\CourseLecture;
 use App\Models\CourseSection;
+use App\Models\SubCategory;
 use App\Models\InfoBox;
 use App\Models\Slider;
 use App\Models\User;
@@ -186,7 +187,7 @@ class FrontendDashboardController extends Controller
 
     public function subcategoryDetails($slug)
     {
-        $subcategory = \App\Models\Subcategory::where('slug', $slug)->firstOrFail();
+        $subcategory = Subcategory::where('slug', $slug)->firstOrFail();
         $courses = Course::where('subcategory_id', $subcategory->id)
             ->where('status', 1)
             ->with(['user', 'category'])
