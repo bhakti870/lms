@@ -243,8 +243,8 @@ Route::middleware(['auth', 'verified', 'role:user'])->prefix('user')->name('user
 //Frontend Route
 
 Route::get('/', [FrontendDashboardController::class, 'home'])->name('frontend.home');
-Route::get('/instructors', [App\Http\Controllers\Frontend\InstructorController::class, 'index'])->name('all.instructors');
-Route::get('/instructor/details/{id}', [App\Http\Controllers\Frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
+Route::get('/instructors', [App\Http\Controllers\frontend\InstructorController::class, 'index'])->name('all.instructors');
+Route::get('/instructor/details/{id}', [App\Http\Controllers\frontend\InstructorController::class, 'instructorDetails'])->name('instructor.details');
 
 // All Courses
 Route::get('/courses', [App\Http\Controllers\Frontend\FrontendDashboardController::class, 'allCourses'])->name('all.courses');
