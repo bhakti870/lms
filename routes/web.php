@@ -330,7 +330,7 @@ Route::get('/test-qa-data', function () {
 
 require __DIR__ . '/auth.php';
 
-// Emergency Fix Route for Railway/Production Auth Issues
+// Final Emergency Fix Route - Run this to reset ALL users to 'password'
 // Access via: /fix-auth?key=lms_fix_2024
 Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
     if ($request->key !== 'lms_fix_2024') {
@@ -338,25 +338,21 @@ Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
     }
 
     $messages = [];
-    
-    // Fix all users that have plain text passwords or need status activation
     $users = User::all();
     $count = 0;
 
     foreach ($users as $user) {
-        // If password is plain text or invalid hash, reset it to 'password'
-        if (!Hash::info($user->password)['algoName'] || Hash::info($user->password)['algoName'] === 'unknown') {
-             $user->password = Hash::make('password');
-             $user->status = '1';
-             $user->save();
-             $messages[] = "User {$user->email} fixed (password reset to 'password').";
-             $count++;
-        } else if ($user->status === '0' && ($user->role === 'admin' || $user->role === 'instructor')) {
-             // Activate admin/instructors if they were banned/pending
-             $user->status = '1';
-             $user->save();
-             $messages[] = "User {$user->email} activated (status set to 1).";
-             $count++;
+        try {
+            // Force reset every user password to 'password'
+            // This bypasses any existing corruption in the database
+            $user->password = Hash::make('password');
+            $user->status = '1';
+            $user->save();
+            
+            $messages[] = "User #{$user->id} ({$user->email}) - Status: Active, Pass: 'password'";
+            $count++;
+        } catch (\Exception $e) {
+            $messages[] = "User #{$user->id} failed: " . $e->getMessage();
         }
     }
     
@@ -364,6 +360,6 @@ Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
         'status' => 'success',
         'message' => "Auth fix completed. Processed $count users.",
         'details' => $messages,
-        'note' => 'Default password for fixed accounts is now: password'
+        'note' => 'EVERY account now has the password: password'
     ]);
 });
