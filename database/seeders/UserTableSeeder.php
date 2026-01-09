@@ -28,30 +28,30 @@ class UserTableSeeder extends Seeder
         ]);
         $admin->assignRole('admin');
 
-        // $instructor = User::updateOrCreate(['email' => 'instructor@example.com'], [
-        //     'name' => 'Instructor User',
-        //     'password' => Hash::make('password'),
-        //     'photo' => null,
-        //     'phone' => '0987654321',
-        //     'address' => '456 Instructor Avenue',
-        //     'role' => 'instructor',
-        //     'status' => '1',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-        // $instructor->assignRole('instructor');
+        $instructor = User::updateOrCreate(['email' => 'instructor@example.com'], [
+            'name' => 'Instructor User',
+            'password' => Hash::make('password'),
+            'photo' => null,
+            'phone' => '0987654321',
+            'address' => '456 Instructor Avenue',
+            'role' => 'instructor',
+            'status' => '1',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $instructor->assignRole('instructor');
 
-        // $user = User::updateOrCreate(['email' => 'user@example.com'], [
-        //     'name' => 'Regular User',
-        //     'password' => Hash::make('password'),
-        //     'photo' => null,
-        //     'phone' => '5555555555',
-        //     'address' => '789 User Lane',
-        //     'role' => 'user',
-        //     'status' => '1',
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-        // $user->assignRole('user');
+        $user = User::updateOrCreate(['email' => 'user@example.com'], [
+            'name' => 'Regular User',
+            'password' => Hash::make('password'),
+            'photo' => null,
+            'phone' => '5555555555',
+            'address' => '789 User Lane',
+            'role' => 'user',
+            'status' => '1',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $user->assignRole('user');
     }
 }
