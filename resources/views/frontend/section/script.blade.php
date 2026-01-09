@@ -37,11 +37,14 @@
 
     }
 
-    // Flash Messages (One-time execution, decoupled from turbo:load to prevent duplicates)
-    (function() {
-        // Prevent execution during Turbo preview or if already shown on this specific DOM load
-        if (document.documentElement.hasAttribute('data-turbo-preview')) return;
-        
+    // Flash Messages Handler
+    function showFlashMessages() {
+        if (typeof Swal === 'undefined') {
+            // If Swal isn't ready yet, retry in 100ms
+            setTimeout(showFlashMessages, 100);
+            return;
+        }
+
         @php
             $success = session()->pull('success');
             $error = session()->pull('error');
@@ -50,101 +53,129 @@
             $purchaseSuccess = session()->pull('purchase_success');
         @endphp
 
-        if (typeof Swal !== 'undefined') {
-            @if ($success)
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '{{ $success }}',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    background: '#7079e7',
-                    color: '#ffffff',
-                    iconColor: '#ffffff',
-                });
-            @endif
+        @if ($success)
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: '{{ $success }}',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: '#7079e7',
+                color: '#ffffff',
+                iconColor: '#ffffff',
+            });
+        @endif
 
-            @if ($error)
-                Swal.fire({
-                    toast: true,
-                    icon: 'error',
-                    title: '{{ $error }}',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    background: '#f27474',
-                    color: '#ffffff',
-                    iconColor: '#ffffff',
-                });
-            @endif
+        @if ($error)
+            Swal.fire({
+                toast: true,
+                icon: 'error',
+                title: '{{ $error }}',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: '#f27474',
+                color: '#ffffff',
+                iconColor: '#ffffff',
+            });
+        @endif
 
-            @if ($regSuccess)
-                Swal.fire({
-                    icon: 'success',
-                    title: '<h3 class="mt-2 text-theme">Welcome! 👋</h3>',
-                    text: 'Your account has been created successfully.',
-                    showConfirmButton: true,
-                });
-            @endif
+        @if ($regSuccess)
+            Swal.fire({
+                icon: 'success',
+                title: '<h3 class="mt-2 text-theme">Welcome! 👋</h3>',
+                text: 'Your account has been created successfully.',
+                showConfirmButton: true,
+                confirmButtonColor: '#7079e7',
+            });
+        @endif
 
-            @if ($loginSuccess)
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: '{{ $loginSuccess }}',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 4000,
-                    timerProgressBar: true,
-                    background: '#7079e7',
-                    color: '#ffffff',
-                    iconColor: '#ffffff',
-                });
-            @endif
+        @if ($loginSuccess)
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: '{{ $loginSuccess }}',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                background: '#7079e7',
+                color: '#ffffff',
+                iconColor: '#ffffff',
+            });
+        @endif
 
-            @if ($purchaseSuccess)
-                Swal.fire({
-                    icon: 'success',
-                    title: '<h2 class="mt-2 text-theme fw-bold">Success! 🎉</h2>',
-                    html: `
-                        <div class="text-start px-3">
-                            <p class="mb-3 lead">Congratulations! Your purchase was successful.</p>
-                            <ul class="list-unstyled mb-4">
-                                <li class="mb-2"><i class="bi bi-play-circle-fill text-theme me-2"></i> <strong>Start Learning:</strong> Your course is now available.</li>
-                                <li class="mb-2"><i class="bi bi-patch-check-fill text-theme me-2"></i> <strong>Get Certified:</strong> Complete the course to earn your certificate.</li>
-                                <li class="mb-2"><i class="bi bi-person-badge-fill text-theme me-2"></i> <strong>Dashboard:</strong> Track your progress in your dashboard.</li>
-                            </ul>
-                            <div class="d-grid gap-2">
-                                <a href="{{ route('user.dashboard') }}" class="btn btn-theme text-white border-0 py-2 rounded-pill shadow-sm">Go to My Courses</a>
+        @if ($purchaseSuccess)
+            Swal.fire({
+                icon: 'success',
+                title: '<h2 class="mt-2 text-theme fw-bold">Order Confirmed! 🎉</h2>',
+                html: `
+                    <div class="text-start px-3 py-2">
+                        <div class="mb-4 text-center">
+                            <div class="p-3 bg-light rounded-circle d-inline-block mb-3">
+                                <i class="bi bi-wallet2 text-theme h1 mb-0"></i>
+                            </div>
+                            <p class="lead fw-bold mb-0">Thank you for your purchase!</p>
+                            <p class="text-muted small">Your enrollment is now complete.</p>
+                        </div>
+                        <div class="list-group list-group-flush border-top border-bottom mb-4">
+                            <div class="list-group-item bg-transparent px-0 py-3 border-0 d-flex align-items-center">
+                                <span class="badge bg-theme-soft text-theme rounded-circle p-2 me-3"><i class="bi bi-play-fill"></i></span>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Instant Access</h6>
+                                    <small class="text-muted">Start learning right now from your dashboard.</small>
+                                </div>
+                            </div>
+                            <div class="list-group-item bg-transparent px-0 py-3 border-0 d-flex align-items-center">
+                                <span class="badge bg-success-soft text-success rounded-circle p-2 me-3"><i class="bi bi-file-earmark-pdf"></i></span>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">Invoice Generated</h6>
+                                    <small class="text-muted">A confirmation email has been sent to you.</small>
+                                </div>
                             </div>
                         </div>
-                    `,
-                    showConfirmButton: false,
-                    showCloseButton: true,
-                    timer: 10000,
-                    timerProgressBar: true,
-                });
-            @endif
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('user.dashboard') }}" class="btn btn-theme text-white border-0 py-3 rounded-pill shadow-sm fw-bold">
+                                <i class="bi bi-grid-fill me-2"></i>Go to My Learning
+                            </a>
+                        </div>
+                    </div>
+                `,
+                showConfirmButton: false,
+                showCloseButton: true,
+                width: '500px',
+                padding: '1.5rem',
+                customClass: {
+                    container: 'purchase-success-modal'
+                }
+            });
+        @endif
 
-            @if ($errors->any())
-                let errorMessages = '';
-                @foreach ($errors->all() as $error)
-                    errorMessages += '<li class="text-start">{{ $error }}</li>';
-                @endforeach
+        @if ($errors->any())
+            let errorMessages = '';
+            @foreach ($errors->all() as $error)
+                errorMessages += '<li class="text-start">{{ $error }}</li>';
+            @endforeach
 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Please fix the errors:',
-                    html: '<ul class="mt-2 list-unstyled">' + errorMessages + '</ul>',
-                    showConfirmButton: true,
-                    confirmButtonColor: '#5b50d6',
-                });
-            @endif
-        }
-    })();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please fix the errors:',
+                html: '<ul class="mt-2 list-unstyled">' + errorMessages + '</ul>',
+                showConfirmButton: true,
+                confirmButtonColor: '#7079e7',
+            });
+        @endif
+    }
+
+    // Run flash message check
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showFlashMessages);
+    } else {
+        showFlashMessages();
+    }
 
     // Run on every Turbo navigation (covers both initial load and AJAX navigation)
     document.addEventListener('turbo:load', initializeScripts);

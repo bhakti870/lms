@@ -66,19 +66,19 @@ class InstructorController extends Controller
     /**
      * Handle instructor login POST request.
      */
-    public function loginStore(Request $request): \Illuminate\Http\RedirectResponse
+    public function loginStore(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (\Illuminate\Support\Facades\Auth::attempt($credentials, $request->boolean('remember'))) {
-            $user = \Illuminate\Support\Facades\Auth::user();
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            $user = Auth::user();
 
             // Ensure the user is an instructor
             if ($user->role !== 'instructor') {
-                \Illuminate\Support\Facades\Auth::logout();
+                Auth::logout();
                 return back()->withErrors([
                     'email' => 'You are not authorized to access instructor panel.',
                 ])->onlyInput('email');
@@ -86,7 +86,7 @@ class InstructorController extends Controller
 
             // Check if instructor account is pending approval (status == '0')
             if ($user->status === '0') {
-                \Illuminate\Support\Facades\Auth::logout();
+                Auth::logout();
                 return back()->withErrors([
                     'email' => 'Your instructor account is pending approval.',
                 ])->onlyInput('email');

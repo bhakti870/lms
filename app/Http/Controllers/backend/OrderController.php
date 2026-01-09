@@ -53,7 +53,7 @@ class OrderController extends Controller
             /*Event End  */
 
             // Use request data for specific fields
-            $this->createPayment($session, $paymentIntent);
+            $this->createPaymentAndOrders($session, $paymentIntent, 'stripe');
 
             $firstCourseId = $stripe_data['course_id'][0] ?? null;
             $course = \App\Models\Course::find($firstCourseId);
@@ -63,102 +63,103 @@ class OrderController extends Controller
             Cart::where('guest_token', $guestToken)->delete();
 
             //coupon session destroy
-            session()->forget('coupon','stripe_data');
+            session()->forget(['coupon', 'stripe_data']);
 
             $redirectUrl = $course ? route('course-details', $course->course_name_slug) : '/';
             return redirect($redirectUrl)->with('purchase_success', true);
-
-
-            // return view('frontend.pages.checkout.stripe.success', ['session' => $session]);
         } catch (\Exception $e) {
-
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     public function cancel()
     {
-
         return view('frontend.pages.checkout.stripe.cancel');
     }
 
-
-    private function createPayment($session, $paymentIntent)
+    private function createPaymentAndOrders($session, $paymentIntent, $type)
     {
+        set_time_limit(120); // Increase time limit for email sending
 
-        // Create payment record using metadata from Stripe
-        $payment = Payment::create([
-            'transaction_id' => $paymentIntent->id,
-            'name' => $session->customer_details->name, // Use customer details for name
-            'email' => $session->customer_email, // Customer's email from session
+        if ($type === 'stripe') {
+            $payment = Payment::create([
+                'transaction_id' => $paymentIntent->id,
+                'name' => $session->customer_details->name,
+                'email' => $session->customer_email,
+                'total_amount' => $session->amount_total / 100,
+                'payment_type' => 'stripe',
+                'invoice_no' => 'INV-' . strtoupper(uniqid()),
+                'order_date' => now()->toDateString(),
+                'order_month' => now()->format('F'),
+                'order_year' => now()->year,
+                'status' => 'completed',
+            ]);
 
-            // 'phone' => $session->customer_phone, // Customer's phone from customer_details
-            //'address' => $session->customer_address, // Customer's address from customer_details, encoded as JSON if needed
+            $orderData = session('stripe_data');
+        } else {
+            // Razorpay logic
+            $orderPayload = session()->get('order_payload');
+            $payment = Payment::create([
+                'transaction_id' => $session['razorpay_payment_id'],
+                'name' => $orderPayload['first_name'] . ' ' . $orderPayload['last_name'],
+                'email' => $orderPayload['email'],
+                'total_amount' => $orderPayload['total_price'],
+                'payment_type' => 'razorpay',
+                'invoice_no' => 'INV-' . strtoupper(uniqid()),
+                'order_date' => now()->toDateString(),
+                'order_month' => now()->format('F'),
+                'order_year' => now()->year,
+                'status' => 'completed',
+            ]);
 
+            $orderData = [
+                'course_id' => $orderPayload['course_id'],
+                'instructor_id' => $orderPayload['instructor_id'],
+                'course_name' => $orderPayload['course_name'],
+                'course_price' => $orderPayload['course_price'],
+            ];
+        }
 
-            'total_amount' => $session->amount_total / 100, // Total price from metadata
-            'payment_type' => 'stripe', // Payment type (Stripe in this case)
-            'invoice_no' => 'INV-' . strtoupper(uniqid()), // Generate a unique invoice number
-            'order_date' => now()->toDateString(),
-            'order_month' => now()->format('F'),
-            'order_year' => now()->year,
-            'status' => 'completed', // Payment status
-        ]);
+        foreach ($orderData['course_id'] as $index => $courseId) {
+            $order = Order::create([
+                'payment_id' => $payment->id,
+                'user_id' => auth()->user()->id,
+                'course_id' => $courseId,
+                'instructor_id' => $orderData['instructor_id'][$index],
+                'course_title' => $orderData['course_name'][$index],
+                'price' => $orderData['course_price'][$index],
+            ]);
 
-         // Use request data for specific fields
-         $this->createOrder($payment->id);
+            // Notify Instructor
+            $instructor = \App\Models\User::find($order->instructor_id);
+            if ($instructor) {
+                $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
+            }
 
-    }
+            // Notify User
+            auth()->user()->notify(new \App\Notifications\UserNotification([
+                'title' => 'Course Purchased Successfully',
+                'message' => 'Congratulations! You have unlocked ' . $order->course_title . '. Happy learning!',
+                'link' => route('user.course.learn', $order->course_id),
+                'type' => 'payment',
+                'icon' => 'bi-bag-check-fill',
+                'color' => 'success',
+            ]));
 
-    private function createOrder($paymentId){
+            // Send Invoice Email (Try to use queue if available)
+            try {
+                \Illuminate\Support\Facades\Mail::to(auth()->user()->email)->queue(new \App\Mail\CourseInvoiceMail($order, auth()->user()));
+            } catch (\Exception $e) {
+                // Background queue might not be set up, fallback to sync or just ignore if it's the bottleneck
+                \Illuminate\Support\Facades\Mail::to(auth()->user()->email)->send(new \App\Mail\CourseInvoiceMail($order, auth()->user()));
+            }
 
-         // Retrieve the validated data from the session or request
-         $stripeData = session('stripe_data'); // Assuming this is where the order data is stored.
-         // Create order and enrollment records for each course
-         foreach ($stripeData['course_id'] as $index => $courseId) {
-             // Create Order
-             $order = Order::create([
-                 'payment_id' => $paymentId, // Associate with the created payment record
-                 'user_id' => auth()->user()->id, // Assuming user is authenticated
-                 'course_id' => $courseId,
-                 'instructor_id' => $stripeData['instructor_id'][$index], // Add logic to retrieve instructor ID if needed
-                 'course_title' => $stripeData['course_name'][$index],
-                 'price' => $stripeData['course_price'][$index],
-             ]);
-
-             // Notify Instructor
-             $instructor = \App\Models\User::find($order->instructor_id);
-             if ($instructor) {
-                 $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
-             }
-
-             // Notify User
-             auth()->user()->notify(new \App\Notifications\UserNotification([
-                 'title' => 'Course Purchased Successfully',
-                 'message' => 'Congratulations! You have unlocked ' . $order->course_title . '. Happy learning!',
-                 'link' => route('user.course.learn', $order->course_id),
-                 'type' => 'payment',
-                 'icon' => 'bi-bag-check-fill',
-                 'color' => 'success',
-             ]));
-
-             // Send Invoice Email
-             \Illuminate\Support\Facades\Mail::to(auth()->user()->email)->send(new \App\Mail\CourseInvoiceMail($order, auth()->user()));
-
-             // Create Enrollment
-             \App\Models\Enrollment::updateOrCreate(
-                [
-                    'user_id' => auth()->user()->id,
-                    'course_id' => $courseId,
-                ],
-                [
-                    'amount' => $stripeData['course_price'][$index],
-                    'status' => 'active',
-                    'enrolled_at' => now(),
-                ]
-             );
-         }
-
+            // Create Enrollment
+            \App\Models\Enrollment::updateOrCreate(
+                ['user_id' => auth()->user()->id, 'course_id' => $courseId],
+                ['amount' => $orderData['course_price'][$index], 'status' => 'active', 'enrolled_at' => now()]
+            );
+        }
     }
 
 
@@ -179,56 +180,9 @@ class OrderController extends Controller
             // Payment successful
             $orderPayload = session()->get('order_payload');
             
-            // Create Payment Record (Razorpay)
-            $payment = Payment::create([
-                'transaction_id' => $input['razorpay_payment_id'],
-                'name' => $orderPayload['first_name'] . ' ' . $orderPayload['last_name'],
-                'email' => $orderPayload['email'],
-                'total_amount' => $orderPayload['total_price'],
-                'payment_type' => 'razorpay',
-                'invoice_no' => 'INV-' . strtoupper(uniqid()),
-                'order_date' => now()->toDateString(),
-                'order_month' => now()->format('F'),
-                'order_year' => now()->year,
-                'status' => 'completed',
-            ]);
+            // Create Payment and Orders using helper
+            $this->createPaymentAndOrders($input, null, 'razorpay');
 
-             // Create Orders
-             foreach ($orderPayload['course_id'] as $index => $courseId) {
-                 $order = Order::create([
-                     'payment_id' => $payment->id,
-                     'user_id' => auth()->user()->id,
-                     'course_id' => $courseId,
-                     'instructor_id' => $orderPayload['instructor_id'][$index] ?? null,
-                     'course_title' => $orderPayload['course_name'][$index] ?? 'Course',
-                     'price' => $orderPayload['course_price'][$index] ?? 0,
-                 ]);
-
-                 // Notify Instructor
-                 if ($order->instructor_id) {
-                     $instructor = \App\Models\User::find($order->instructor_id);
-                     if ($instructor) {
-                         $instructor->notify(new \App\Notifications\CoursePurchaseNotification($order));
-                     }
-                 }
-                 
-                 // Send Invoice Email
-                 \Illuminate\Support\Facades\Mail::to(auth()->user()->email)->send(new \App\Mail\CourseInvoiceMail($order, auth()->user()));
-
-                 // Create Enrollment
-                 \App\Models\Enrollment::updateOrCreate(
-                    [
-                        'user_id' => auth()->user()->id,
-                        'course_id' => $courseId,
-                    ],
-                    [
-                        'amount' => $orderPayload['course_price'][$index] ?? 0,
-                        'status' => 'active',
-                        'enrolled_at' => now(),
-                    ]
-                 );
-             }
-            
             // Clear cart
              Cart::where('user_id', auth()->user()->id)->delete();
              $guestToken = $request->cookie('guest_token');
