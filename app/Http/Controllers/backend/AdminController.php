@@ -37,7 +37,7 @@ class AdminController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
             
             // Check if user is admin

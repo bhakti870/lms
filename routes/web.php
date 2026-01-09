@@ -330,7 +330,7 @@ Route::get('/test-qa-data', function () {
 
 require __DIR__ . '/auth.php';
 
-// Final Emergency Fix Route - Run this to reset ALL users to 'password'
+// Comprehensive Emergency Fix Route
 // Access via: /fix-auth?key=lms_fix_2024
 Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
     if ($request->key !== 'lms_fix_2024') {
@@ -338,28 +338,67 @@ Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
     }
 
     $messages = [];
+    
+    // 1. Fix Passwords and Status
     $users = User::all();
-    $count = 0;
-
+    $userCount = 0;
     foreach ($users as $user) {
         try {
-            // Force reset every user password to 'password'
-            // This bypasses any existing corruption in the database
             $user->password = Hash::make('password');
             $user->status = '1';
             $user->save();
-            
-            $messages[] = "User #{$user->id} ({$user->email}) - Status: Active, Pass: 'password'";
-            $count++;
+            $userCount++;
         } catch (\Exception $e) {
-            $messages[] = "User #{$user->id} failed: " . $e->getMessage();
+            $messages[] = "User #{$user->id} pass fix failed: " . $e->getMessage();
         }
     }
+    $messages[] = "--- Fixed $userCount User passwords to 'password' ---";
+
+    // 2. Fix Absolute Links in Database
+    $tables = [
+        'users' => ['photo'],
+        'courses' => ['course_image'],
+        'categories' => ['category_image', 'image'],
+        'sliders' => ['image'],
+        'site_infos' => ['logo', 'favicon'],
+    ];
+
+    $linkCount = 0;
+    foreach ($tables as $table => $columns) {
+        if (!Illuminate\Support\Facades\Schema::hasTable($table)) continue;
+        
+        foreach ($columns as $column) {
+            $records = Illuminate\Support\Facades\DB::table($table)
+                ->where($column, 'like', '%127.0.0.1:8000%')
+                ->orWhere($column, 'like', '%localhost:8000%')
+                ->get();
+
+            foreach ($records as $record) {
+                $oldValue = $record->$column;
+                $newValue = preg_replace('/https?:\/\/(127\.0\.0\.1|localhost):8000\//', '', $oldValue);
+                
+                Illuminate\Support\Facades\DB::table($table)->where('id', $record->id)->update([$column => $newValue]);
+                $messages[] = "Fixed Link in $table (#$record->id): $column updated";
+                $linkCount++;
+            }
+        }
+    }
+    $messages[] = "--- Fixed $linkCount Local links to relative paths ---";
     
+    // 3. Clear Cache
+    try {
+        Illuminate\Support\Facades\Artisan::call('cache:clear');
+        Illuminate\Support\Facades\Artisan::call('view:clear');
+        Illuminate\Support\Facades\Artisan::call('config:clear');
+        $messages[] = "--- Caches Cleared ---";
+    } catch (\Exception $e) {
+        $messages[] = "Cache clear failed: " . $e->getMessage();
+    }
+
     return response()->json([
         'status' => 'success',
-        'message' => "Auth fix completed. Processed $count users.",
+        'summary' => "Processed $userCount users and $linkCount links.",
         'details' => $messages,
-        'note' => 'EVERY account now has the password: password'
+        'note' => 'All accounts now use password: password. All links are now relative.'
     ]);
 });
