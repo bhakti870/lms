@@ -15,11 +15,11 @@ class UserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $admin = User::updateOrCreate(['email' => 'admin@gmail.com'], [
+        $admin = User::updateOrCreate(['email' => 'admin@example.com'], [
             'name' => 'Admin User',
             'password' => Hash::make('password'),
             'photo' => null,
-            'phone' => '9998979695',
+            'phone' => '1234567890',
             'address' => '123 Admin Street',
             'role' => 'admin',
             'status' => '1',
