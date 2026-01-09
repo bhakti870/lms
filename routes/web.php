@@ -280,8 +280,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/order', [OrderController::class, 'order'])->name('order');
     Route::get('/payment-success', [OrderController::class, 'success'])->name('success');
     Route::get('/payment-cancel', [OrderController::class, 'cancel'])->name('cancel');
-    Route::get('/razorpay-success', [OrderController::class, 'razorpaySuccess'])->name('razorpay.success');
-    Route::get('/razorpay-cancel', [OrderController::class, 'razorpayCancel'])->name('razorpay.cancel');
+    Route::match(['get', 'post'], '/razorpay-success', [OrderController::class, 'razorpaySuccess'])->name('razorpay.success');
+    Route::match(['get', 'post'], '/razorpay-cancel', [OrderController::class, 'razorpayCancel'])->name('razorpay.cancel');
 
     /* Review */
     Route::post('/store/review', [FrontendReviewController::class, 'storeReview'])->name('store.review');
