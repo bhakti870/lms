@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Bcrypt;
 
 class UserTableSeeder extends Seeder
 {
@@ -17,7 +18,7 @@ class UserTableSeeder extends Seeder
     {
         $admin = User::updateOrCreate(['email' => 'admin@example.com'], [
             'name' => 'Admin User',
-            'password' => Hash::make('password'),
+            'password' => bcrypt('password'),
             'photo' => null,
             'phone' => '1234567890',
             'address' => '123 Admin Street',
@@ -30,7 +31,7 @@ class UserTableSeeder extends Seeder
 
         $instructor = User::updateOrCreate(['email' => 'instructor@example.com'], [
             'name' => 'Instructor User',
-            'password' => Hash::make('password'),
+            'password' => bcrypt('password'),
             'photo' => null,
             'phone' => '0987654321',
             'address' => '456 Instructor Avenue',
