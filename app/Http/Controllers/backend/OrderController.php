@@ -79,7 +79,7 @@ class OrderController extends Controller
 
     private function createPaymentAndOrders($session, $paymentIntent, $type)
     {
-        set_time_limit(120); // Increase time limit for email sending
+        set_time_limit(60); // Increase time limit for email sending
 
         if ($type === 'stripe') {
             $payment = Payment::create([
