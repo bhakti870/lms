@@ -7,6 +7,8 @@ use App\Http\Controllers\backend\AdminController;
 use App\Http\Controllers\backend\AdminCourseController;
 use App\Http\Controllers\backend\AdminInstructorController;
 use App\Http\Controllers\backend\AdminProfileController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\backend\BackendOrderController;
 use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\backend\CouponController;
@@ -327,3 +329,41 @@ Route::get('/test-qa-data', function () {
 
 
 require __DIR__ . '/auth.php';
+
+// Emergency Fix Route for Railway/Production Auth Issues
+// Access via: /fix-auth?key=lms_fix_2024
+Route::get('/fix-auth', function (Illuminate\Http\Request $request) {
+    if ($request->key !== 'lms_fix_2024') {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $messages = [];
+    
+    // Fix all users that have plain text passwords or need status activation
+    $users = User::all();
+    $count = 0;
+
+    foreach ($users as $user) {
+        // If password is plain text or invalid hash, reset it to 'password'
+        if (!Hash::info($user->password)['algoName'] || Hash::info($user->password)['algoName'] === 'unknown') {
+             $user->password = Hash::make('password');
+             $user->status = '1';
+             $user->save();
+             $messages[] = "User {$user->email} fixed (password reset to 'password').";
+             $count++;
+        } else if ($user->status === '0' && ($user->role === 'admin' || $user->role === 'instructor')) {
+             // Activate admin/instructors if they were banned/pending
+             $user->status = '1';
+             $user->save();
+             $messages[] = "User {$user->email} activated (status set to 1).";
+             $count++;
+        }
+    }
+    
+    return response()->json([
+        'status' => 'success',
+        'message' => "Auth fix completed. Processed $count users.",
+        'details' => $messages,
+        'note' => 'Default password for fixed accounts is now: password'
+    ]);
+});
