@@ -36,6 +36,12 @@ class AdminController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
+                       $request->authenticate();
+
+        $request->session()->regenerate();
+
+        $user = $request->user();
+        dd($user);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $user = Auth::user();
